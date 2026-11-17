@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GAO Gestor · Início</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+<link rel="stylesheet" href="static/css/app.css">
+<link rel="stylesheet" href="static/css/gestor.css">
+<link rel="stylesheet" href="static/css/kit.css">
+</head>
+<body data-page="home">
+  <main class="gpage">
+    <div class="gk-page-head" style="align-items:center"><div><h1 class="gk-h1">Início</h1></div><span class="gk-datechip"><i data-lucide="calendar" class="gk-ic"></i><span id="hoje"></span></span></div>
+    <div class="gk-card" style="padding:var(--space-8) var(--space-6);text-align:center;color:var(--muted)"><div class="gk-strong" style="color:var(--fg);font-size:14px">Painel com gráficos e atalhos rápidos</div><div style="margin-top:var(--space-1);font-size:13px">Em construção. O acompanhamento do dia está em <a href="operacao.html" style="color:var(--primary-ink);font-weight:600">Operação</a>.</div></div>
+  </main>
+<script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
+<script src="static/js/shell.js"></script>
+<script src="static/js/kit-ui.js"></script>
+<script src="static/js/kit-icons.js"></script>
+<script>var dh=new Date(2026,10,17).toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'}); document.getElementById('hoje').textContent=dh.charAt(0).toUpperCase()+dh.slice(1); GK.icons();</script>
+</body>
+</html>

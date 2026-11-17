@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GAO Gestor · Comprovantes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+<link rel="stylesheet" href="static/css/app.css">
+<link rel="stylesheet" href="static/css/gestor.css">
+<link rel="stylesheet" href="static/css/kit.css">
+</head>
+<body data-page="comprovantes">
+  <main class="gpage">
+    <div class="gk-page-head"><div><h1 class="gk-h1">Comprovantes</h1></div></div>
+    <div class="gk-stats is-2" style="margin-bottom:var(--space-5)">
+      <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="clipboard-list" class="gk-ic"></i></span>Comprovantes</div><div class="gk-stat-v" id="stT"></div><div class="gk-stat-l">Comprovantes no período</div></div>
+      <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="building-2" class="gk-ic"></i></span>Clientes atendidos</div><div class="gk-stat-v" id="stC"></div><div class="gk-stat-l">Com comprovante no período</div></div>
+    </div>
+    <div class="gk-table-wrap">
+      <div class="gk-toolbar" style="flex-wrap:nowrap">
+        <div class="gk-input-wrap" style="flex:1 1 200px;min-width:160px;max-width:440px"><i data-lucide="search" class="gk-ic"></i><input class="gk-input" id="q" placeholder="Busque por cliente ou recebedor"></div>
+        <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="fCli" data-pop="popCli"><i data-lucide="building-2" class="gk-ic"></i><span>Cliente</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popCli"><div class="gk-fp-body"><label class="gk-check"><input type="checkbox" value="Hospital Amparo">Hospital Amparo</label><label class="gk-check"><input type="checkbox" value="HEMU">HEMU</label><label class="gk-check"><input type="checkbox" value="Santa Casa">Santa Casa</label><label class="gk-check"><input type="checkbox" value="Albert Einstein">Albert Einstein</label><label class="gk-check"><input type="checkbox" value="Hotel Le Jardin">Hotel Le Jardin</label><label class="gk-check"><input type="checkbox" value="Laboratório Central">Laboratório Central</label></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+        <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="fTipo" data-pop="popTipo"><i data-lucide="filter" class="gk-ic"></i><span>Tipo</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popTipo"><div class="gk-fp-body"><label class="gk-check"><input type="checkbox" value="Entrega">Entrega</label><label class="gk-check"><input type="checkbox" value="Coleta">Coleta</label><label class="gk-check"><input type="checkbox" value="Entrega e coleta">Entrega e coleta</label></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+        <div class="gk-pop-anchor">
+          <button class="gk-btn gk-btn-secondary" id="fPer" data-pop="popPer"><i data-lucide="calendar" class="gk-ic"></i><span>Período</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button>
+          <div class="gk-pop gk-menu" id="popPer"></div>
+        </div>
+        <button class="gk-btn gk-btn-ghost" id="clearAll" hidden>Limpar filtros</button>
+        <span class="gk-spacer"></span>
+        <span class="gk-caption" id="selCount" hidden></span>
+        <button class="gk-btn gk-btn-primary" id="btnEnviar" disabled><i data-lucide="send" class="gk-ic"></i>Enviar</button>
+      </div>
+      <table class="gk-table is-compact">
+        <thead><tr><th style="width:48px"><label class="gk-check"><input type="checkbox" id="selAll" aria-label="Selecionar todos"></label></th><th>Data</th><th>Cliente</th><th>Recebido por</th><th>Tipo</th><th>Origem</th><th class="gk-col-actions" style="width:80px">Ações</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="gk-empty" id="empty" hidden><i data-lucide="search" class="gk-ic"></i><b>Nenhum comprovante encontrado</b>Tente ajustar os termos da busca ou remover os filtros.<div style="margin-top:var(--space-4)"><button class="gk-btn gk-btn-secondary" id="clearEmpty">Limpar filtros</button></div></div>
+      <div class="gk-tfoot"><span id="cnt"></span><div class="gk-pager" id="pager"></div></div>
+    </div>
+  </main>
+
+  <div class="gk-overlay" id="ovEnv"><div class="gk-scrim" data-close="ovEnv"></div>
+    <div class="gk-modal is-form" role="dialog" aria-labelledby="envTitle">
+      <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="send" class="gk-ic"></i></span><h2 class="gk-h2" id="envTitle">Enviar comprovantes</h2></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovEnv" aria-label="Fechar"><i data-lucide="x" class="gk-ic"></i></button></div>
+      <div class="gk-modal-body" style="border-top:1px solid var(--line)">
+        <div class="gk-rcpt"><span class="gk-avatar gk-avatar-lg" id="envAva"></span><div><b id="envPara"></b><span id="envWpp"></span></div></div>
+        <div class="gk-sec-t" style="margin-top:var(--space-5)">Mensagem</div>
+        <div class="gk-wa" id="envBox"><div id="envMsg"></div><button type="button" class="gk-wa-copy" id="envCopy"><i data-lucide="copy" class="gk-ic"></i>Copiar</button></div>
+        <div class="gk-note" id="envSem" hidden><i data-lucide="triangle-alert" class="gk-ic"></i>Este cliente não tem WhatsApp cadastrado. Cadastre em Clientes para poder enviar.</div>
+        <div class="gk-caption" id="envInfo" style="margin-top:var(--space-3)">O WhatsApp abre com a mensagem pronta. Você confirma o envio por lá.</div>
+      </div>
+      <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovEnv">Cancelar</button><button class="gk-btn gk-btn-primary" id="envOk"><i data-lucide="send" class="gk-ic"></i>Enviar pelo WhatsApp</button></div>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
+<script src="static/js/shell.js"></script>
+<script src="static/js/kit-ui.js"></script>
+<script src="static/js/kit-icons.js"></script>
+<script src="static/js/clientes-data.js"></script>
+<script>
+(function(){
+  var CLI=['Hospital Amparo', 'HEMU', 'Santa Casa', 'Albert Einstein', 'Hotel Le Jardin', 'Laboratório Central'], QUEM=['Maria Aparecida','João Batista','Fernanda Lima','Carlos Eduardo','Ana Paula','Roberto Alves','Luciana Costa','Marcos Vinícius','Patrícia Souza','Pedro Henrique','Juliana Rocha','Tiago Ferreira'];
+  var TIPOS=['Entrega e coleta','Entrega','Entrega e coleta','Coleta','Entrega','Entrega e coleta','Entrega','Coleta','Entrega e coleta','Entrega','Coleta','Entrega e coleta'];
+  var COMP=QUEM.map(function(q,i){ var d=12-Math.floor(i/2); return {id:i,data:(d<10?'0':'')+d+'/11/2026',cli:CLI[i%CLI.length],quem:q,tipo:TIPOS[i],viagem:1048-Math.floor(i/2),link:'gao.app/c/'+(7391+i*37).toString(36)+'x'+(i+4)}; });
+  var state={q:'',cli:[],tipo:[],page:1}, PAGE=10, sel={}, shown=[];
+  var tbody=document.getElementById('tbody'), empty=document.getElementById('empty');
+  function row(c){
+    return '<tr class="gk-row-link" data-id="'+c.id+'"><td><label class="gk-check"><input type="checkbox" data-sel="'+c.id+'"'+(sel[c.id]?' checked':'')+' aria-label="Selecionar"></label></td><td>'+c.data+'</td><td class="gk-strong">'+c.cli+'</td><td>'+c.quem+'</td><td>'+c.tipo+'</td>'
+      +'<td><a class="gk-linkbtn" href="viagem.html?v='+c.viagem+'">Viagem #'+c.viagem+'</a></td>'
+      +'<td class="gk-col-actions"><span class="gk-acts"><a class="gk-act" href="comprovante.html?c='+c.id+'" aria-label="Ver comprovante" title="Ver"><i data-lucide="eye" class="gk-ic"></i></a></span></td></tr>';
+  }
+  function apply(){
+    var list=COMP.filter(function(c){ return (!state.q||(c.cli+' '+c.quem+' '+c.viagem).toLowerCase().indexOf(state.q)>=0)&&(!state.cli.length||state.cli.indexOf(c.cli)>=0)&&(!state.tipo.length||state.tipo.indexOf(c.tipo)>=0)&&fP.test(c.data); });
+    var cs={}; list.forEach(function(c){ cs[c.cli]=1; });
+    document.getElementById('stT').textContent=list.length; document.getElementById('stC').textContent=Object.keys(cs).length;
+    var total=list.length, pages=Math.max(1,Math.ceil(total/PAGE)); if(state.page>pages) state.page=pages;
+    var start=(state.page-1)*PAGE; shown=list.slice(start,start+PAGE);
+    tbody.innerHTML=shown.map(row).join('');
+    empty.hidden=total>0; tbody.closest('table').hidden=total===0;
+    document.getElementById('cnt').textContent=total===0?'Nenhum comprovante encontrado':('Mostrando '+(start+1)+'–'+Math.min(start+PAGE,total)+' de '+total);
+    var pg=document.getElementById('pager'); pg.innerHTML='';
+    function mk(label,page,on,dis,aria){ var b=document.createElement('button'); b.type='button'; b.className='gk-btn gk-btn-ghost gk-btn-sm'+(on?' is-active':''); b.innerHTML=label; if(aria) b.setAttribute('aria-label',aria); b.disabled=dis; if(!dis&&!on) b.addEventListener('click',function(){ state.page=page; apply(); }); pg.appendChild(b); }
+    mk('<i data-lucide="chevron-left" class="gk-ic"></i>',state.page-1,false,state.page<=1,'Anterior');
+    for(var i=1;i<=pages;i++) mk(String(i),i,i===state.page,false);
+    mk('<i data-lucide="chevron-right" class="gk-ic"></i>',state.page+1,false,state.page>=pages,'Próxima');
+    document.getElementById('clearAll').hidden=!(state.cli.length||state.tipo.length||fP.active());
+    contagem(); GK.icons();
+  }
+  function ids(){ return Object.keys(sel).filter(function(k){ return sel[k]; }); }
+  function sels(){ return COMP.filter(function(c){ return sel[c.id]; }); }
+  function contagem(){
+    var ch=sels(), n=ch.length, un={}; ch.forEach(function(c){ un[c.cli]=1; }); var mult=Object.keys(un).length>1;
+    document.getElementById('btnEnviar').disabled=!n||mult; var sc=document.getElementById('selCount'); sc.hidden=!n; sc.textContent=n+(n===1?' selecionado':' selecionados')+(mult?' · de um só cliente':'');
+    var all=document.getElementById('selAll'), nv=shown.filter(function(c){ return sel[c.id]; }).length; all.checked=shown.length>0&&nv===shown.length; all.indeterminate=nv>0&&nv<shown.length;
+  }
+  document.getElementById('q').addEventListener('input',function(){ state.q=this.value.toLowerCase().trim(); state.page=1; apply(); });
+  var fCli=GK.checkFilter({btn:'fCli',pop:'popCli',label:'Cliente',onChange:function(v){ state.cli=v; state.page=1; apply(); }});
+  var fTipo=GK.checkFilter({btn:'fTipo',pop:'popTipo',label:'Tipo',onChange:function(v){ state.tipo=v; state.page=1; apply(); }});
+  var fP=GK.periodFilter({btn:'fPer',pop:'popPer',onChange:function(){ state.page=1; apply(); }});
+  document.getElementById('clearAll').addEventListener('click',function(){ fCli.reset(); fTipo.reset(); fP.reset(); });
+  document.getElementById('clearEmpty').addEventListener('click',function(){ document.getElementById('q').value=''; state.q=''; fCli.reset(); fTipo.reset(); fP.reset(); });
+  tbody.addEventListener('click',function(e){ if(e.target.closest('a,.gk-check')) return; var tr=e.target.closest('tr'); if(tr) location.href='comprovante.html?c='+tr.getAttribute('data-id'); });
+  tbody.addEventListener('change',function(e){ var id=e.target.getAttribute('data-sel'); if(id!==null){ sel[id]=e.target.checked; contagem(); } });
+  document.getElementById('selAll').addEventListener('change',function(){ var on=this.checked; shown.forEach(function(c){ sel[c.id]=on; }); apply(); });
+  function mensagem(ch){ return 'Olá! Segue o histórico de comprovantes de entrega e coleta da GAO Lavanderia Hospitalar'+(ch.length?':':'.')+'\n\n'+ch.map(function(c){ return c.data+' · '+c.tipo+'\nhttps://'+c.link; }).join('\n\n'); }
+  function wppDe(n){ var c=(window.GAO_CLI||[]).filter(function(x){ return x.nome===n; })[0]; return (c&&c.wpp)||''; }
+  function copiar(txt,ok){ function fb(){ var t=document.createElement('textarea'); t.value=txt; t.style.cssText='position:fixed;opacity:0'; document.body.appendChild(t); t.select(); try{ document.execCommand('copy'); }catch(e){} t.remove(); ok(); } if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(ok,fb); else fb(); }
+  document.getElementById('btnEnviar').addEventListener('click',function(){
+    var ch=sels(), cli=ch[0].cli; document.getElementById('envTitle').textContent=ch.length===1?'Enviar comprovante':'Enviar '+ch.length+' comprovantes';
+    var c0=(window.GAO_CLI||[]).filter(function(x){ return x.nome===cli; })[0]||{}, ini=cli.split(' ').filter(function(x){ return x&&!/^(de|da|do|das|dos|e)$/i.test(x); }); ini=(ini.length>1?ini[0][0]+ini[1][0]:cli.slice(0,2)).toUpperCase();
+    document.getElementById('envAva').innerHTML=c0.foto?'<img src="'+c0.foto+'" alt="">':ini;
+    document.getElementById('envPara').textContent=cli; document.getElementById('envWpp').textContent=c0.wpp||'WhatsApp não cadastrado';
+    document.getElementById('envMsg').innerHTML=mensagem(ch).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/(https:\/\/\S+)/g,'<span class="gk-wa-l">$1</span>');
+    var tem=wppDe(cli).replace(/\D/g,'').length>=10; document.getElementById('envOk').disabled=!tem; document.getElementById('envSem').hidden=!!tem; document.getElementById('envInfo').hidden=!tem; GK.open('ovEnv'); GK.icons();
+  });
+  var tCopy=null;
+  document.getElementById('envCopy').addEventListener('click',function(){ var b=this; copiar(mensagem(sels()),function(){ b.classList.add('is-done'); b.innerHTML='<i data-lucide="check" class="gk-ic"></i>Copiado'; GK.icons(); clearTimeout(tCopy); tCopy=setTimeout(function(){ b.classList.remove('is-done'); b.innerHTML='<i data-lucide="copy" class="gk-ic"></i>Copiar'; GK.icons(); },2000); }); });
+  document.getElementById('envOk').addEventListener('click',function(){ var ch=sels(), d=wppDe(ch[0].cli).replace(/\D/g,''); if(d.length<10) return; window.open('https://wa.me/55'+d+'?text='+encodeURIComponent(mensagem(ch)),'_blank','noopener'); GK.close('ovEnv'); });
+  GK.popovers(); apply();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,831 @@
+/* scaffold das páginas do gestor (casca enquanto montamos as telas) */
+.gpage{padding:24px 32px 28px 24px;max-width:1360px;margin:0 auto}
+.gpage-head h1{margin:0;font-size:18px;font-weight:700;letter-spacing:-.02em;color:var(--fg)}
+.gpage-head p{margin:3px 0 0;font-size:12px;color:var(--muted)}
+.gph-soon{margin-top:14px;border:1px dashed var(--line);border-radius:16px;background:var(--card);padding:34px 24px;text-align:center;color:var(--muted);font-size:13px}
+.gph-soon b{display:block;color:var(--fg);font-size:15px;font-weight:600;margin-bottom:6px}
+.gph-ic{width:46px;height:46px;border-radius:12px;background:var(--info-bg);color:var(--read);display:grid;place-items:center;margin:0 auto 14px}
+@media(max-width:720px){.gpage{padding:20px 16px}}
+
+/* hambúrguer do menu (só no mobile; no desktop a sidebar fica fixa) */
+.gao-burger{display:none;align-items:center;justify-content:center;width:40px;height:40px;margin-left:-8px;margin-right:2px;border:0;background:none;color:var(--fg);border-radius:10px;cursor:pointer}
+.gao-burger:hover{background:var(--row)}
+@media(max-width:899px){
+  .gao-topbar-bc{display:flex}
+  .gao-topbar-bc .gao-bc{display:none}
+  .gao-burger{display:inline-flex}
+  body.gao-crumb{padding-top:var(--crumb-h)}
+}
+/* desktop: sem header no topo (a localização já vem pelo item ativo do menu) */
+@media(min-width:900px){
+  body.gao-crumb .gao-topbar{display:none}
+  body.gao-crumb{padding-top:0}
+}
+/* item "Modo escuro" dentro do menu do perfil */
+button.gao-pop-item{width:100%;background:none;border:0;cursor:pointer;text-align:left}
+
+/* ============ componentes das telas do gestor ============ */
+
+/* cabeçalho de página com ação à direita */
+.gp-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.gp-actions{display:flex;gap:10px;flex:none}
+
+/* botões */
+.gp-btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 20px;border-radius:10px;border:0;background:var(--primary);color:#fff;font:inherit;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;white-space:nowrap}
+.gp-btn:hover{background:var(--read)}
+.gp-btn svg{width:16px;height:16px}
+.gp-btn-ghost{background:var(--card);color:var(--fg);border:1px solid var(--line)}
+.gp-btn-ghost:hover{background:var(--row);border-color:var(--read);color:var(--read)}
+.gp-btn-danger{background:var(--card);color:#C0392B;border:1px solid #F0C9C4}
+.gp-btn-danger:hover{background:#FDEEEC}
+
+/* sub-página: voltar + breadcrumb */
+.gp-sub{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.gp-back{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);display:grid;place-items:center;cursor:pointer;flex:none;text-decoration:none}
+.gp-back:hover{background:var(--row);border-color:var(--read);color:var(--read)}
+.gp-back svg{width:18px;height:18px}
+.gp-crumb{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.gp-crumb a{color:var(--muted);text-decoration:none}
+.gp-crumb a:hover{color:var(--read)}
+.gp-crumb b{color:var(--fg);font-weight:600}
+.gp-crumb .sep{color:var(--muted);opacity:.6}
+
+/* tabela */
+.gtable-wrap{margin-top:20px;border:1px solid var(--line);border-radius:14px;background:var(--card);overflow-x:auto}
+.gtable{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
+.gtable thead th{text-align:left;padding:13px 18px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--card);border-bottom:1px solid var(--line);white-space:nowrap}
+.gtable tbody td{padding:13px 18px;border-bottom:1px solid var(--line);color:var(--fg);vertical-align:middle}
+.gtable tbody tr:last-child td{border-bottom:0}
+.gtable tbody tr{cursor:pointer;transition:background .12s}
+.gtable tbody tr:hover{background:var(--row)}
+.gt-name{font-weight:600;color:var(--fg)}
+.gt-sub{display:block;font-size:12px;color:var(--muted);font-weight:400;margin-top:1px}
+.gt-num{font-variant-numeric:tabular-nums}
+.gt-mut{color:var(--muted)}
+.gt-act{text-align:right;white-space:nowrap}
+.gt-eye{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--muted);display:inline-grid;place-items:center;cursor:pointer;text-decoration:none}
+.gt-eye:hover{border-color:var(--read);color:var(--read);background:var(--info-bg)}
+.gt-eye svg{width:16px;height:16px}
+
+/* tags de tipo */
+.gtag{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.gtag.normal{background:var(--info-bg);color:var(--read)}
+.gtag.folg{background:#FBEBD2;color:var(--coleta-ink)}
+
+/* cards de desempenho (detalhe) */
+.gstat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}
+.gstat{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:15px 16px}
+.gstat small{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.gstat b{display:block;font-size:24px;font-weight:700;letter-spacing:-.02em;margin-top:5px;color:var(--fg)}
+@media(max-width:620px){.gstat-row{grid-template-columns:1fr 1fr}}
+
+/* bloco de dados (detalhe) */
+.gcard{margin-top:16px;border:1px solid var(--line);border-radius:14px;background:var(--card);padding:6px 18px}
+.gcard h3{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:16px 0 4px}
+.grow{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);font-size:13px}
+.grow:last-child{border-bottom:0}
+.grow .k{color:var(--muted)}
+.grow .v{color:var(--fg);font-weight:600;text-align:right}
+
+/* formulário */
+.gform{margin-top:20px;max-width:560px;border:1px solid var(--line);border-radius:14px;background:var(--card);padding:22px}
+.gfield{margin-bottom:18px}
+.gfield:last-of-type{margin-bottom:0}
+.gfield>label{display:block;font-size:12px;font-weight:600;color:var(--fg);margin-bottom:7px}
+.gfield .hint{font-size:11px;color:var(--muted);margin-top:7px;line-height:1.45}
+.ginput{width:100%;height:42px;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:0 13px;font:inherit;font-size:14px;color:var(--fg)}
+.ginput::placeholder{color:var(--muted);opacity:.7}
+.ginput:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--info-bg)}
+.gseg{display:inline-flex;gap:6px;background:var(--row);border:1px solid var(--line);border-radius:10px;padding:4px}
+.gseg button{border:0;background:none;font:inherit;font-size:13px;font-weight:600;color:var(--muted);padding:7px 15px;border-radius:7px;cursor:pointer}
+.gseg button.on{background:var(--card);color:var(--read);box-shadow:0 1px 2px rgba(16,24,40,.08)}
+.gform-foot{display:flex;gap:10px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+
+/* modal de confirmação (excluir) */
+.gmodal{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(16,24,40,.45)}
+.gmodal.show{display:flex}
+.gmodal-box{background:var(--card);border:1px solid var(--line);border-radius:16px;max-width:380px;width:100%;padding:22px;box-shadow:0 20px 50px rgba(16,24,40,.25)}
+.gmodal-ic{width:44px;height:44px;border-radius:12px;background:#FDEEEC;color:#C0392B;display:grid;place-items:center;margin-bottom:14px}
+.gmodal-box h3{margin:0 0 6px;font-size:16px;font-weight:700;color:var(--fg)}
+.gmodal-box p{margin:0;font-size:13px;color:var(--muted);line-height:1.5}
+.gmodal-foot{display:flex;gap:10px;margin-top:20px}
+.gmodal-foot .gp-btn{flex:1;justify-content:center}
+
+/* ============ tabela profissional (estilo CRM) ============ */
+.gtbar{display:flex;align-items:center;gap:12px;margin-top:18px}
+.gsearch{position:relative;flex:1;max-width:440px}
+.gsearch svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--muted)}
+.gsearch input{width:100%;height:40px;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:0 13px 0 38px;font:inherit;font-size:13px;color:var(--fg)}
+.gsearch input::placeholder{color:var(--muted);opacity:.75}
+.gsearch input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--info-bg)}
+
+.gtable-wrap{margin-top:14px}
+.gtable-pro{min-width:780px}
+.gtable-pro thead th{vertical-align:middle}
+.gt-th{display:inline-flex;align-items:center;gap:5px}
+.gt-th.c{justify-content:center;width:100%}
+.gt-sort{display:inline-flex;color:var(--muted);opacity:.65}
+.gt-sort svg{width:13px;height:13px}
+.gt-c{text-align:center}
+.gt-act{text-align:center}
+
+/* linha de filtros por coluna */
+.gt-frow th{background:var(--card);padding:8px 12px;border-bottom:1px solid var(--line)}
+.gt-fi,.gt-fs{width:100%;height:32px;border:1px solid var(--line);border-radius:8px;background:var(--card);padding:0 9px;font:inherit;font-size:12px;color:var(--fg)}
+.gt-fi:focus,.gt-fs:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px var(--info-bg)}
+
+/* situação */
+.gstatus{display:inline-flex;align-items:center;height:22px;padding:0 11px;border-radius:999px;font-size:11px;font-weight:700}
+.gstatus.on{background:#E3F6E9;color:var(--ok-ink)}
+.gstatus.off{background:var(--row);color:var(--muted)}
+
+/* ações (ver / editar / excluir) */
+.gact{width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:var(--card);display:inline-grid;place-items:center;cursor:pointer;text-decoration:none;margin:0 2px;vertical-align:middle}
+.gact svg{width:15px;height:15px}
+.gact.view{color:var(--fg)}
+.gact.view:hover{background:var(--row);border-color:var(--muted)}
+.gact.edit{color:var(--read);border-color:#C2D2F2}
+.gact.edit:hover{background:var(--info-bg)}
+.gact.del{color:#C0392B;border-color:#F0C9C4}
+.gact.del:hover{background:#FDEEEC}
+
+/* rodapé: limite + paginação */
+.gtfoot{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px;flex-wrap:wrap}
+.glimit{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.glimit select{height:34px;border:1px solid var(--line);border-radius:8px;background:var(--card);padding:0 8px;font:inherit;font-size:13px;color:var(--fg)}
+.gpag{display:flex;gap:4px}
+.gpag button{min-width:34px;height:34px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit;font-size:13px;font-weight:600;cursor:pointer;padding:0 9px}
+.gpag button:hover:not(:disabled):not(.on){background:var(--row)}
+.gpag button.on{background:var(--read);color:#fff;border-color:var(--read)}
+.gpag button:disabled{color:var(--muted);opacity:.5;cursor:default}
+
+/* ===== layout Motoristas (Figma) ===== */
+.gp-btn-lg{height:46px;padding:0 22px;border-radius:11px;font-size:14px}
+.gtbar{display:flex;align-items:center;gap:12px;margin-top:18px;flex-wrap:wrap}
+.gsearch{flex:1;min-width:240px;max-width:none}
+.gsearch input{height:46px;border-radius:12px}
+.gfilter{height:46px;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:0 40px 0 16px;font:inherit;font-size:13px;font-weight:600;color:var(--fg);cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23667085' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 14px center}
+.gfilter:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--info-bg)}
+.gclear{height:46px;padding:0 12px;border:0;background:none;color:var(--read);font:inherit;font-size:13px;font-weight:700;cursor:pointer;display:none;align-items:center;gap:6px}
+.gclear svg{width:15px;height:15px}
+.gclear.show{display:inline-flex}
+
+.gstatus.on{background:var(--info-bg);color:var(--read)}
+.gstatus.off{background:var(--row);color:var(--muted)}
+
+.gact{width:40px;height:40px;border-radius:10px;border:0;background:var(--row);color:var(--muted);display:inline-grid;place-items:center;cursor:pointer;text-decoration:none;margin-right:6px;vertical-align:middle}
+.gact:last-child{margin-right:0}
+.gact svg{width:16px;height:16px}
+.gact:hover{background:#E4E8F1;color:var(--fg)}
+.gact.del:hover{background:#FDEEEC;color:#C0392B}
+
+.gtable-pro tbody td{padding:16px 18px}
+
+.gtfoot{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:18px;flex-wrap:wrap}
+.gtfoot-right{display:flex;align-items:center;gap:14px}
+.gresults{font-size:13px;color:var(--muted)}
+.gresults b{color:var(--fg);font-weight:700}
+.glimit-sel{height:38px;border:1px solid var(--line);border-radius:9px;background:var(--card);padding:0 32px 0 12px;font:inherit;font-size:13px;font-weight:600;color:var(--fg);cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23667085' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 10px center}
+
+/* ===== refinos (feedback Motoristas) ===== */
+/* filtros: texto menor e mais leve */
+.gfilter{font-size:13px;font-weight:500}
+/* cabeçalho: mais padding + texto suave */
+.gtable thead th{padding:16px 18px}
+/* textos da tabela menores */
+.gtable{font-size:13px}
+.gt-name{font-size:13px}
+.gtable-pro tbody td{padding:15px 18px}
+/* ações: só borda (cinza), sem fundo, à direita e juntas */
+.gtable-pro thead th:last-child,.gtable-pro tbody td:last-child{text-align:right}
+.gact{width:36px;height:36px;border-radius:9px;border:1px solid var(--line);background:transparent;color:var(--muted);margin:0 0 0 8px}
+.gact:hover{background:var(--row);color:var(--fg)}
+.gact.del:hover{background:#FDEEEC;color:#C0392B}
+/* paginação: só borda, cinza; ativo = número azul sublinhado */
+.gpag button{background:transparent;border:1px solid var(--line);color:var(--muted);font-weight:600}
+.gpag button:hover:not(:disabled):not(.on){background:var(--row);color:var(--fg)}
+.gpag button.on{background:transparent;border:1px solid var(--line);color:var(--read);text-decoration:underline;font-weight:700}
+
+/* ===== refinos 2 (feedback) ===== */
+.gtable thead th{font-weight:800}
+.gtable-wrap{border-radius:0}
+/* paginação: quadradinhos com fundo branco */
+.gpag button{background:var(--card)}
+.gpag button.on{background:var(--card)}
+/* ícones de ação menores e sem cor */
+.gact{width:32px;height:32px}
+.gact svg{width:13px;height:13px}
+.gact:hover{background:var(--row);color:var(--muted)}
+.gact.del:hover{background:var(--row);color:var(--muted)}
+
+/* ===== cor só no excluir ===== */
+.gact.view{color:var(--muted);border-color:var(--line)}
+.gact.edit{color:var(--muted);border-color:var(--line)}
+.gact.del{color:#C0392B;border-color:#F0C9C4}
+.gact.view:hover,.gact.edit:hover{background:var(--row);color:var(--fg);border-color:var(--line)}
+.gact.del:hover{background:#FDEEEC;color:#C0392B;border-color:#F0C9C4}
+
+/* ===== colunas com larguras balanceadas ===== */
+.gtable-pro{table-layout:fixed}
+.gtable-pro th,.gtable-pro td{overflow:hidden;text-overflow:ellipsis}
+.gtable-pro th:nth-child(1),.gtable-pro td:nth-child(1){width:19%}
+.gtable-pro th:nth-child(2),.gtable-pro td:nth-child(2){width:18%}
+.gtable-pro th:nth-child(3),.gtable-pro td:nth-child(3){width:15%}
+.gtable-pro th:nth-child(4),.gtable-pro td:nth-child(4){width:18%}
+.gtable-pro th:nth-child(5),.gtable-pro td:nth-child(5){width:15%}
+.gtable-pro th:nth-child(6),.gtable-pro td:nth-child(6){width:15%;white-space:nowrap}
+
+/* ===== avatar (iniciais) ao lado do nome ===== */
+.gt-name{display:flex;align-items:center;gap:10px;min-width:0}
+.gt-ava{width:30px;height:30px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700;flex:none;letter-spacing:.02em}
+.gt-nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+
+/* ===== correção: nome (avatar inline) + ações centralizadas ===== */
+.gt-name{display:table-cell;white-space:nowrap}
+.gt-ava{display:inline-grid;vertical-align:middle;margin-right:10px}
+.gt-nm{display:inline;vertical-align:middle;overflow:visible}
+.gtable-pro thead th:last-child,.gtable-pro tbody td:last-child{text-align:center;overflow:visible;white-space:nowrap}
+.gact{margin:0 4px}
+/* rebalancear colunas (nome maior p/ o avatar; ações mais largo p/ caber 3) */
+.gtable-pro th:nth-child(1),.gtable-pro td:nth-child(1){width:22%}
+.gtable-pro th:nth-child(2),.gtable-pro td:nth-child(2){width:17%}
+.gtable-pro th:nth-child(3),.gtable-pro td:nth-child(3){width:13%}
+.gtable-pro th:nth-child(4),.gtable-pro td:nth-child(4){width:17%}
+.gtable-pro th:nth-child(5),.gtable-pro td:nth-child(5){width:14%}
+.gtable-pro th:nth-child(6),.gtable-pro td:nth-child(6){width:17%}
+
+/* ===== refinamento: cor do avatar + hierarquia + densidade ===== */
+.gt-ava{background:var(--read)}
+.gpage-head h1{font-size:22px;font-weight:800;letter-spacing:-.03em}
+.gpage-head p{font-size:13px;margin-top:4px}
+.gtable thead th{font-size:11px;letter-spacing:.02em}
+.gtable-pro tbody td{padding:12px 18px}
+.gsearch input{height:42px;border-radius:10px}
+.gfilter{height:42px;border-radius:10px}
+.gact{margin:0 3px}
+
+/* avatar: azul mais claro (o escuro ficou pesado) */
+.gt-ava{background:var(--primary)}
+
+/* ===== ícones de ação maiores + lixo sem vermelho ===== */
+.gact{width:38px;height:38px}
+.gact svg{width:16px;height:16px}
+.gact.del{color:var(--muted);border-color:var(--line)}
+.gact.del:hover{background:var(--row);color:var(--fg);border-color:var(--line)}
+
+/* ============================================================
+   REFATORAÇÃO — escala fixa, grid 4/8, menos peso, tons claros
+   ============================================================ */
+/* menu: fonte menor, menos letter-spacing, ritmo */
+.gao-nav{font-size:13px;height:38px}
+.gni svg{width:16px;height:16px}
+.gao-sh{font-size:10px;letter-spacing:.06em;font-weight:600;margin:12px 0 4px}
+
+/* página: título menor e mais leve + subtítulo integrado */
+.gpage{padding:24px 32px 32px 24px}
+.gpage-head h1{font-size:20px;font-weight:600;letter-spacing:-.01em;color:var(--fg)}
+.gpage-head p{font-size:13px;margin-top:4px;color:var(--muted)}
+
+/* toolbar: campos menores, no grid */
+.gtbar{gap:12px;margin-top:16px}
+.gsearch input{height:40px;border-radius:10px;font-size:13px}
+.gfilter{height:40px;border-radius:10px;font-size:13px}
+
+/* tabela: borderless + alinhada ao título + densidade no grid */
+.gtable-wrap{margin-top:16px;border:0;border-radius:0;overflow-x:auto}
+.gtable{font-size:13px}
+.gtable thead th{padding:12px 16px;font-size:11px;font-weight:600;letter-spacing:.04em;color:#98A2B3;background:transparent;border-bottom:1px solid var(--line)}
+.gtable-pro tbody td{padding:12px 16px}
+.gtable-pro thead th:first-child,.gtable-pro tbody td:first-child{padding-left:0}
+.gtable-pro thead th:last-child,.gtable-pro tbody td:last-child{padding-right:0}
+.gt-nm{font-weight:600;color:var(--fg)}
+.gt-mut{color:var(--muted)}
+.gt-ava{width:32px;height:32px;font-size:12px;margin-right:12px}
+
+/* ações: cinza, juntas, no grid */
+.gact{width:36px;height:36px;margin:0 4px}
+.gact svg{width:16px;height:16px}
+
+/* rodapé/paginação no grid */
+.gtfoot{margin-top:16px}
+.gpag button{min-width:36px;height:36px}
+
+/* botão principal menos pesado */
+.gp-btn{font-weight:600}
+.gp-btn-lg{height:44px;padding:0 20px;font-size:13px}
+
+/* ===== tabela contida (fix "esticadona") + célula de pessoa ===== */
+.gpage{max-width:1200px}
+.gtable-wrap{border:1px solid var(--line);border-radius:0;background:var(--card);overflow-x:auto}
+.gtable-pro thead th:first-child,.gtable-pro tbody td:first-child{padding-left:16px}
+.gtable-pro thead th:last-child,.gtable-pro tbody td:last-child{padding-right:16px}
+/* 5 colunas balanceadas */
+.gtable-pro th:nth-child(1),.gtable-pro td:nth-child(1){width:34%}
+.gtable-pro th:nth-child(2),.gtable-pro td:nth-child(2){width:14%}
+.gtable-pro th:nth-child(3),.gtable-pro td:nth-child(3){width:22%}
+.gtable-pro th:nth-child(4),.gtable-pro td:nth-child(4){width:15%}
+.gtable-pro th:nth-child(5),.gtable-pro td:nth-child(5){width:15%}
+/* célula de pessoa: nome + usuário empilhados */
+.gt-id{display:inline-block;vertical-align:middle;min-width:0}
+.gt-nm{display:block;font-weight:600;font-size:13px;color:var(--fg);line-height:1.3}
+.gt-handle{display:block;font-size:12px;color:var(--muted);line-height:1.2;margin-top:1px}
+.gt-ava{vertical-align:middle}
+
+/* princípio: texto secundário é regular (não semi-bold) */
+.gt-handle{font-weight:400}
+
+/* ================= Motoristas v2 (card cheio estilo Figma) ================= */
+.gpage{max-width:none}
+.gp-crumb-top{font-size:12px;color:var(--muted);margin-bottom:6px}
+.gp-crumb-top a{color:var(--muted);text-decoration:none}
+.gp-crumb-top .sep{margin:0 6px;opacity:.6}
+
+.gcard-table{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 1px 2px rgba(16,24,40,.04);margin-top:20px}
+
+/* header do card */
+.gct-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px 18px;flex-wrap:wrap}
+.gct-title{display:flex;align-items:center;gap:12px}
+.gct-ic{width:42px;height:42px;border-radius:12px;background:var(--info-bg);color:var(--read);display:grid;place-items:center;flex:none}
+.gct-ic svg{width:20px;height:20px}
+.gct-title b{display:block;font-size:15px;font-weight:700;color:var(--fg)}
+.gct-title small{display:block;font-size:12px;color:var(--muted);font-weight:400;margin-top:2px}
+.gct-search{position:relative;width:360px;max-width:100%}
+.gct-search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--muted)}
+.gct-search input{width:100%;height:42px;border:1px solid var(--line);border-radius:11px;background:var(--card);padding:0 46px 0 40px;font:inherit;font-size:13px;color:var(--fg)}
+.gct-search input::placeholder{color:var(--muted)}
+.gct-search input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--info-bg)}
+.gkbd{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--muted);background:var(--row);border:1px solid var(--line);border-radius:6px;padding:2px 7px;font-weight:600}
+
+/* abas */
+.gtabs{display:flex;gap:2px;border-bottom:1px solid var(--line);padding:0 16px}
+.gtab{border:0;background:none;font:inherit;font-size:13px;font-weight:600;color:var(--muted);padding:12px 14px;cursor:pointer;position:relative}
+.gtab:hover{color:var(--fg)}
+.gtab.on{color:var(--read)}
+.gtab.on::after{content:"";position:absolute;left:14px;right:14px;bottom:-1px;height:2px;border-radius:2px;background:var(--read)}
+.gtab-n{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:18px;padding:0 6px;border-radius:9px;background:var(--row);color:var(--muted);font-size:11px;font-weight:700;margin-left:6px}
+.gtab.on .gtab-n{background:var(--info-bg);color:var(--read)}
+
+/* filtros (chips) */
+.gfilters{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:16px 24px}
+.gf-label{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.gf-label svg{width:15px;height:15px}
+.gchip{border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:12px;font-weight:600;padding:6px 15px;border-radius:999px;cursor:pointer}
+.gchip:hover{background:var(--row)}
+.gchip.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+.gclear-link{margin-left:auto;border:0;background:none;color:var(--read);font:inherit;font-size:12px;font-weight:600;cursor:pointer;display:none}
+.gclear-link.show{display:inline-flex}
+
+/* tabela dentro do card */
+.gct-tw{overflow-x:auto}
+.gm-table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;min-width:760px}
+.gm-table thead th{text-align:left;padding:12px 16px;font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:#98A2B3;border-top:1px solid var(--line);border-bottom:1px solid var(--line);white-space:nowrap}
+.gm-table tbody td{padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:middle}
+.gm-table tbody tr{cursor:pointer}
+.gm-table tbody tr:hover{background:var(--row)}
+.gm-table th:first-child,.gm-table td:first-child{padding-left:24px}
+.gm-table th:last-child,.gm-table td:last-child{padding-right:24px;text-align:right}
+.gm-table th:nth-child(1),.gm-table td:nth-child(1){width:32%}
+.gm-table th:nth-child(2),.gm-table td:nth-child(2){width:22%}
+.gm-table th:nth-child(3),.gm-table td:nth-child(3){width:18%}
+.gm-table th:nth-child(4),.gm-table td:nth-child(4){width:16%}
+.gm-table th:nth-child(5),.gm-table td:nth-child(5){width:12%}
+
+/* célula de pessoa */
+.gm-person{display:flex;align-items:center;gap:12px;min-width:0}
+.gm-ava{width:38px;height:38px;border-radius:50%;background:#E9EEFC;color:#3A5BD0;display:grid;place-items:center;font-size:12px;font-weight:700;flex:none}
+.gm-id{min-width:0}
+.gm-nm{display:block;font-weight:600;font-size:13px;color:var(--fg);line-height:1.3;overflow:hidden;text-overflow:ellipsis}
+.gm-handle{display:block;font-size:12px;font-weight:400;color:var(--muted);line-height:1.2;margin-top:1px;overflow:hidden;text-overflow:ellipsis}
+
+.gm-route{font-size:13px;color:var(--fg)}
+.gm-route.sem{color:var(--coleta-ink)}
+.gm-perfil{display:inline-flex;align-items:center;height:24px;padding:0 11px;border-radius:7px;background:var(--row);color:var(--fg);font-size:12px;font-weight:500}
+.gm-sit{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--fg)}
+.gm-sit::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok);flex:none}
+.gm-sit.off{color:var(--muted)}
+.gm-sit.off::before{background:#C2C8D0}
+
+/* ações: kebab + chevron */
+.gm-act{display:inline-flex;align-items:center;gap:2px}
+.gkwrap{position:relative}
+.gkebab,.gchev{width:32px;height:32px;border-radius:8px;border:0;background:none;color:var(--muted);display:inline-grid;place-items:center;cursor:pointer}
+.gkebab:hover,.gchev:hover{background:var(--row);color:var(--fg)}
+.gkebab svg,.gchev svg{width:17px;height:17px}
+.gkmenu{position:absolute;right:0;top:calc(100% + 4px);background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 32px rgba(16,24,40,.14);padding:6px;min-width:168px;display:none;z-index:40;text-align:left}
+.gkmenu.show{display:block}
+.gkmenu a,.gkmenu button{display:block;width:100%;text-align:left;padding:8px 10px;border-radius:7px;font:inherit;font-size:13px;font-weight:500;color:var(--fg);text-decoration:none;border:0;background:none;cursor:pointer}
+.gkmenu a:hover,.gkmenu button:hover{background:var(--row)}
+.gkmenu .danger{color:#C0392B}
+
+/* estado vazio */
+.gempty{display:none;flex-direction:column;align-items:center;text-align:center;padding:56px 20px}
+.gempty.show{display:flex}
+.gempty-ic{width:64px;height:64px;border-radius:50%;background:var(--row);color:var(--muted);display:grid;place-items:center;margin-bottom:16px}
+.gempty-ic svg{width:26px;height:26px}
+.gempty h3{font-size:16px;font-weight:700;color:var(--fg);margin:0 0 6px}
+.gempty p{font-size:13px;color:var(--muted);margin:0 0 18px}
+
+/* rodapé do card */
+.gct-foot{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 24px;border-top:1px solid var(--line);flex-wrap:wrap}
+.gct-foot .cnt{font-size:13px;color:var(--muted)}
+.gct-foot .cnt b{color:var(--fg);font-weight:700}
+
+/* ===== ajustes finos (busca, situação badge, limpar filtros) ===== */
+.gct-search input{padding:0 14px 0 40px}
+.gct-search input:focus{box-shadow:none}
+/* situação: badge verdinha, sem bolinha */
+.gm-sit{height:22px;padding:0 10px;border-radius:999px;font-size:11px;font-weight:700;background:#E3F6E9;color:var(--ok-ink);gap:0}
+.gm-sit::before{display:none}
+.gm-sit.off{background:var(--row);color:var(--muted)}
+/* limpar filtros alinhado */
+.gclear-link{align-items:center;gap:6px}
+.gclear-link.show{display:inline-flex;align-items:center;gap:6px}
+.gclear-link svg{width:14px;height:14px}
+
+/* ===== ajustes: contador menor + menu com ícones ===== */
+.gct-title small{font-size:11px}
+.gkmenu a,.gkmenu button{display:flex;align-items:center;gap:10px}
+.gkmenu svg{width:14px;height:14px;color:var(--muted);flex:none}
+.gkmenu .danger svg{color:#C0392B}
+
+/* ===== formulário de cadastro: seções + senha + grid ===== */
+.gform{max-width:620px}
+.gform-sec{margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.gform-sec:last-of-type{margin-bottom:0;padding-bottom:0;border-bottom:0}
+.gform-sec>.sec-h{font-size:12px;font-weight:700;letter-spacing:.02em;color:var(--fg);margin:0 0 3px}
+.gform-sec>.sec-d{font-size:11px;color:var(--muted);margin:0 0 16px;line-height:1.45}
+.gf-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.gf-grid .gfield{margin-bottom:0}
+@media(max-width:560px){.gf-grid{grid-template-columns:1fr;gap:18px}}
+.gpass{position:relative}
+.gpass .ginput{padding-right:46px}
+.gpass-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:34px;height:34px;display:grid;place-items:center;border:0;background:none;color:var(--muted);cursor:pointer;border-radius:8px}
+.gpass-eye:hover{background:var(--row);color:var(--fg)}
+.gpass-eye svg{width:17px;height:17px}
+
+/* ===== cabecalho de subpagina: breadcrumb em cima, titulo ao lado do voltar ===== */
+.gp-crumb-row{margin-bottom:10px}
+.gp-titlerow{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.gp-titlerow h1{margin:0;font-size:20px;font-weight:600;letter-spacing:-.01em;color:var(--fg)}
+.gp-titlerow .gp-actions{margin-left:auto}
+.gp-btn-sm{height:34px;padding:0 13px;font-size:12px}
+.gp-btn-sm svg{width:14px;height:14px}
+@media(max-width:560px){.gp-titlerow{flex-wrap:wrap}.gp-titlerow .gp-actions{width:100%;margin-left:0;margin-top:4px}}
+
+/* ===== select (filtro de rota + perfil de escala) ===== */
+.gsel{height:38px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--fg);font:inherit;font-size:13px;font-weight:600;padding:0 34px 0 13px;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center}
+.gsel:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--info-bg)}
+.gsel-full{width:100%;height:42px;font-size:14px;font-weight:500;padding-right:38px}
+
+/* ===== home: barra de abas + select de rota ===== */
+.gct-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid var(--line);padding-right:24px;flex-wrap:wrap}
+.gct-bar .gtabs{border-bottom:0}
+.gct-rota{position:relative;display:flex;align-items:center;padding-left:16px}
+.gct-rota .lbl{font-size:12px;color:var(--muted);font-weight:600}
+@media(max-width:620px){.gct-bar{padding:0 12px}.gct-rota{width:100%;padding-bottom:12px}.gct-rota .gsel{flex:1}}
+
+/* ===== cabecalho: chevron a esquerda, breadcrumb+titulo empilhados ao lado ===== */
+.gp-head2{display:flex;align-items:center;gap:13px;position:sticky;top:0;z-index:30;background:var(--bg);padding:0 0 14px;margin-bottom:0}
+.gp-head2-txt{display:flex;flex-direction:column;gap:3px;min-width:0}
+.gp-head2-txt .gp-crumb{margin:0}
+.gp-head2-txt h1{margin:0;font-size:16px;font-weight:600;letter-spacing:-.01em;color:var(--fg)}
+.gp-head2 .gp-actions{margin-left:auto;flex:none}
+@media(max-width:560px){.gp-head2{flex-wrap:wrap}.gp-head2 .gp-actions{width:100%;margin-left:0;margin-top:6px}}
+
+/* ===== sem brilho/sombra e sem borda azul nos campos ativos ===== */
+.ginput:focus,.gsel:focus,.gsel-full:focus{outline:none;border-color:var(--line);box-shadow:none}
+.gct-search input:focus{outline:none;border-color:var(--line);box-shadow:none}
+
+/* ===== scrollbar fininha azul (sempre) ===== */
+*{scrollbar-width:none}
+*::-webkit-scrollbar{width:0;height:0;display:none}
+
+/* label "Rota:" fixa dentro do select, com peso/cor proprios */
+.gct-rota svg,.gsel-ic{position:absolute;left:30px;top:50%;transform:translateY(-50%);width:13px !important;height:13px !important;color:var(--muted);pointer-events:none;z-index:1}
+.gsel-rota{padding-left:40px}
+/* ===================== Cadastro/edição de motorista ===================== */
+.mform{max-width:none;margin-top:6px}
+.mform-sec{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px 28px;margin-bottom:16px}
+.mform-sec + .mform-sec{border-top:0}
+.msec-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px}
+.msec-h{font-size:15px;font-weight:600;color:var(--fg);margin:0;letter-spacing:-.01em}
+.msec-d{font-size:12px;font-weight:500;color:var(--ph);margin:3px 0 0}
+.msec-req{font-size:11px;font-weight:500;color:var(--muted);flex:none;white-space:nowrap;padding-top:2px}
+.msec-req b{color:#E5484D}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px}
+@media(max-width:640px){.mgrid{grid-template-columns:1fr;gap:16px}}
+.mfield{display:flex;flex-direction:column;min-width:0}
+.mfield>label{font-size:12px;font-weight:600;color:var(--fg);margin-bottom:7px}
+.mfield .req{color:#E5484D;margin-left:1px}
+.mfield .mhint{font-size:11px;font-weight:500;color:var(--muted);margin-top:7px;line-height:1.5}
+.minput{height:44px;border:1px solid var(--line);border-radius:11px;background:var(--card);padding:0 14px;font:inherit;font-size:13px;font-weight:500;color:var(--fg);width:100%}
+.minput::placeholder{color:var(--muted);opacity:.7;font-weight:400}
+.minput:focus{outline:none;border-color:#c7cdda;box-shadow:none}
+.minput.err{border-color:#E5484D}
+.field-err{font-size:11px;font-weight:500;color:#E5484D;margin-top:7px;display:none}
+.mfield.invalid .field-err{display:block}
+.mfield.invalid .mhint{display:none}
+/* senha + regras ao vivo */
+.mpass{position:relative}
+.mpass .minput{padding-right:44px}
+.mpass-eye{position:absolute;right:7px;top:50%;transform:translateY(-50%);width:32px;height:32px;display:grid;place-items:center;border:0;background:none;color:var(--muted);cursor:pointer;border-radius:8px}
+.mpass-eye:hover{color:var(--fg);background:var(--row)}
+.mpass-eye svg{width:16px !important;height:16px !important}
+.pwrules{list-style:none;margin:9px 0 0;padding:0;display:none;flex-direction:column;gap:5px}
+.pwrules.show{display:flex}
+.pwrules li{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:500;color:var(--muted)}
+.pwrules li::before{content:"\2713";font-size:9px;font-weight:800;color:var(--muted);width:14px;height:14px;flex:none;display:grid;place-items:center;border-radius:50%;background:var(--row);opacity:.55}
+.pwrules li.ok{color:#2E9E5B}
+.pwrules li.ok::before{color:#fff;background:#2E9E5B;opacity:1}
+/* segmented perfil */
+.mseg{display:flex;background:var(--row);border:1px solid var(--line);border-radius:11px;padding:4px;height:44px}
+.mseg button{flex:1;border:1px solid transparent;background:none;font:inherit;font-size:13px;font-weight:600;color:var(--muted);border-radius:8px;cursor:pointer}
+.mseg button.on{background:var(--card);color:var(--read);border-color:#dfe3ec;box-shadow:0 1px 2px rgba(16,24,40,.08)}
+/* multi-select rotas */
+.gms{position:relative}
+.gms-field{min-height:48px;border:1px solid var(--line);border-radius:11px;background:var(--card);padding:9px 36px 9px 9px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;cursor:pointer}
+.gms-field.err{border-color:#E5484D}
+.gms-ph{color:var(--muted);opacity:.7;font-size:13px;padding-left:8px}
+.gms-chip{display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 7px 0 11px;border-radius:7px;background:var(--info-bg);color:var(--read);font-size:12px;font-weight:600}
+.gms-chip button{border:0;background:none;color:var(--read);cursor:pointer;display:grid;place-items:center;padding:2px;border-radius:4px;opacity:.6}
+.gms-chip button:hover{opacity:1;background:rgba(0,0,0,.07)}
+.gms-chip svg{width:13px !important;height:13px !important}
+.gms-chev{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:16px !important;height:16px !important;color:var(--muted);pointer-events:none}
+.gms-menu{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--card);border:1px solid var(--line);border-radius:11px;box-shadow:0 12px 32px rgba(16,24,40,.14);padding:6px;z-index:40;display:none}
+.gms-menu.show{display:block}
+.gms-menu label{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:500;color:var(--fg);cursor:pointer}
+.gms-menu label:hover{background:var(--row)}
+.gms-menu input{accent-color:var(--primary);width:15px;height:15px}
+/* status de acesso */
+.mstatus-row{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.mstatus-tog{display:flex;align-items:center;gap:10px;flex:none}
+.st-on{font-size:12px;font-weight:700;color:#2E9E5B}
+.st-on.off{color:var(--muted)}
+.gsw{position:relative;width:40px;height:23px;flex:none;display:inline-block}
+.gsw input{opacity:0;width:0;height:0;position:absolute}
+.gsw .track{position:absolute;inset:0;background:var(--line);border-radius:999px;transition:.15s;cursor:pointer}
+.gsw .track::before{content:"";position:absolute;left:3px;top:3px;width:17px;height:17px;border-radius:50%;background:#fff;transition:.15s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.gsw input:checked + .track{background:var(--primary)}
+.gsw input:checked + .track::before{transform:translateX(17px)}
+.gsw input:disabled + .track{cursor:default}
+/* barra de ações (rodapé dentro do card) */
+.mbar{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:none;margin-top:20px;padding:0 0 0 28px}
+.mbar-note{font-size:12px;font-weight:500;color:var(--muted)}
+.mbar-actions{display:flex;gap:10px;flex:none;margin-left:auto}
+.mbar-del{border:0;background:none;color:#C0392B;font:inherit;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:7px;cursor:pointer;padding:0}
+.mbar-del:hover{text-decoration:underline}
+.mbar-del svg{width:15px !important;height:15px !important}
+.gp-btn-lg2{height:42px;padding:0 20px;font-size:13px;border-radius:10px}
+
+/* status: fonte menor */
+.mstatus-row .msec-h{font-size:14px}
+.mstatus-row .msec-d{font-size:11px;font-weight:500;color:var(--ph);margin-top:2px}
+/* foto de perfil */
+.mphoto{display:flex;align-items:center;gap:16px;margin-bottom:22px}
+.mphoto-ava{position:relative;width:76px;height:76px;border-radius:50%;background:var(--row);border:1px solid var(--line);display:grid;place-items:center;overflow:visible;flex:none;cursor:pointer;padding:0}
+.mphoto-ava:hover{border-color:#c7cdda}
+.mphoto-ava img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.mphoto-ini{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;font-size:17px;font-weight:700;color:var(--read)}
+.mphoto-ini svg{width:22px !important;height:22px !important;color:var(--muted)}
+.mphoto-badge{position:absolute;right:-2px;bottom:-2px;width:24px;height:24px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;border:2px solid var(--card)}
+.mphoto-badge svg{width:12px !important;height:12px !important}
+.mphoto-h{font-size:13px;font-weight:600;color:var(--fg)}
+.mphoto-sub{font-size:11px;font-weight:500;color:var(--ph);margin-top:2px}
+.mphoto-rm{border:0;background:none;color:#C0392B;font:inherit;font-size:12px;font-weight:600;cursor:pointer;padding:0;margin-top:8px}
+.mphoto-rm:hover{text-decoration:underline}
+/* avatar da tabela com foto */
+.gm-ava{overflow:hidden}
+.gm-ava img{width:100%;height:100%;object-fit:cover}
+
+/* ===== ajustes finos cadastro ===== */
+/* breadcrumb menor e item atual mais fraco */
+.gp-crumb{font-size:11px}
+.gp-crumb b{color:var(--muted);font-weight:500}
+/* títulos e subtítulos de seção um pouco maiores */
+.msec-h{font-size:16px}
+.msec-d{font-size:13px}
+/* badge da câmera centralizado */
+.mphoto-badge{line-height:0}
+.mphoto-badge svg{display:block}
+/* ícone à esquerda dentro do input (@ e cadeado) */
+.minput-ic{position:relative}
+.lead{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--muted);pointer-events:none;z-index:1}
+.lead svg{width:16px !important;height:16px !important;display:block}
+.minput-ic .minput,.mpass .minput{padding-left:40px}
+/* ícone à esquerda do input: tamanho forçado no svg gerado */
+.minput-ic > svg,.mpass > svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:15px !important;height:15px !important;color:var(--muted);pointer-events:none;z-index:1}
+
+.gsel-full{height:44px;font-size:13px}
+
+/* estiliza as opções do select nativo */
+.gsel option{background:var(--card);color:var(--fg);font-size:13px;padding:8px}
+.gsel option:checked,.gsel option:hover{background:var(--info-bg);color:var(--read)}
+/* chips das rotas selecionadas menores */
+.gms-chip{font-size:12px;height:28px}
+.gms-chip svg{width:12px !important;height:12px !important}
+
+/* botão de ação principal do rodapé mais largo */
+.mbar-actions .gp-btn-lg2:not(.gp-btn-ghost){min-width:190px;justify-content:center;padding:0 28px}
+
+/* foto de perfil no canto direito do cabeçalho de seção */
+.msec-head{align-items:center}
+.msec-head .mphoto{margin-bottom:0;flex-direction:column;align-items:center;text-align:center;gap:8px;flex:none}
+
+/* borda dos campos um pouco mais escura (base no sistema) */
+.minput,.gms-field,.gsel,.mseg{border-color:#CBD2DC}
+
+/* foto à esquerda + nome/telefone empilhados à direita */
+.mphoto-row{display:flex;align-items:flex-start;gap:24px}
+.mphoto-row .mphoto{flex-direction:column;align-items:center;text-align:center;gap:8px;flex:none;margin-bottom:0}
+.mphoto-fields{flex:1;display:flex;flex-direction:column;gap:18px;min-width:0}
+@media(max-width:640px){.mphoto-row{flex-direction:column;align-items:stretch;gap:18px}.mphoto-row .mphoto{align-self:flex-start}}
+
+.mfield>label{font-weight:500}
+
+/* foto de perfil inline (horizontal) */
+.mphoto-txt{display:flex;flex-direction:column;gap:8px}
+.mphoto-acts{display:flex;align-items:center;gap:12px}
+
+.mstatus-in{margin-top:22px;padding-top:22px;border-top:1px solid var(--line)}
+
+/* ===================== Perfil do motorista ===================== */
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px 28px;margin-top:6px}
+.phead{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.phead-ava{width:58px;height:58px;border-radius:50%;background:#E9EEFC;color:#3A5BD0;display:grid;place-items:center;font-size:18px;font-weight:700;flex:none;overflow:hidden}
+.phead-ava img{width:100%;height:100%;object-fit:cover}
+.phead-id{min-width:0}
+.phead-name{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.phead-name h2{margin:0;font-size:20px;font-weight:700;letter-spacing:-.01em;color:var(--fg)}
+.phead-handle{font-size:13px;color:var(--muted);margin-top:3px}
+.phead-acts{margin-left:auto;display:flex;gap:10px;flex:none}
+.pdiv{height:1px;background:var(--line);margin:20px 0}
+.pinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.pinfo .lbl{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#98A2B3;margin-bottom:9px}
+.pinfo .val{font-size:14px;color:var(--fg)}
+.pinfo .chips{display:flex;flex-wrap:wrap;gap:8px}
+@media(max-width:720px){.pinfo{grid-template-columns:1fr;gap:16px}.phead-acts{width:100%;margin-left:0;margin-top:6px}}
+/* stat cards */
+.pstats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:18px}
+@media(max-width:720px){.pstats{grid-template-columns:1fr}}
+.pstat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;position:relative}
+.pstat-h{display:flex;align-items:center;gap:10px}
+.pstat-ic{width:30px;height:30px;border-radius:8px;background:var(--info-bg);color:var(--read);display:grid;place-items:center;flex:none}
+.pstat-ic svg{width:16px !important;height:16px !important}
+.pstat-h span{font-size:13px;font-weight:600;color:var(--fg)}
+.pstat-n{font-size:26px;font-weight:700;letter-spacing:-.02em;color:var(--fg);margin:14px 0 5px}
+.pstat-sub{font-size:12px;color:var(--muted)}
+.pstat.link{cursor:pointer}
+.pstat.link:hover{border-color:var(--read)}
+.pstat-arrow{position:absolute;top:18px;right:18px;color:var(--muted)}
+.pstat-arrow svg{width:17px !important;height:17px !important}
+/* filtros do histórico */
+.ptab-filters{display:flex;align-items:center;gap:12px;padding:0 24px 16px;flex-wrap:wrap}
+.ptab-clear{margin-left:auto;border:0;background:none;color:var(--read);font:inherit;font-size:13px;font-weight:600;cursor:pointer;padding:0}
+.ptab-clear:hover{text-decoration:underline}
+/* status da viagem */
+.tst{display:inline-flex;align-items:center;height:22px;padding:0 11px;border-radius:999px;font-size:11px;font-weight:700}
+.tst.ok{background:#E3F6E9;color:var(--ok-ink)}
+.tst.no{background:#FDECEC;color:#C0392B}
+/* tabela de viagens: 4 colunas */
+.gm-table.ptrips{min-width:620px}
+.gm-table.ptrips th:nth-child(1),.gm-table.ptrips td:nth-child(1){width:26%}
+.gm-table.ptrips th:nth-child(2),.gm-table.ptrips td:nth-child(2){width:42%}
+.gm-table.ptrips th:nth-child(3),.gm-table.ptrips td:nth-child(3){width:22%}
+.gm-table.ptrips th:nth-child(4),.gm-table.ptrips td:nth-child(4){width:10%}
+
+/* card de desempenho com gradiente azul */
+.pstat.grad{background:linear-gradient(135deg,var(--primary),var(--read));border-color:transparent;color:#fff}
+.pstat.grad .pstat-h span,.pstat.grad .pstat-n{color:#fff}
+.pstat.grad .pstat-sub{color:rgba(255,255,255,.82)}
+.pstat.grad .pstat-ic{background:rgba(255,255,255,.18);color:#fff}
+
+/* limpar filtros do histórico: só quando há filtro ativo */
+.ptab-clear{display:none}
+.ptab-clear.show{display:inline-block}
+
+.medit-log{max-width:none;margin-top:14px;font-size:12px;font-weight:500;color:var(--ph)}
+
+/* filtro-select com ícone (padrão do sistema) */
+.fsel{position:relative;display:inline-flex;align-items:center}
+.fsel > svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px !important;height:14px !important;color:var(--muted);pointer-events:none;z-index:1}
+.fsel .gsel{padding-left:36px}
+
+/* perfil: linha de meta compacta (telefone · rotas · perfil) */
+.pmeta{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.pmeta-i{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--fg)}
+.pmeta-i > svg{width:15px !important;height:15px !important;color:var(--muted);flex:none}
+.pmeta-sep{width:1px;height:16px;background:var(--line);flex:none}
+@media(max-width:640px){.pmeta{gap:10px}.pmeta-sep{display:none}.pmeta-i{width:100%}}
+
+/* cadastro/edição no desktop: dois cards lado a lado */
+@media(min-width:860px){
+  .mform{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch}
+  .mform-sec{margin-bottom:0}
+  .mform .mgrid{grid-template-columns:1fr;gap:16px}
+}
+
+/* cabeçalho de seção com step badge */
+.msec-head{justify-content:flex-start;gap:14px}
+.mstep{width:26px;height:26px;border-radius:50%;background:var(--read);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;flex:none}
+.mstep .n{line-height:1}
+.mstep.done{background:#2E9E5B}
+.mstep.done .n{display:none}
+.mstep.done::after{content:"\2713";font-size:14px;font-weight:800}
+
+/* ===== passe de harmonização do formulário ===== */
+/* tipografia um pouco maior */
+.msec-h{font-size:17px}
+.mfield>label{font-size:13px;margin-bottom:8px}
+.minput{height:46px;font-size:14px}
+.minput::placeholder{font-size:14px}
+.mhint{font-size:12px}
+.gsel-full{height:46px;font-size:14px}
+.mseg{height:46px}
+.mseg button{font-size:14px}
+.gms-field{min-height:46px}
+.gms-ph{font-size:14px}
+/* espaçamentos */
+.mgrid{gap:20px 24px}
+.mform-sec{padding:26px 28px}
+@media(min-width:860px){.mform{gap:20px}}
+/* step badge alinhado ao título */
+.msec-head{align-items:flex-start;margin-bottom:20px}
+.mstep{margin-top:1px}
+.msec-head > div{padding-top:1px}
+/* rodapé: excluir + log agrupados à esquerda */
+.mbar{align-items:center}
+.mbar-left{display:flex;flex-direction:column;gap:6px}
+.mbar-left .medit-log{margin:0}
+
+/* botão desabilitado + card de acesso apagado quando inativo */
+.gp-btn:disabled{opacity:.45;cursor:not-allowed}
+.mform-sec.inactive .msec-head,.mform-sec.inactive .mgrid{opacity:.5;transition:opacity .15s}
+
+/* ===== padrão de tamanho do formulário (alinhado ao resto do sistema) ===== */
+.msec-h{font-size:15px}
+.msec-d{font-size:12px}
+.mfield>label{font-size:12px;margin-bottom:7px}
+.minput{height:42px;font-size:13px}
+.minput::placeholder{font-size:13px}
+.mhint{font-size:11px}
+.gsel-full{height:42px;font-size:13px}
+.mseg{height:42px}
+.mseg button{font-size:13px}
+.gms-field{min-height:42px}
+.gms-ph{font-size:13px}
+.gms-chip{font-size:12px;height:26px}
+.mgrid{gap:18px 24px}
+.mform-sec{padding:22px 26px}
+.msec-head{margin-bottom:18px}
+.mstep{width:24px;height:24px;font-size:11px}
+.mstep.done::after{font-size:13px}
+.mstatus-row .msec-h{font-size:14px}
+.gp-btn-lg2{height:42px;font-size:13px}
+.mbar-del{font-size:12px}
+.medit-log{font-size:11px}
+
+/* chevron de voltar sem fundo */
+.gp-back{background:none;border:0}
+.gp-back:hover{background:var(--row);border:0}
+
+/* chevron de voltar: com borda, sem fundo */
+.gp-back{background:none;border:1px solid var(--line)}
+.gp-back:hover{background:var(--row);border-color:var(--read)}
+
+/* cards sem stroke (tabela mantém o stroke) */
+.mform-sec,.pcard,.pstat{border-color:transparent;box-shadow:0 1px 3px rgba(16,24,40,.05)}
+.pstat.grad{box-shadow:0 1px 3px rgba(37,99,235,.18)}
+
+/* sombra dos cards bem suave e esfumaçada */
+.mform-sec,.pcard,.pstat{box-shadow:0 6px 24px rgba(16,24,40,.045)}
+.pstat.grad{box-shadow:0 6px 24px rgba(37,99,235,.14)}
+
+/* sombra só nos cards de estatística; card institucional/forms com borda e sem sombra */
+.pcard,.mform-sec{border-color:var(--line);box-shadow:none}
+
+/* ===== tabela de rotas (4 colunas) ===== */
+.gm-table.rt4{min-width:600px}
+.gm-table.rt4 th:nth-child(1),.gm-table.rt4 td:nth-child(1){width:42%}
+.gm-table.rt4 th:nth-child(2),.gm-table.rt4 td:nth-child(2){width:24%}
+.gm-table.rt4 th:nth-child(3),.gm-table.rt4 td:nth-child(3){width:24%}
+.gm-table.rt4 th:nth-child(4),.gm-table.rt4 td:nth-child(4){width:10%}
+.gm-rt-name{display:flex;align-items:center;gap:11px;min-width:0}
+.gm-rota-ic{width:34px;height:34px;border-radius:9px;background:var(--info-bg);color:var(--read);display:grid;place-items:center;flex:none}
+.gm-rota-ic svg{width:17px !important;height:17px !important}
+.gm-rt-nm{font-weight:600;font-size:13px;color:var(--fg);overflow:hidden;text-overflow:ellipsis}
+.gm-count{font-size:13px;color:var(--fg)}
+.gm-count small{color:var(--muted);font-weight:400}
+
+/* ===== multi-select com busca dentro ===== */
+.gms-search{position:relative;padding:6px 6px 8px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.gms-search > svg{position:absolute;left:16px;top:calc(50% - 1px);transform:translateY(-50%);width:14px !important;height:14px !important;color:var(--muted);pointer-events:none}
+.gms-search input{width:100%;height:34px;border:1px solid var(--line);border-radius:8px;padding:0 10px 0 32px;font:inherit;font-size:13px;color:var(--fg);background:var(--card)}
+.gms-search input:focus{outline:none;border-color:var(--line);box-shadow:none}
+.gms-opts{max-height:220px;overflow-y:auto}
+.gms-none{padding:12px 10px;text-align:center;font-size:12px;color:var(--muted);display:none}
+
+/* ===== formulário de card único (rota) ===== */
+@media(min-width:860px){
+  .mform-1col{display:block}
+  .mform-1col .mgrid{grid-template-columns:1fr}
+}

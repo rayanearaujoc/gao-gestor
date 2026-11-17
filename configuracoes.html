@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GAO Gestor · Configurações</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+<link rel="stylesheet" href="static/css/app.css">
+<link rel="stylesheet" href="static/css/gestor.css">
+<link rel="stylesheet" href="static/css/kit.css">
+</head>
+<body data-page="configuracoes">
+  <main class="gpage">
+    <div class="gk-page-head"><div><h1 class="gk-h1">Configurações</h1></div></div>
+
+    <div class="gk-settings">
+      <nav class="gk-sidetabs">
+        <button class="gk-sidetab is-active" data-t="plano"><i data-lucide="credit-card" class="gk-ic"></i>Plano</button>
+        <button class="gk-sidetab" data-t="bot"><i data-lucide="bot" class="gk-ic"></i>Assistente WhatsApp</button>
+        <button class="gk-sidetab" data-t="empresa"><i data-lucide="building-2" class="gk-ic"></i>Dados da empresa</button>
+      </nav>
+      <div class="gk-settings-panel">
+        <section data-p="plano">
+          <h2 class="gk-h2">Plano</h2>
+          <div class="gk-caption" style="margin-bottom:var(--space-5)">O que está contratado pela sua empresa.</div>
+          <div class="gk-hero" style="margin-bottom:var(--space-5)">
+            <div class="gk-hero-l">Seu plano</div>
+            <div class="gk-hero-t">CRM GAO + Logística</div>
+            <div class="gk-hero-list">
+              <div><i data-lucide="check" class="gk-ic"></i>Comandas vindas do CRM</div>
+              <div><i data-lucide="check" class="gk-ic"></i>Rotas e viagens</div>
+              <div><i data-lucide="check" class="gk-ic"></i>App do motorista</div>
+              <div><i data-lucide="check" class="gk-ic"></i>Comprovantes por WhatsApp</div>
+            </div>
+          </div>
+          <div class="gk-status-row" style="padding-top:var(--space-5);border-top:1px solid var(--line)">
+            <div><h3 class="gk-h3">Quer mudar de plano?</h3><div class="gk-caption">Fale com a equipe da GAO para conhecer outras opções.</div></div>
+            <a class="gk-btn gk-btn-secondary" href="https://wa.me/556230000000" target="_blank" rel="noopener"><i data-lucide="message-circle" class="gk-ic"></i>Falar com a GAO</a>
+          </div>
+        </section>
+        <section data-p="bot" hidden>
+          <h2 class="gk-h2">Assistente WhatsApp</h2>
+          <div class="gk-caption" style="margin-bottom:var(--space-6)">O número que envia os avisos automáticos aos clientes durante as viagens.</div>
+          <div class="gk-status-row">
+            <div><div class="gk-inline" style="gap:var(--space-2)"><h3 class="gk-h3" id="wNum"></h3><span id="wBadge"></span></div><div class="gk-caption" id="wDesc"></div></div>
+            <button class="gk-btn gk-btn-secondary" id="wBtn" type="button"></button>
+          </div>
+        </section>
+        <section data-p="empresa" hidden>
+          <h2 class="gk-h2">Dados da empresa</h2>
+          <div class="gk-caption" style="margin-bottom:var(--space-6)">Dados cadastrados pela GAO.</div>
+          <div class="gk-fgroup"><h3 class="gk-h3">Empresa</h3><div class="gk-fgrid"><div class="gk-fact"><div class="gk-fact-l">Nome</div><div class="gk-fact-v"><span class="gk-strong">GAO Lavanderia Hospitalar</span></div></div><div class="gk-fact"><div class="gk-fact-l">CNPJ</div><div class="gk-fact-v">12.345.678/0001-90</div></div><div class="gk-fact"><div class="gk-fact-l">Categoria</div><div class="gk-fact-v">Lavanderia hospitalar</div></div><div class="gk-fact"><div class="gk-fact-l">Telefone</div><div class="gk-fact-v">(62) 3000-0000</div></div></div></div>
+          <div class="gk-fgroup"><h3 class="gk-h3">Endereço</h3><div class="gk-fgrid"><div class="gk-fact"><div class="gk-fact-l">CEP</div><div class="gk-fact-v">74110-010</div></div><div class="gk-fact"><div class="gk-fact-l">Logradouro</div><div class="gk-fact-v">Av. T-4, 1200</div></div><div class="gk-fact"><div class="gk-fact-l">Bairro</div><div class="gk-fact-v">Setor Bueno</div></div><div class="gk-fact"><div class="gk-fact-l">Cidade</div><div class="gk-fact-v">Goiânia, GO</div></div></div></div>
+          <div class="gk-fgroup"><h3 class="gk-h3">Responsável</h3><div class="gk-fgrid"><div class="gk-fact"><div class="gk-fact-l">Nome</div><div class="gk-fact-v">Marina Alves</div></div><div class="gk-fact"><div class="gk-fact-l">Cargo</div><div class="gk-fact-v">Gestora</div></div><div class="gk-fact"><div class="gk-fact-l">WhatsApp</div><div class="gk-fact-v">(62) 99456-7800</div></div><div class="gk-fact"><div class="gk-fact-l">E-mail</div><div class="gk-fact-v">marina@gaolavanderia.com.br</div></div></div></div>
+        <div class="gk-status-row" style="padding-top:var(--space-5);border-top:1px solid var(--line)">
+            <div><h3 class="gk-h3">Quer alterar algum dado?</h3><div class="gk-caption">Fale com a equipe da GAO e atualizamos para você.</div></div>
+            <a class="gk-btn gk-btn-secondary" href="https://wa.me/556230000000" target="_blank" rel="noopener"><i data-lucide="message-circle" class="gk-ic"></i>Falar com a GAO</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div class="gk-overlay" id="ovWpp"><div class="gk-scrim" data-close="ovWpp"></div>
+    <div class="gk-modal is-form" role="dialog" aria-labelledby="wTitle">
+      <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="message-circle" class="gk-ic"></i></span><h2 class="gk-h2" id="wTitle">Conectar assistente</h2></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovWpp" aria-label="Fechar"><i data-lucide="x" class="gk-ic"></i></button></div>
+      <div class="gk-modal-body" style="border-top:1px solid var(--line)"><div class="gk-form">
+        <div class="gk-caption">No celular da empresa, abra o WhatsApp, vá em Aparelhos conectados e escaneie o código abaixo.</div>
+        <div style="height:176px;display:grid;place-items:center;border:1px dashed var(--line-strong);border-radius:var(--radius-md);background:var(--row)"><span class="gk-caption">Código QR</span></div>
+      </div></div>
+      <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovWpp">Cancelar</button><button class="gk-btn gk-btn-primary" id="wOk">Já escaneei</button></div>
+    </div>
+  </div>
+  <div class="gk-overlay" id="ovWppOff"><div class="gk-scrim" data-close="ovWppOff"></div><div class="gk-modal" role="dialog"><div class="gk-modal-body"><div class="gk-modal-icon is-warn"><i data-lucide="triangle-alert" class="gk-ic"></i></div><h2 class="gk-h2">Desconectar o WhatsApp?</h2><p>Os avisos automáticos aos clientes deixam de ser enviados até você conectar um número novamente.</p></div><div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovWppOff">Cancelar</button><button class="gk-btn gk-btn-danger" id="wOffOk">Desconectar</button></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
+<script src="static/js/shell.js"></script>
+<script src="static/js/kit-ui.js"></script>
+<script src="static/js/kit-icons.js"></script>
+<script>
+(function(){
+  var $=function(id){ return document.getElementById(id); }, on=true;
+  function pintar(){
+    $('wBadge').innerHTML=on?'<span class="gk-badge gk-badge-ok gk-badge-plain">Conectado</span>':'<span class="gk-badge gk-badge-bad gk-badge-plain">Desconectado</span>';
+    $('wNum').textContent=on?'(62) 99999-0000':'Nenhum número conectado';
+    $('wDesc').textContent=on?'Os avisos de entrega e coleta saem por este número.':'Conecte um número para enviar os avisos automáticos aos clientes.';
+    var b=$('wBtn'); b.className='gk-btn '+(on?'gk-btn-secondary':'gk-btn-primary'); b.textContent=on?'Desconectar':'Conectar número';
+  }
+  $('wBtn').addEventListener('click',function(){ GK.open(on?'ovWppOff':'ovWpp'); });
+  $('wOk').addEventListener('click',function(){ on=true; GK.close('ovWpp'); pintar(); });
+  $('wOffOk').addEventListener('click',function(){ on=false; GK.close('ovWppOff'); pintar(); });
+  document.querySelectorAll('.gk-sidetab').forEach(function(t){ t.addEventListener('click',function(){
+    document.querySelectorAll('.gk-sidetab').forEach(function(x){ x.classList.toggle('is-active',x===t); });
+    document.querySelectorAll('[data-p]').forEach(function(p){ p.hidden=p.getAttribute('data-p')!==t.getAttribute('data-t'); }); }); });
+  pintar(); GK.popovers(); GK.icons();
+})();
+</script>
+</body>
+</html>

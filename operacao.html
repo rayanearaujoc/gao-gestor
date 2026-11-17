@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GAO Gestor · Operação</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+<link rel="stylesheet" href="static/css/app.css">
+<link rel="stylesheet" href="static/css/gestor.css">
+<link rel="stylesheet" href="static/css/kit.css">
+</head>
+<body data-page="operacao">
+  <main class="gpage">
+    <div class="gk-page-head" style="align-items:center"><div><h1 class="gk-h1">Operação</h1></div><span class="gk-datechip"><i data-lucide="calendar" class="gk-ic"></i><span id="hoje"></span></span></div>
+
+    <div class="gk-stats is-3" style="margin-bottom:var(--space-5)">
+      <div class="gk-card gk-stat is-grad"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="route" class="gk-ic"></i></span>Viagens em andamento</div><div class="gk-stat-v" id="stV"></div><div class="gk-stat-l" id="stVl"></div></div>
+      <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="truck" class="gk-ic"></i></span>Entregas feitas</div><div class="gk-stat-v" id="stE"></div><div class="gk-stat-l">Comandas entregues hoje</div></div>
+      <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="package" class="gk-ic"></i></span>Coletas pendentes</div><div class="gk-stat-v" id="stC"></div><div class="gk-stat-l">Aguardando coleta</div></div>
+    </div>
+
+    <section id="acSec" style="margin-bottom:var(--space-5)">
+      <div class="gk-attn-h" style="margin-bottom:var(--space-3)"><span class="gk-attn-dot"></span><h2 class="gk-h2">Precisam de ação</h2></div>
+      <div class="gk-attn" id="alerts"></div>
+    </section>
+
+    <section class="gk-charts">
+      <div class="gk-card gk-chart"><div class="gk-chart-h"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="truck" class="gk-ic"></i></span>Entregas ao longo do dia</div><span class="gk-chart-m" id="chM"></span></div><div id="chBars"></div></div>
+      <div class="gk-card gk-chart"><div class="gk-chart-h"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="package" class="gk-ic"></i></span>Situação das entregas</div><span class="gk-chart-m" id="chD"></span></div><div id="chDonut"></div></div>
+    </section>
+
+    <section>
+      <h2 class="gk-h2" style="margin-bottom:var(--space-3)">Rotas de hoje</h2>
+      <div class="gk-table-wrap">
+        <div class="gk-toolbar" style="flex-wrap:nowrap">
+          <div class="gk-input-wrap" style="flex:1 1 200px;min-width:160px;max-width:440px"><i data-lucide="search" class="gk-ic"></i><input class="gk-input" id="q" placeholder="Busque por rota ou motorista"></div>
+          <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="fSt" data-pop="popSt"><i data-lucide="filter" class="gk-ic"></i><span>Status</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popSt"><div class="gk-fp-body"></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+          <button class="gk-btn gk-btn-ghost" id="clearAll" hidden>Limpar filtros</button>
+        </div>
+        <table class="gk-table">
+          <thead><tr><th>Rota</th><th>Motoristas de hoje</th><th>Comandas</th><th>Coletas</th><th>Paradas</th><th>Status</th><th class="gk-col-actions" style="width:112px">Ações</th></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+        <div class="gk-empty" id="empty" hidden><i data-lucide="search" class="gk-ic"></i><b>Nenhuma rota encontrada</b>Tente ajustar os termos da busca ou remover os filtros.</div>
+        <div class="gk-tfoot"><span id="cnt"></span></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- designar motorista -->
+  <div class="gk-overlay" id="ovD"><div class="gk-scrim" data-close="ovD"></div>
+    <div class="gk-modal is-form" role="dialog" aria-labelledby="dT">
+      <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="user-plus" class="gk-ic"></i></span><h2 class="gk-h2" id="dT">Designar motorista</h2></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovD" aria-label="Fechar"><i data-lucide="x" class="gk-ic"></i></button></div>
+      <div class="gk-modal-body" style="border-top:1px solid var(--line)"><div class="gk-form">
+        <div class="gk-field"><label class="gk-label">Rota</label><input class="gk-input" id="dRota" readonly></div>
+        <div class="gk-field"><label class="gk-label">Motorista<span class="gk-req">*</span></label><div id="dMotBox"></div></div>
+        <div class="gk-caption" style="display:flex;align-items:center;gap:var(--space-2)"><i data-lucide="calendar" class="gk-ic"></i>Vale só para hoje. O cadastro do motorista não muda.</div>
+      </div></div>
+      <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovD">Cancelar</button><button class="gk-btn gk-btn-primary" id="dOk" disabled>Designar</button></div>
+    </div>
+  </div>
+
+  <!-- detalhe da rota -->
+  <div class="gk-overlay" id="ovR"><div class="gk-scrim" data-close="ovR"></div>
+    <div class="gk-modal is-lg is-form" role="dialog" aria-labelledby="rT">
+      <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="route" class="gk-ic"></i></span><h2 class="gk-h2" id="rT"></h2></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovR" aria-label="Fechar"><i data-lucide="x" class="gk-ic"></i></button></div>
+      <div class="gk-modal-body" style="border-top:1px solid var(--line)" id="rB"></div>
+      <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovR">Fechar</button><button class="gk-btn gk-btn-primary" id="rAv" hidden><i data-lucide="send" class="gk-ic"></i>Avisar motorista</button></div>
+    </div>
+  </div>
+
+  <!-- comandas sem carregar -->
+  <div class="gk-overlay" id="ovP"><div class="gk-scrim" data-close="ovP"></div>
+    <div class="gk-modal is-lg is-form" role="dialog" aria-labelledby="pT">
+      <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="clipboard-list" class="gk-ic"></i></span><h2 class="gk-h2" id="pT">Comandas sem carregar</h2></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovP" aria-label="Fechar"><i data-lucide="x" class="gk-ic"></i></button></div>
+      <div class="gk-modal-body" style="border-top:1px solid var(--line)">
+        <div id="pList"></div>
+        <div class="gk-field" style="margin-top:var(--space-5)"><label class="gk-label">Designar para</label><div id="pMotBox"></div></div>
+        <div class="gk-caption" style="display:flex;align-items:center;gap:var(--space-2);margin-top:var(--space-3)"><i data-lucide="smartphone" class="gk-ic"></i>As comandas selecionadas passam a aparecer no app do motorista.</div>
+      </div>
+      <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovP">Cancelar</button><button class="gk-btn gk-btn-primary" id="pOk" disabled>Designar</button></div>
+    </div>
+  </div>
+
+  <!-- avisar motorista -->
+  <div class="gk-overlay" id="ovV"><div class="gk-scrim" data-close="ovV"></div>
+    <div class="gk-modal is-form" role="dialog" aria-labelledby="vT">
+      <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="send" class="gk-ic"></i></span><h2 class="gk-h2" id="vT">Avisar motorista</h2></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovV" aria-label="Fechar"><i data-lucide="x" class="gk-ic"></i></button></div>
+      <div class="gk-modal-body" style="border-top:1px solid var(--line)">
+        <div class="gk-rcpt"><span class="gk-avatar gk-avatar-lg" id="vAva"></span><div><b id="vPara"></b><span id="vWpp"></span></div></div>
+        <div class="gk-sec-t" style="margin-top:var(--space-5)">Mensagem</div>
+        <div class="gk-wa"><div id="vMsg"></div><button type="button" class="gk-wa-copy" id="vCopy"><i data-lucide="copy" class="gk-ic"></i>Copiar</button></div>
+        <div class="gk-caption" style="margin-top:var(--space-3)">O WhatsApp abre com a mensagem pronta. Você confirma o envio por lá.</div>
+      </div>
+      <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovV">Cancelar</button><button class="gk-btn gk-btn-primary" id="vOk"><i data-lucide="send" class="gk-ic"></i>Enviar pelo WhatsApp</button></div>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
+<script src="static/js/shell.js"></script>
+<script src="static/js/kit-ui.js"></script>
+<script src="static/js/kit-icons.js"></script>
+<script>
+(function(){
+  var $=function(id){ return document.getElementById(id); };
+  var ATIVOS=['Ronaldo Araújo','Gustavo Lima','Carlos Henrique','Mariana Lopes','Felipe Moraes','Paulo César','Rodrigo Alves','Anderson Souza','Bruno Castro'];
+  var FOLG=['Paulo César','Anderson Souza','Bruno Castro'];
+  // rotas de hoje: m = motoristas do dia (c = carregou, e = entregou, hoje = designado só hoje)
+  var R=[
+    {nome:'Rota Hospitalar',cli:8,lib:1,tot:6,col:2,par:[5,8],st:'Em andamento',m:[{n:'Ronaldo Araújo',c:3,e:2},{n:'Gustavo Lima',c:2,e:1}]},
+    {nome:'Rota Centro',cli:5,lib:0,tot:4,col:1,par:[3,5],st:'Em andamento',m:[{n:'Carlos Henrique',c:2,e:1},{n:'Rodrigo Alves',c:2,e:1}],parada:'2h10'},
+    {nome:'Rota Norte',cli:6,lib:2,tot:5,col:1,par:[0,6],st:'Carregando',m:[{n:'Felipe Moraes',c:3,e:0}]},
+    {nome:'Rota Sul',cli:4,lib:0,tot:3,col:0,par:[4,4],st:'Concluída',m:[{n:'Mariana Lopes',c:3,e:3}]},
+    {nome:'Rota Oeste',cli:3,lib:3,tot:3,col:1,par:[0,3],st:'Aguardando início',m:[{n:'Paulo César',c:0,e:0,hoje:true}]},
+    {nome:'Rota Leste',cli:4,lib:3,tot:3,col:0,par:[0,4],st:'Aguardando início',m:[{n:'Anderson Souza',c:0,e:0}]}
+  ];
+  var TEL={'Ronaldo Araújo':'(62) 99982-4510','Gustavo Lima':'(62) 99874-3321','Carlos Henrique':'(62) 99655-1208','Mariana Lopes':'(62) 99731-9046','Felipe Moraes':'(62) 98812-7743','Paulo César':'(62) 99420-5518','Rodrigo Alves':'(62) 99841-2207','Anderson Souza':'(62) 98563-1190','Bruno Castro':'(62) 99317-6602'};
+  var PEND=[
+    {id:42352,rota:'Rota Leste',cli:'Hospital Dia',g:4,h:'1 dia e 3 h'},{id:42351,rota:'Rota Leste',cli:'Laboratório Central',g:3,h:'1 dia e 1 h'},{id:42347,rota:'Rota Leste',cli:'Hospital Dia',g:2,h:'1 dia'},
+    {id:42349,rota:'Rota Oeste',cli:'HEMU',g:6,h:'1 dia e 5 h'},{id:42344,rota:'Rota Oeste',cli:'HEMU',g:4,h:'1 dia e 2 h'}
+  ];
+  var BADGE={'Aguardando início':'gk-badge gk-badge-warn','Carregando':'gk-badge gk-badge-info','Em andamento':'gk-badge gk-badge-info','Concluída':'gk-badge gk-badge-ok'};
+  var STS=['Aguardando início','Carregando','Em andamento','Concluída'];
+  var state={q:'',st:[]}, shown=[];
+  function first(n){ return n.split(' ')[0]; }
+  function ent(r){ return r.m.reduce(function(a,x){ return a+x.e; },0); }
+  function motTxt(r){
+    if(!r.m.length) return '<span class="gk-caption">—</span>';
+    return r.m.map(function(x){ return '<span class="gk-medium">'+first(x.n)+'</span>'+(x.hoje?' <span class="gk-badge gk-badge-plain">só hoje</span>':''); }).join('<span style="color:var(--muted)">, </span>');
+  }
+  function row(r,i){
+    var sem=!r.m.length;
+    return '<tr class="gk-row-link" data-i="'+i+'"><td><div class="gk-cell-main"><div><div class="gk-name">'+r.nome+'</div><div class="gk-sub">'+r.cli+' clientes</div></div></div></td>'
+      +'<td>'+motTxt(r)+'</td><td>'+ent(r)+' de '+r.tot+' entregues</td><td>'+(r.col?r.col+(r.col>1?' pendentes':' pendente'):'<span class="gk-caption">—</span>')+'</td>'
+      +'<td><div class="gk-meter"><span>'+r.par[0]+' de '+r.par[1]+'</span><span class="gk-meter-b'+(r.par[0]===r.par[1]?' is-done':'')+'"><i style="width:'+Math.round(r.par[0]/r.par[1]*100)+'%"></i></span></div></td><td><span class="'+BADGE[r.st]+' gk-badge-plain">'+r.st+'</span></td>'
+      +'<td class="gk-col-actions"><span class="gk-acts"><button class="gk-act" data-act="ver" type="button" aria-label="Ver rota" title="Ver rota"><i data-lucide="eye" class="gk-ic"></i></button>'
+      +(r.st==='Concluída'?'<span class="gk-act" style="visibility:hidden"></span>':'<button class="gk-act" data-act="des" type="button" aria-label="Designar motorista" title="Designar motorista"><i data-lucide="user-plus" class="gk-ic"></i></button>')+'</span></td></tr>';
+  }
+  function avisos(){
+    var a=[];
+    if(PEND.length){ var rs=[]; PEND.forEach(function(x){ if(rs.indexOf(x.rota)<0) rs.push(x.rota); }); a.push({id:'pend',ic:'clipboard-list',k:'Comandas sem carregar',v:PEND.length+(PEND.length>1?' comandas':' comanda'),t:rs.join(' e ')+' · liberadas há mais de 24 horas, ninguém carregou',btn:'Ver e designar'}); }
+    R.forEach(function(r){ if(r.parada) a.push({id:'viagem',ic:'clock',k:'Viagem parada',v:'há '+r.parada,t:r.nome+' · '+r.m[1].n+', sem confirmar parada',btn:'Avisar motorista',rota:r}); });
+    return a;
+  }
+  function cards(){
+    var em=R.filter(function(r){ return r.st==='Em andamento'||r.st==='Carregando'; }).length, tot=R.reduce(function(a,r){ return a+r.tot; },0), e=R.reduce(function(a,r){ return a+ent(r); },0);
+    $('stV').textContent=em; $('stVl').textContent='de '+R.length+' rotas hoje'; $('stE').textContent=e+' de '+tot; $('stC').textContent=R.reduce(function(a,r){ return a+r.col; },0);
+  }
+  function renderAvisos(){
+    var a=avisos(); $('acSec').hidden=!a.length;
+    $('alerts').innerHTML=a.map(function(x){ return '<button type="button" class="gk-attn-c" data-al="'+x.id+'"><span class="gk-attn-k"><i data-lucide="'+x.ic+'" class="gk-ic"></i>'+x.k+'</span><span class="gk-attn-v">'+x.v+'</span><span class="gk-attn-t">'+x.t+'</span><span class="gk-attn-a">'+x.btn+'<i data-lucide="arrow-right" class="gk-ic"></i></span></button>'; }).join('');
+    $('alerts').querySelectorAll('[data-al]').forEach(function(b){ b.addEventListener('click',function(){ if(b.getAttribute('data-al')==='pend') abrirPend(); else abrirViagem(); }); });
+  }
+  function apply(){
+    var q=state.q;
+    var list=R.filter(function(r){ return (!q||(r.nome+' '+r.m.map(function(x){return x.n;}).join(' ')).toLowerCase().indexOf(q)>=0)&&(!state.st.length||state.st.indexOf(r.st)>=0); });
+    shown=list; $('tbody').innerHTML=list.map(function(r){ return row(r,R.indexOf(r)); }).join('');
+    $('empty').hidden=list.length>0; $('tbody').closest('table').hidden=!list.length;
+    $('cnt').textContent=list.length?('Mostrando '+list.length+' de '+R.length+' rotas'):'Nenhuma rota encontrada';
+    $('clearAll').hidden=!state.st.length; cards(); renderAvisos(); GK.icons();
+  }
+  $('popSt').querySelector('.gk-fp-body').innerHTML=STS.map(function(s){ return '<label class="gk-check"><input type="checkbox" value="'+s+'">'+s+'</label>'; }).join('');
+  var fS=GK.checkFilter({btn:'fSt',pop:'popSt',label:'Status',onChange:function(v){ state.st=v; apply(); }});
+  $('q').addEventListener('input',function(){ state.q=this.value.toLowerCase().trim(); apply(); });
+  $('clearAll').addEventListener('click',function(){ fS.reset(); });
+
+  /* designar */
+  var ssD=null, curR=null;
+  function abrirDes(nome){
+    curR=R.filter(function(r){ return r.nome===nome; })[0];
+    var ja=[]; R.forEach(function(r){ r.m.forEach(function(x){ ja.push(x.n); }); }); var lista=FOLG.concat(ATIVOS.filter(function(n){ return FOLG.indexOf(n)<0; })).filter(function(n){ return ja.indexOf(n)<0; });
+    $('dRota').value=nome; $('dMotBox').innerHTML=GK.ssHTML('ssD','Selecione o motorista','Buscar motorista',lista);
+    ssD=GK.searchSelect($('dMotBox').firstChild,function(v){ $('dOk').disabled=!v; }); $('dOk').disabled=true; GK.open('ovD'); GK.icons();
+  }
+  $('dOk').addEventListener('click',function(){
+    var n=ssD.get(); if(!n||!curR) return;
+    curR.m.push({n:n,c:0,e:0,hoje:true});
+    GK.close('ovD'); apply();
+  });
+
+  /* linha do tempo do motorista (simulada: no app real vem dos eventos e da posição do celular) */
+  var NOW=12*60;
+  var STOPS={
+    'Rota Hospitalar':[['Hospital Amparo','Setor Bueno'],['Hospital Dia','Setor Leste Universitário'],['Hospital Santa Genoveva','Setor Oeste'],['Maternidade Nascer','Setor Marista'],['Hospital Ortopédico','Setor Bueno'],['Hospital do Coração','Setor Sul'],['Clínica Vida Plena','Setor Central'],['Hospital Oncológico','Setor Universitário']],
+    'Rota Centro':[['Santa Casa','Setor Central'],['Clínica Central','Setor Central'],['Hospital São Salvador','Setor Oeste'],['Laboratório Vida','Setor Central'],['Clínica Dermato','Setor Marista']],
+    'Rota Norte':[['Laboratório Central','Setor Central'],['Hospital Norte','Jardim Guanabara'],['Clínica Bem Estar','Vila Nova'],['Hospital Infantil','Setor Norte Ferroviário'],['UPA Norte','Jardim Guanabara'],['Clínica Renal','Setor Central']],
+    'Rota Sul':[['Clínica São Lucas','Setor Bueno'],['Hospital Sul','Jardim América'],['Clínica Ortopédica','Setor Bueno'],['Pronto Socorro Sul','Jardim América']],
+    'Rota Oeste':[['HEMU','Setor Oeste'],['Hospital Oeste','Setor Oeste'],['Clínica Oeste','Setor Oeste']],
+    'Rota Leste':[['Hospital Dia','Setor Leste Universitário'],['Laboratório Leste','Setor Leste Universitário'],['Clínica Leste','Setor Leste Universitário'],['Hospital Leste','Setor Leste Universitário']]
+  };
+  function hm(t){ return ('0'+Math.floor(t/60)).slice(-2)+':'+('0'+(t%60)).slice(-2); }
+  var PLACA=['GAO-2847','GAO-1234','GAO-0981','GAO-2210','GAO-3105','GAO-0764'], RECEB=['Mariana Lopes','Carlos Henrique','Juliana Prado','Ricardo Nunes'], SETOR=['Rouparia','Centro cirúrgico','Governança','Recepção'];
+  /* eventos do jeito que o app do motorista registra: início da viagem (check-in do veículo), carregamento por comanda,
+     entregas (todas primeiro), coletas, check-out e fim da viagem */
+  function evts(r,mi){
+    var m=r.m[mi], S=STOPS[r.nome], idx=R.indexOf(r), out=[];
+    if(r.st==='Aguardando início'||(m.c===0&&m.e===0&&r.st!=='Carregando')) return out;
+    var t0=400+mi*12+idx*3, cli=function(k){ return S[(mi*3+k)%S.length]; }, id=function(k){ return 42300+idx*10+mi*5+k; }, gai=function(k){ return (k*3+idx)%4+3; };
+    out.push({t:t0,k:'sai',a:'Iniciou a viagem',l:'Veículo '+PLACA[(idx+mi*3)%6]+' · check-in feito'});
+    for(var k=0;k<m.c;k++){
+      out.push({t:t0+10+k*6,k:'car',a:'Confirmou o carregamento',l:'Comanda #'+id(k)+' · '+cli(k)[0],x:gai(k)+' gaiolas'});
+      if(idx===0&&mi===0&&k===1) out.push({t:t0+10+k*6+3,k:'oc',a:'Registrou um problema',l:'Etiqueta ilegível · 1 gaiola'});
+    }
+    if(r.st==='Carregando'){ out.push({t:NOW,k:'now',a:'Carregando',l:'Conferindo as gaiolas de '+cli(m.c)[0],x:'carregamento'}); return out; }
+    var sai=t0+10+m.c*6+8, pm=r.parada&&mi===1?(+r.parada.split('h')[0]*60+ +r.parada.split('h')[1]):0, ult=pm?NOW-pm:sai+35+(m.e-1)*55;
+    out.push({t:sai,k:'sai',a:'Iniciou as entregas',l:'Rota calculada · '+m.c+(m.c>1?' paradas':' parada')});
+    for(k=0;k<m.e;k++) out.push({t:ult-(m.e-1-k)*55,k:'ent',a:'Confirmou a entrega',l:'Comanda #'+id(k)+' · '+cli(k)[0],x:'Recebido por '+RECEB[(k+idx)%4]+' · '+SETOR[(k+mi)%4]});
+    if(r.st==='Concluída'){
+      out.push({t:ult+45,k:'col',a:'Confirmou a coleta',l:cli(0)[0],x:'Entregue por '+RECEB[(idx+1)%4]+' · '+SETOR[1]});
+      out.push({t:ult+95,k:'sai',a:'Fez o check-out do veículo',l:'Higienização registrada'});
+      out.push({t:ult+107,k:'sai',a:'Finalizou a viagem',l:'38 km rodados',end:1}); return out;
+    }
+    var prox=m.e<m.c?cli(m.e)[0]:'a coleta';
+    if(pm) out.push({t:NOW,k:'now',stop:1,a:'Parado',l:'Perto de '+cli(m.e-1)[0],x:'Sem confirmar parada há '+r.parada.replace('h',' h ')});
+    else out.push({t:NOW,k:'now',a:'Em trânsito',l:'Indo para '+prox,x:'Em trânsito para '+prox});
+    return out;
+  }
+  var cur={r:null,mi:0};
+  function pintar(){
+    var r=cur.r, m=r.m[cur.mi], E=evts(r,cur.mi), ult=E.filter(function(e){ return e.k==='ent'; }).pop();
+    $('rAv').hidden=!(r.parada&&cur.mi===1);
+    function stat(i){ var X=evts(r,i), a=X.filter(function(e){ return e.k==='now'; })[0], f=X.filter(function(e){ return e.end; })[0];
+      if(!X.length) return {t:'Não iniciou',c:''}; if(f) return {t:'Concluída às '+hm(f.t),c:'is-ok'}; if(a&&a.stop) return {t:'Parado há '+r.parada,c:'is-warn'}; if(a&&a.a==='Carregando') return {t:'Carregando',c:'is-info'}; return {t:'Em trânsito',c:'is-info'}; }
+    var h='<div class="gk-drv" style="--n:'+r.m.length+'">'+r.m.map(function(x,i){ var q=x.n.split(' '), st=stat(i), tag=r.m.length>1?'button type="button" data-mi="'+i+'"':'div';
+      return '<'+tag+' class="gk-drv-c'+(i===cur.mi?' is-active':'')+'"><span class="gk-avatar">'+q[0][0]+q[1][0]+'</span><span class="gk-drv-n"><b title="'+x.n+'">'+first(x.n)+'</b><span class="gk-drv-s '+st.c+'"><i></i>'+st.t+'</span></span></'+(r.m.length>1?'button':'div')+'>'; }).join('')+'</div>';
+    if(!E.length){ $('rB').innerHTML=h+'<div class="gk-tl-empty">Ainda não começou. Quando o motorista iniciar a viagem no app, os registros aparecem aqui.</div>'; return wireTL(); }
+    var agora=E.filter(function(e){ return e.k==='now'; })[0], fim=E.filter(function(e){ return e.end; })[0];
+    /* trilho: os carregamentos viram um ponto só */
+    var T=[], car=E.filter(function(e){ return e.k==='car'; }), oc=E.filter(function(e){ return e.k==='oc'; }).length;
+    E.forEach(function(e,i){ e.i=i; });
+    var ini=E.filter(function(e){ return e.a==='Iniciou a viagem'; })[0];
+    if(car.length) T.push({t:ini.t,k:'car',a:'Início e carregamento',l:'Carregou '+car.length+(car.length>1?' comandas':' comanda')+(oc?' · '+oc+(oc>1?' problemas':' problema'):''),x:'Viagem iniciada',ids:[ini.i].concat(car.map(function(c){ return c.i; }),E.filter(function(e){ return e.k==='oc'; }).map(function(c){ return c.i; }))});
+    E.forEach(function(e){ if(e.k!=='car'&&e.k!=='oc'&&!(car.length&&e===ini)) T.push({t:e.t,k:e.k,a:e.a,l:e.l,x:e.x,ids:[e.i],stop:e.stop,end:e.end,now:e.k==='now'}); });
+    T.sort(function(a,b){ return a.t-b.t; });
+    /* mapa esquemático: a posição de cada parada é simulada (no app real vem do GPS) */
+    var S=STOPS[r.nome], DOTS=T.filter(function(e){ return e.k==='car'||e.k==='ent'||e.k==='col'||e.k==='now'||e.end; }), fimE=DOTS.filter(function(e){ return e.end; })[0], nowE=DOTS.filter(function(e){ return e.now; })[0];
+    var done=DOTS.filter(function(e){ return !e.now&&!e.end; }), pend=[];
+    if(!fim) for(var q=m.e;q<m.c;q++) pend.push({k:'pend',a:'Próxima parada',l:S[(cur.mi*3+q)%S.length][0],ids:[]});
+    var seq=done.concat(pend), n=seq.length+(fimE?1:0), P=[];
+    seq.forEach(function(e,i){ P.push(i===0?[70,178]:[70+470*i/Math.max(n,2),Math.max(48,Math.min(200,118+62*Math.sin(i*1.9+R.indexOf(r)*.7)))]); });
+    var lastD=done.length-1, cp=null;
+    if(nowE){ var nx=P[lastD+1]; cp=nx?[P[lastD][0]+(nx[0]-P[lastD][0])*.45,P[lastD][1]+(nx[1]-P[lastD][1])*.45]:[P[lastD][0]+40,P[lastD][1]-26]; }
+    var solid=P.slice(0,lastD+1); if(cp) solid.push(cp); if(fimE) solid.push([96,208]);
+    var dash=cp?[cp].concat(P.slice(lastD+1)):[];
+    function curve(Q){ if(Q.length<2) return ''; var d='M'+Q[0][0]+' '+Q[0][1]; for(var i=0;i<Q.length-1;i++){ var p0=Q[i-1]||Q[i],p1=Q[i],p2=Q[i+1],p3=Q[i+2]||p2; d+=' C'+(p1[0]+(p2[0]-p0[0])/6).toFixed(1)+' '+(p1[1]+(p2[1]-p0[1])/6).toFixed(1)+' '+(p2[0]-(p3[0]-p1[0])/6).toFixed(1)+' '+(p2[1]-(p3[1]-p1[1])/6).toFixed(1)+' '+p2[0].toFixed(1)+' '+p2[1].toFixed(1); } return d; }
+    var rd=''; [28,80,134,186,226].forEach(function(y,i){ rd+='<path d="M0 '+y+' L600 '+(y+(i%2?10:-8))+'" stroke-width="'+(i%2?5:8)+'"/>'; });
+    [58,150,248,342,436,528].forEach(function(x,i){ rd+='<path d="M'+x+' 0 L'+(x+(i%2?14:-10))+' 240" stroke-width="'+(i%2?8:5)+'"/>'; });
+    rd+='<path d="M0 206 L250 0" stroke-width="6"/><path d="M290 240 L600 36" stroke-width="6"/>';
+    var tm=(fimE?fimE.t:NOW)-E[0].t, tmTxt=Math.floor(tm/60)+' h '+('0'+tm%60).slice(-2);
+    var mp='<div class="gk-mp"><svg viewBox="0 0 600 240" aria-hidden="true"><g class="gk-mp-r" fill="none" stroke-linecap="round">'+rd+'</g><path class="gk-mp-p is-rest" d="'+curve(dash)+'"/><path class="gk-mp-p" d="'+curve(solid)+'"/></svg>'
+      +'<div class="gk-mp-s"><span>Tempo de viagem</span><b>'+tmTxt+'</b></div><div class="gk-mp-s is-r"><span>Entregas</span><b>'+m.e+' de '+m.c+'</b></div>';
+    var DT=[]; function dotHTML(e,x,y,cls){ var i=DT.push(e)-1; return '<button type="button" class="gk-tl-d '+cls+'" style="left:'+(x/6)+'%;top:'+(y/2.4)+'%" data-ids="'+e.ids.join(' ')+'" data-ti="'+i+'" aria-label="'+(e.t!=null?hm(e.t)+' · ':'')+e.a+'"></button>'; }
+    seq.forEach(function(e,i){ mp+=dotHTML(e,P[i][0],P[i][1],e.k==='pend'?'is-pend':'is-'+({ent:'ent',col:'col',car:'car'}[e.k])); });
+    if(fimE) mp+=dotHTML(fimE,96,208,'is-sai');
+    if(nowE) mp+=dotHTML(nowE,cp[0],cp[1],'is-now'+(nowE.stop?' is-stop':''));
+    mp+='</div>'; cur.T=DT;
+    h+=mp+'<div class="gk-tl-lg"><span><i style="background:var(--read)"></i>Início e carregamento</span><span><i style="background:var(--ok)"></i>Entrega</span><span><i class="is-ring"></i>Coleta</span><span><i class="is-pend"></i>Próxima parada</span></div>';
+    h+='<div class="gk-tl-list">'+E.slice().reverse().map(function(e){ return '<div class="gk-tl-i is-'+e.k+(e.stop?' is-stop':'')+'" data-i="'+e.i+'"><time>'+hm(e.t)+'</time><i></i><div><b>'+e.a+'</b><br><span>'+e.l+(e.x&&!e.stop&&e.k!=='now'?' · '+e.x:'')+'</span></div></div>'; }).join('')+'</div>';
+    $('rB').innerHTML=h; cur.E=E; wireTL();
+  }
+  function wireTL(){
+    var B=$('rB'); GK.icons();
+    B.querySelectorAll('[data-mi]').forEach(function(b){ b.addEventListener('click',function(){ cur.mi=+b.getAttribute('data-mi'); pintar(); }); });
+    B.querySelectorAll('.gk-tl-d').forEach(function(d){
+      var e=cur.T[+d.getAttribute('data-ti')]; GK.tip.bind(d,e.a,e.l,(e.k==='pend'?'Ainda não confirmada':(e.x&&!e.now?e.x+' · ':'')+(e.now?'agora, ':'às ')+hm(e.t)));
+      d.addEventListener('mouseenter',function(){ hot(d.getAttribute('data-ids').split(' '),true); }); d.addEventListener('mouseleave',function(){ hot(d.getAttribute('data-ids').split(' '),false); });
+    });
+    B.querySelectorAll('.gk-tl-i').forEach(function(it){
+      it.addEventListener('mouseenter',function(){ dot(it.getAttribute('data-i'),true); }); it.addEventListener('mouseleave',function(){ dot(it.getAttribute('data-i'),false); });
+    });
+  }
+  function hot(ids,on){ ids.forEach(function(i){ var n=$('rB').querySelector('.gk-tl-i[data-i="'+i+'"]'); if(n) n.classList.toggle('is-hot',on); }); }
+  function dot(i,on){ $('rB').querySelectorAll('.gk-tl-d').forEach(function(d){ if((' '+d.getAttribute('data-ids')+' ').indexOf(' '+i+' ')>=0) d.classList.toggle('is-hot',on); }); }
+  function ver(r){
+    $('rT').textContent=r.nome; cur.r=r; cur.mi=0;
+    if(!r.m.length){ $('rAv').hidden=true; $('rB').innerHTML='<div class="gk-tl-empty">Nenhum motorista designado hoje.</div>'; }
+    else pintar();
+    GK.open('ovR'); GK.icons();
+  }
+  $('rAv').addEventListener('click',function(){ GK.close('ovR'); abrirViagem(); });
+  $('tbody').addEventListener('click',function(e){
+    var tr=e.target.closest('tr'); if(!tr) return; var r=R[+tr.getAttribute('data-i')], a=e.target.closest('[data-act]'), k=a?a.getAttribute('data-act'):'ver';
+    if(k==='des') abrirDes(r.nome); else ver(r);
+  });
+
+  /* comandas sem carregar */
+  var ssP=null, selP={};
+  function abrirPend(){
+    var rs=[]; PEND.forEach(function(x){ if(rs.indexOf(x.rota)<0) rs.push(x.rota); }); selP={}; PEND.forEach(function(x){ selP[x.id]=true; });
+    $('pList').innerHTML=rs.map(function(r){ var L=PEND.filter(function(x){ return x.rota===r; });
+      return '<div class="gk-sec-t" style="margin:var(--space-4) 0 var(--space-2)">'+r+' · '+L.length+(L.length>1?' comandas':' comanda')+'</div><div class="gk-list">'+L.map(function(x){
+        return '<label class="gk-list-i" style="cursor:pointer"><div style="display:flex;align-items:center;gap:var(--space-3)"><span class="gk-check"><input type="checkbox" checked data-p="'+x.id+'"></span><div><strong class="gk-strong">#'+x.id+'</strong> · '+x.cli+'</div></div><div>'+x.g+' gaiolas · há '+x.h+'</div></label>'; }).join('')+'</div>'; }).join('');
+    $('pMotBox').innerHTML=GK.ssHTML('ssP','Selecione o motorista','Buscar motorista',FOLG.concat(ATIVOS.filter(function(n){ return FOLG.indexOf(n)<0; })));
+    ssP=GK.searchSelect($('pMotBox').firstChild,function(){ pBtn(); }); pBtn(); GK.open('ovP'); GK.icons();
+  }
+  function pBtn(){ var n=Object.keys(selP).filter(function(k){ return selP[k]; }).length; $('pOk').disabled=!n||!ssP.get(); $('pOk').textContent=n?('Designar '+n+(n>1?' comandas':' comanda')):'Designar'; }
+  $('pList').addEventListener('change',function(e){ var id=e.target.getAttribute('data-p'); if(id){ selP[id]=e.target.checked; pBtn(); } });
+  $('pOk').addEventListener('click',function(){ PEND=PEND.filter(function(x){ return !selP[x.id]; }); GK.close('ovP'); apply(); });
+
+  /* avisar motorista (viagem parada) */
+  function msgV(r){ var m=r.m[1], p=first(m.n); return 'Olá, '+p+'! Aqui é da logística da GAO. Notamos que sua viagem da '+r.nome+' está sem confirmação de parada há '+r.parada+'. Está tudo bem? Se houve algum imprevisto, responda por aqui para a gente te ajudar.'; }
+  var rV=null, tC=null;
+  function abrirViagem(){
+    rV=R.filter(function(r){ return r.parada; })[0]; var m=rV.m[1];
+    $('vAva').innerHTML='<span class="gk-strong" style="font-size:15px">'+(m.n.split(' ')[0][0]+m.n.split(' ')[1][0])+'</span>'; $('vPara').textContent=m.n; $('vWpp').textContent=TEL[m.n]||'';
+    $('vMsg').textContent=msgV(rV); GK.open('ovV'); GK.icons();
+  }
+  function copiar(txt,ok){ function fb(){ var t=document.createElement('textarea'); t.value=txt; t.style.cssText='position:fixed;opacity:0'; document.body.appendChild(t); t.select(); try{ document.execCommand('copy'); }catch(e){} t.remove(); ok(); } if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(ok,fb); else fb(); }
+  $('vCopy').addEventListener('click',function(){ var b=this; copiar(msgV(rV),function(){ b.classList.add('is-done'); b.innerHTML='<i data-lucide="check" class="gk-ic"></i>Copiado'; GK.icons(); clearTimeout(tC); tC=setTimeout(function(){ b.classList.remove('is-done'); b.innerHTML='<i data-lucide="copy" class="gk-ic"></i>Copiar'; GK.icons(); },1800); }); });
+  $('vOk').addEventListener('click',function(){ var d=(TEL[rV.m[1].n]||'').replace(/\D/g,''); window.open('https://wa.me/55'+d+'?text='+encodeURIComponent(msgV(rV)),'_blank','noopener'); GK.close('ovV'); });
+  var dh=new Date(2026,10,17).toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'}); $('hoje').textContent=dh.charAt(0).toUpperCase()+dh.slice(1);
+  GK.popovers(); apply();
+  (function(){
+    var h={}, tot=R.reduce(function(a,r){ return a+r.tot; },0), e=0, tr=0, lib=R.reduce(function(a,r){ return a+r.lib; },0);
+    R.forEach(function(r,ri){ r.m.forEach(function(m,mi){ tr+=m.c-m.e; evts(r,mi).forEach(function(x){ if(x.k==='ent'){ e++; var k=Math.floor(x.t/60); h[k]=(h[k]||0)+1; } }); }); });
+    var it=[], acc=0; for(var k=6;k<=Math.floor(NOW/60);k++){ acc+=(h[k]||0); var hh=('0'+k).slice(-2); it.push({l:hh+'h',v:acc,t:k===6?'Início do dia':'Até as '+hh+':00',e:k===6?'':'+'+(h[k]||0)+' entre '+('0'+(k-1)).slice(-2)+'h e '+hh+'h'}); }
+    $('chM').textContent=e+' de '+tot+' até agora';
+    GK.areaChart($('chBars'),{items:it,unit:'entregas',one:'entrega'});
+    $('chD').textContent=tot+' comandas';
+    GK.donut($('chDonut'),{unit:'comandas',one:'comanda',centro:{v:tot,l:'entregas hoje'},parts:[{n:'Entregues',v:e,c:'var(--ok)'},{n:'Em trânsito',v:tr,c:'var(--primary)'},{n:'Aguardando carga',v:lib,c:'var(--ph)'}]});
+  })();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GAO Gestor · Cliente</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+<link rel="stylesheet" href="static/css/app.css">
+<link rel="stylesheet" href="static/css/gestor.css">
+<link rel="stylesheet" href="static/css/kit.css">
+</head>
+<body data-page="clientes">
+  <main class="gpage">
+    <div class="gk-subhead">
+      <a class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" href="clientes.html" aria-label="Voltar"><i data-lucide="chevron-left" class="gk-ic"></i></a>
+      <nav class="gk-crumbs"><a href="clientes.html">Clientes</a><i data-lucide="chevron-right" class="gk-ic"></i><span class="is-current" id="bcNome"></span></nav>
+    </div>
+
+    <div class="gk-stack" style="gap:var(--space-5)">
+      <div class="gk-card">
+        <div class="gk-card-body">
+          <div class="gk-pstrip">
+            <div class="gk-inline gk-gap-3" style="flex-wrap:nowrap">
+              <span class="gk-avatar" id="pAva" style="width:48px;height:48px"></span>
+              <div style="min-width:0">
+                <h2 class="gk-h2" id="pNome"></h2>
+                <div class="gk-caption" id="pDoc"></div>
+              </div>
+            </div>
+            <span class="gk-vr"></span>
+            <div class="gk-facts">
+              <div class="gk-fact"><div class="gk-fact-l">Rota</div><div class="gk-fact-v" id="pRota"></div></div>
+              <div class="gk-fact"><div class="gk-fact-l">WhatsApp</div><div class="gk-fact-v" id="pWpp"></div></div>
+              <div class="gk-fact"><div class="gk-fact-l">Janela de atendimento</div><div class="gk-fact-v" id="pJan"></div></div>
+            </div>
+            <div class="gk-pop-anchor" style="margin-left:auto">
+              <button class="gk-btn gk-btn-secondary gk-btn-icon" data-pop="popAcoes" aria-label="Ações"><i data-lucide="more-horizontal" class="gk-ic"></i></button>
+              <div class="gk-pop gk-menu is-right" id="popAcoes"><button class="gk-menu-item" id="btnEditar"><i data-lucide="pencil" class="gk-ic"></i>Editar</button><button class="gk-menu-item is-danger" id="btnDel"><i data-lucide="trash-2" class="gk-ic"></i>Excluir</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gk-stats is-3">
+        <div class="gk-card gk-stat is-grad"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="route" class="gk-ic"></i></span>Viagens</div><div class="gk-stat-v" id="stV"></div><div class="gk-stat-l">Viagens com parada neste cliente</div></div>
+        <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="truck" class="gk-ic"></i></span>Entregas</div><div class="gk-stat-v" id="stE"></div><div class="gk-stat-l">Entregas confirmadas</div></div>
+        <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="package" class="gk-ic"></i></span>Coletas</div><div class="gk-stat-v" id="stC"></div><div class="gk-stat-l">Coletas realizadas</div></div>
+      </div>
+
+      <section>
+        <h2 class="gk-h2" style="margin-bottom:var(--space-3)">Histórico de comprovantes</h2>
+        <div class="gk-table-wrap">
+          <div class="gk-toolbar" style="flex-wrap:nowrap">
+            <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="fTipo" data-pop="popTipo"><i data-lucide="filter" class="gk-ic"></i><span>Tipo</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popTipo"><div class="gk-fp-body"><label class="gk-check"><input type="checkbox" value="Entrega">Entrega</label><label class="gk-check"><input type="checkbox" value="Coleta">Coleta</label><label class="gk-check"><input type="checkbox" value="Entrega e coleta">Entrega e coleta</label></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+            <div class="gk-pop-anchor">
+              <button class="gk-btn gk-btn-secondary" id="fPer" data-pop="popPer"><i data-lucide="calendar" class="gk-ic"></i><span>Período</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button>
+              <div class="gk-pop gk-menu" id="popPer"></div>
+            </div>
+            <button class="gk-btn gk-btn-ghost" id="trClear" hidden>Limpar filtros</button>
+            <span class="gk-spacer"></span>
+            <span class="gk-caption" id="selCount" hidden></span>
+            <button class="gk-btn gk-btn-primary" id="btnEnviar" disabled><i data-lucide="send" class="gk-ic"></i>Enviar</button>
+          </div>
+          <table class="gk-table is-compact">
+            <thead><tr><th style="width:48px"><label class="gk-check"><input type="checkbox" id="selAll" aria-label="Selecionar todos"></label></th><th>Data</th><th>Recebido por</th><th>Tipo</th><th class="gk-col-actions" style="width:96px">Ações</th></tr></thead>
+            <tbody id="tbody"></tbody>
+          </table>
+          <div class="gk-empty" id="empty" hidden><i data-lucide="search" class="gk-ic"></i><b>Nenhum comprovante encontrado</b>Tente remover os filtros.<div style="margin-top:var(--space-4)"><button class="gk-btn gk-btn-secondary" id="clearEmpty">Limpar filtros</button></div></div>
+          <div class="gk-tfoot"><span id="cnt"></span></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="gk-overlay" id="ovEnv"><div class="gk-scrim" data-close="ovEnv"></div>
+    <div class="gk-modal is-form" role="dialog" aria-labelledby="envTitle">
+      <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="send" class="gk-ic"></i></span><h2 class="gk-h2" id="envTitle">Enviar comprovantes</h2></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovEnv" aria-label="Fechar"><i data-lucide="x" class="gk-ic"></i></button></div>
+      <div class="gk-modal-body" style="border-top:1px solid var(--line)"><div class="gk-form">
+        <div class="gk-field"><label class="gk-label">Mensagem para <span id="envPara"></span></label>
+          <div class="gk-msgbox" id="envBox"><button type="button" class="gk-msgbox-copy" id="envCopy" aria-label="Copiar mensagem" title="Copiar mensagem"><i data-lucide="copy" class="gk-ic"></i></button><div id="envMsg"></div></div>
+          <span class="gk-caption" id="envSem" hidden>Cadastre o WhatsApp deste cliente para poder enviar.</span></div>
+      </div></div>
+      <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovEnv">Cancelar</button><button class="gk-btn gk-btn-primary" id="envOk"><i data-lucide="send" class="gk-ic"></i>Enviar para o cliente</button></div>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
+<script src="static/js/shell.js"></script>
+<script src="static/js/kit-ui.js"></script>
+<script src="static/js/kit-icons.js"></script>
+<script src="static/js/clientes-data.js"></script>
+<script src="static/js/cliente-form.js"></script>
+<script>
+(function(){
+  var idx=+(new URLSearchParams(location.search).get('c')||0), C=window.GAO_CLI[idx]||window.GAO_CLI[0];
+  var $=function(id){ return document.getElementById(id); };
+  var BADGE={ativo:'<span class="gk-badge gk-badge-ok gk-badge-plain">Ativo</span>',pendente:'<span class="gk-badge gk-badge-warn gk-badge-plain">Pendente</span>',inativo:'<span class="gk-badge gk-badge-plain">Inativo</span>'};
+  function dash(v){ return v||'<span class="gk-caption">—</span>'; }
+  function pintar(){
+    $('bcNome').textContent=C.nome; $('pNome').textContent=C.nome; $('pDoc').textContent='CNPJ '+C.doc;
+    $('pRota').innerHTML=C.rota?'<span class="gk-ms-chip">'+C.rota+'</span>':dash(''); $('pWpp').innerHTML=dash(C.wpp);
+    $('pJan').innerHTML=(C.ini&&C.fim)?(C.ini+' às '+C.fim):dash('');
+    var V=[42,36,58,31,27,24,0,0,12,21,33][idx]||0, E=Math.round(V*.9), K=Math.round(V*.85); BASE.V=V; BASE.E=E; BASE.K=K; if(window.__ready) render();
+    (function(){ var w=C.nome.split(' ').filter(function(x){ return x&&!/^(de|da|do|das|dos|e)$/i.test(x); }); $('pAva').innerHTML=C.foto?'<img src="'+C.foto+'" alt="">':'<span class="gk-strong" style="font-size:15px">'+((w.length>1?w[0][0]+w[1][0]:C.nome.slice(0,2)).toUpperCase())+'</span>'; })();
+    document.title='GAO Gestor · '+C.nome;
+  }
+  // comprovantes (exemplo)
+  var NOMES=['Maria Aparecida','João Batista','Fernanda Lima','Carlos Eduardo','Ana Paula','Roberto Alves','Luciana Costa','Marcos Vinícius','Patrícia Souza','Pedro Henrique'];
+  var TIPOS=['Entrega e coleta','Entrega','Entrega e coleta','Coleta','Entrega','Entrega e coleta','Entrega','Coleta','Entrega e coleta','Entrega'];
+  var COMP=NOMES.map(function(n,i){ var d=12-i; return {id:'k'+(i+1),data:(d<10?'0':'')+d+'/11/2026',quem:n,tipo:TIPOS[i],link:'gao.app/c/'+(7391+i*37).toString(36)+'x'+(i+4)}; });
+  if(C.status==='pendente') COMP=[];
+  var f={tipo:[]}, sel={};
+  var tbody=$('tbody');
+  var BASE={V:0,E:0,K:0};
+  function lista(){ return COMP.filter(function(c){ return (!f.tipo.length||f.tipo.indexOf(c.tipo)>=0)&&fP.test(c.data); }); }
+  function cards(l){
+    var tot=COMP.length||1, isE=function(c){ return /entrega/i.test(c.tipo); }, isK=function(c){ return /coleta/i.test(c.tipo); };
+    var tE=COMP.filter(isE).length||1, tK=COMP.filter(isK).length||1;
+    var v=Math.round(BASE.V*l.length/tot); $('stV').textContent=v; $('stE').textContent=Math.min(v,Math.round(BASE.E*l.filter(isE).length/tE)); $('stC').textContent=Math.min(v,Math.round(BASE.K*l.filter(isK).length/tK));
+  }
+  function render(){
+    var l=lista();
+    tbody.innerHTML=l.map(function(c){ return '<tr data-id="'+c.id+'"><td><label class="gk-check"><input type="checkbox" data-sel="'+c.id+'"'+(sel[c.id]?' checked':'')+' aria-label="Selecionar"></label></td><td>'+c.data+'</td><td>'+c.quem+'</td><td>'+c.tipo+'</td><td class="gk-col-actions"><span class="gk-acts"><a class="gk-act" href="comprovantes.html" aria-label="Ver comprovante" title="Ver"><i data-lucide="eye" class="gk-ic"></i></a></span></td></tr>'; }).join('');
+    $('empty').hidden=l.length>0; tbody.closest('table').hidden=l.length===0;
+    $('cnt').textContent=l.length?('Mostrando 1–'+l.length+' de '+l.length+' comprovantes'):'Nenhum comprovante encontrado';
+    $('trClear').hidden=!(f.tipo.length||fP.active()); cards(l); contagem(); GK.icons();
+  }
+  function contagem(){
+    var ids=Object.keys(sel).filter(function(k){ return sel[k]; }), vis=lista(), n=ids.length;
+    $('btnEnviar').disabled=!n; $('selCount').hidden=!n; $('selCount').textContent=n+(n===1?' selecionado':' selecionados');
+    var all=$('selAll'), nv=vis.filter(function(c){ return sel[c.id]; }).length; all.checked=vis.length>0&&nv===vis.length; all.indeterminate=nv>0&&nv<vis.length;
+  }
+  tbody.addEventListener('change',function(e){ var id=e.target.getAttribute('data-sel'); if(id){ sel[id]=e.target.checked; contagem(); } });
+  $('selAll').addEventListener('change',function(){ var on=this.checked; lista().forEach(function(c){ sel[c.id]=on; }); render(); });
+  var ft=GK.checkFilter({btn:'fTipo',pop:'popTipo',label:'Tipo',onChange:function(v){ f.tipo=v; render(); }});
+  var fP=GK.periodFilter({btn:'fPer',pop:'popPer',onChange:function(){ render(); }});
+  $('trClear').addEventListener('click',function(){ ft.reset(); fP.reset(); }); $('clearEmpty').addEventListener('click',function(){ ft.reset(); fP.reset(); });
+  // enviar: abre o WhatsApp do próprio gestor (wa.me) com o número do cliente e a mensagem prontos
+  function mensagem(ch){
+    return 'Olá! Segue o histórico de comprovantes de entrega e coleta da GAO Lavanderia Hospitalar'+(ch.length?':':'.')+'\n\n'+ch.map(function(c){ return c.data+' · '+c.tipo+'\nhttps://'+c.link; }).join('\n\n');
+  }
+  function sels(){ return COMP.filter(function(c){ return sel[c.id]; }); }
+  function copiar(txt,ok){
+    function fb(){ var t=document.createElement('textarea'); t.value=txt; t.style.cssText='position:fixed;opacity:0'; document.body.appendChild(t); t.select(); try{ document.execCommand('copy'); }catch(e){} t.remove(); ok(); }
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(ok,fb); else fb();
+  }
+  $('btnEnviar').addEventListener('click',function(){
+    var ch=sels(); $('envTitle').textContent=ch.length===1?'Enviar comprovante':'Enviar '+ch.length+' comprovantes';
+    $('envPara').textContent=C.nome; $('envMsg').textContent=mensagem(ch);
+    var tem=C.wpp&&C.wpp.replace(/\D/g,'').length>=10; $('envOk').disabled=!tem; $('envSem').hidden=!!tem;
+    GK.open('ovEnv'); GK.icons();
+  });
+  var tCopy=null;
+  $('envCopy').addEventListener('click',function(){ var b=$('envCopy'); copiar(mensagem(sels()),function(){ b.classList.add('is-done'); b.innerHTML='<i data-lucide="check" class="gk-ic"></i>'; GK.icons(); clearTimeout(tCopy); tCopy=setTimeout(function(){ b.classList.remove('is-done'); b.innerHTML='<i data-lucide="copy" class="gk-ic"></i>'; GK.icons(); },2000); }); });
+  $('envOk').addEventListener('click',function(){
+    var d=(C.wpp||'').replace(/\D/g,''); if(d.length<10) return;
+    window.open('https://wa.me/55'+d+'?text='+encodeURIComponent(mensagem(sels())),'_blank','noopener'); GK.close('ovEnv');
+  });
+  // ações do cliente
+  $('btnEditar').addEventListener('click',function(){ $('popAcoes').classList.remove('is-open'); GKCli.editar(C,function(n){ for(var k in n) C[k]=n[k]; pintar(); }); });
+  $('btnDel').addEventListener('click',function(){ $('popAcoes').classList.remove('is-open'); GKCli.excluir(C.nome,function(){ location.href='clientes.html'; }); });
+  pintar(); render(); window.__ready=true;
+})();
+</script>
+</body>
+</html>

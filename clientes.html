@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GAO Gestor · Clientes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+<link rel="stylesheet" href="static/css/app.css">
+<link rel="stylesheet" href="static/css/gestor.css">
+<link rel="stylesheet" href="static/css/kit.css">
+</head>
+<body data-page="clientes">
+  <main class="gpage">
+    <div class="gk-page-head">
+      <div><h1 class="gk-h1">Clientes<span class="gk-h1-n" id="hN"></span></h1></div>
+    </div>
+
+    <div class="gk-table-wrap">
+      <div class="gk-toolbar" style="flex-wrap:nowrap">
+        <div class="gk-input-wrap" style="flex:1 1 200px;min-width:160px;max-width:440px"><i data-lucide="search" class="gk-ic"></i><input class="gk-input" id="q" placeholder="Busque por nome ou documento"></div>
+        <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="btnRota" data-pop="popRota"><i data-lucide="route" class="gk-ic"></i><span>Rota</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popRota"><div class="gk-fp-body"><label class="gk-check"><input type="checkbox" value="Rota Hospitalar">Rota Hospitalar</label><label class="gk-check"><input type="checkbox" value="Rota Centro">Rota Centro</label><label class="gk-check"><input type="checkbox" value="Rota Norte">Rota Norte</label><label class="gk-check"><input type="checkbox" value="Rota Sul">Rota Sul</label><label class="gk-check"><input type="checkbox" value="Rota Leste">Rota Leste</label><label class="gk-check"><input type="checkbox" value="Rota Oeste">Rota Oeste</label></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+        <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="btnStatus" data-pop="popStatus"><i data-lucide="filter" class="gk-ic"></i><span>Status</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popStatus"><div class="gk-fp-body"><label class="gk-check"><input type="checkbox" value="pendente">Pendente</label><label class="gk-check"><input type="checkbox" value="ativo">Ativo</label><label class="gk-check"><input type="checkbox" value="inativo">Inativo</label></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+        <button class="gk-btn gk-btn-ghost" id="clearAll" hidden>Limpar filtros</button>
+        <span class="gk-spacer"></span>
+        <button class="gk-btn gk-btn-primary" id="btnNovo"><i data-lucide="plus" class="gk-ic"></i>Cadastrar cliente</button>
+      </div>
+      <div class="gk-alert gk-alert-info" id="pendAlert" hidden role="button" tabindex="0" style="margin:var(--space-4) var(--space-6);align-items:center;cursor:pointer"><i data-lucide="triangle-alert" class="gk-ic" style="margin-top:0"></i><div style="flex:1" id="pendTxt"></div><span class="gk-linkbtn" id="pendBtn"></span></div>
+      <table class="gk-table">
+        <thead><tr><th>Cliente</th><th>Rota</th><th>WhatsApp</th><th>Status</th><th class="gk-col-actions" style="width:128px">Ações</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="gk-empty" id="empty" hidden><i data-lucide="search" class="gk-ic"></i><b>Nenhum cliente encontrado</b>Tente ajustar os termos da busca ou remover os filtros.<div style="margin-top:var(--space-4)"><button class="gk-btn gk-btn-secondary" id="clearEmpty">Limpar filtros</button></div></div>
+      <div class="gk-tfoot"><span id="cnt"></span><div class="gk-pager" id="pager"></div></div>
+    </div>
+  </main>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
+<script src="static/js/shell.js"></script>
+<script src="static/js/kit-ui.js"></script>
+<script src="static/js/kit-icons.js"></script>
+<script src="static/js/clientes-data.js"></script>
+<script src="static/js/cliente-form.js"></script>
+<script>
+(function(){
+  var CLI=window.GAO_CLI;
+  var state={q:'',rota:[],status:[],page:1}, PAGE=10;
+  var tbody=document.getElementById('tbody'), empty=document.getElementById('empty');
+  function dash(v){ return v?v:'<span class="gk-caption">—</span>'; }
+  var BADGE={ativo:'<span class="gk-badge gk-badge-ok gk-badge-plain">Ativo</span>',pendente:'<span class="gk-badge gk-badge-warn gk-badge-plain">Pendente</span>',inativo:'<span class="gk-badge gk-badge-plain">Inativo</span>'};
+  function ini(n){ var w=n.split(' ').filter(function(x){ return x&&!/^(de|da|do|das|dos|e)$/i.test(x); }); return ((w.length>1?w[0][0]+w[1][0]:n.slice(0,2))).toUpperCase(); }
+  function ava(v){ return '<span class="gk-avatar gk-avatar-lg">'+(v.foto?'<img src="'+v.foto+'" alt="">':ini(v.nome))+'</span>'; }
+  function row(v,i){
+    var tip=v.status==='pendente'?'Completar cadastro':'Editar';
+    return '<tr class="gk-row-link" data-i="'+i+'"><td><div class="gk-cell-main">'+ava(v)+'<div><div class="gk-name">'+v.nome+'</div><div class="gk-sub">CNPJ '+v.doc+'</div></div></div></td><td>'+(v.rota?'<span class="gk-strong">'+v.rota+'</span>':dash(''))+'</td><td>'+dash(v.wpp)+'</td><td>'+BADGE[v.status]+'</td>'
+      +'<td class="gk-col-actions"><span class="gk-acts"><a class="gk-act" href="cliente.html?c='+i+'" aria-label="Ver cliente" title="Ver"><i data-lucide="eye" class="gk-ic"></i></a><button class="gk-act" data-act="edit" type="button" aria-label="'+tip+'" title="'+tip+'"><i data-lucide="pencil" class="gk-ic"></i></button><button class="gk-act is-danger" data-act="del" type="button" aria-label="Excluir" title="Excluir"><i data-lucide="trash-2" class="gk-ic"></i></button></span></td></tr>';
+  }
+  function aviso(){
+    var n=CLI.filter(function(c){ return c.status==='pendente'; }).length, so=state.status.length===1&&state.status[0]==='pendente';
+    var al=document.getElementById('pendAlert'); al.hidden=!n; if(!n) return;
+    document.getElementById('pendTxt').innerHTML = so ? '<b>'+n+(n>1?' clientes pendentes de configuração':' cliente pendente de configuração')+'</b>Complete o cadastro dos clientes para ativá-los.' : '<b>'+n+(n>1?' clientes pendentes de configuração':' cliente pendente de configuração')+'</b>Complete o cadastro dos clientes para ativá-los.';
+    var bt=document.getElementById('pendBtn'); bt.textContent=so?'Ver todos':'Ver pendentes'; al.onclick=function(){ if(so) fStatus.reset(); else { var box=document.querySelector('#popStatus input[value=pendente]'); document.querySelectorAll('#popStatus input').forEach(function(i){ i.checked=false; }); box.checked=true; document.querySelector('#popStatus [data-apply]').click(); } };
+  }
+  document.getElementById('hN').textContent=CLI.length+(CLI.length===1?' cadastrado':' cadastrados');
+  function apply(){
+    var list=CLI.map(function(v,i){ return {v:v,i:i}; }).sort(function(a,b){ return (a.v.status==='pendente'?0:1)-(b.v.status==='pendente'?0:1)||b.i-a.i; }).filter(function(o){ var v=o.v;
+      return (!state.q||(v.nome+' '+v.doc).toLowerCase().indexOf(state.q)>=0)&&(!state.rota.length||state.rota.indexOf(v.rota)>=0)&&(!state.status.length||state.status.indexOf(v.status)>=0); });
+    var total=list.length, pages=Math.max(1,Math.ceil(total/PAGE)); if(state.page>pages) state.page=pages;
+    var start=(state.page-1)*PAGE, shown=list.slice(start,start+PAGE);
+    tbody.innerHTML=shown.map(function(o){ return row(o.v,o.i); }).join('');
+    empty.hidden=total>0; tbody.closest('table').hidden=total===0;
+    document.getElementById('cnt').textContent = total===0?'Nenhum cliente encontrado':('Mostrando '+(start+1)+'–'+Math.min(start+PAGE,total)+' de '+total);
+    var pg=document.getElementById('pager'); pg.innerHTML='';
+    function mk(label,page,on,dis,aria){ var b=document.createElement('button'); b.type='button'; b.className='gk-btn gk-btn-ghost gk-btn-sm'+(on?' is-active':''); b.innerHTML=label; if(aria) b.setAttribute('aria-label',aria); b.disabled=dis; if(!dis&&!on) b.addEventListener('click',function(){ state.page=page; apply(); }); pg.appendChild(b); }
+    mk('<i data-lucide="chevron-left" class="gk-ic"></i>',state.page-1,false,state.page<=1,'Anterior');
+    for(var i=1;i<=pages;i++) mk(String(i),i,i===state.page,false);
+    mk('<i data-lucide="chevron-right" class="gk-ic"></i>',state.page+1,false,state.page>=pages,'Próxima');
+    document.getElementById('clearAll').hidden=!(state.rota.length||state.status.length);
+    aviso(); GK.icons();
+  }
+  document.getElementById('q').addEventListener('input',function(){ state.q=this.value.toLowerCase().trim(); state.page=1; apply(); });
+  var fTipo=GK.checkFilter({btn:'btnRota',pop:'popRota',label:'Rota',onChange:function(v){ state.rota=v; state.page=1; apply(); }});
+  var fStatus=GK.checkFilter({btn:'btnStatus',pop:'popStatus',label:'Status',onChange:function(v){ state.status=v; state.page=1; apply(); }});
+  document.getElementById('clearAll').addEventListener('click',function(){ fTipo.reset(); fStatus.reset(); });
+  document.getElementById('clearEmpty').addEventListener('click',function(){ document.getElementById('q').value=''; state.q=''; fTipo.reset(); fStatus.reset(); });
+  document.getElementById('btnNovo').addEventListener('click',function(){ GKCli.novo(function(n){ CLI.push(n); apply(); }); });
+  tbody.addEventListener('click',function(e){
+    var tr=e.target.closest('tr'); if(!tr) return; var i=+tr.getAttribute('data-i'), v=CLI[i], act=e.target.closest('[data-act]');
+    if(e.target.closest('a')) return;
+    if(act&&act.getAttribute('data-act')==='del'){ GKCli.excluir(v.nome,function(){ CLI.splice(i,1); apply(); }); return; }
+    if(act){ GKCli.editar(v,function(n){ for(var k in n) v[k]=n[k]; apply(); }); return; }
+    if(v.status==='pendente'){ GKCli.editar(v,function(n){ for(var k in n) v[k]=n[k]; apply(); }); return; }
+    location.href='cliente.html?c='+i;
+  });
+  apply();
+})();
+</script>
+</body>
+</html>

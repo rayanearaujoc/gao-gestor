@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GAO Gestor · Comandas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+<link rel="stylesheet" href="static/css/app.css">
+<link rel="stylesheet" href="static/css/gestor.css">
+<link rel="stylesheet" href="static/css/kit.css">
+</head>
+<body data-page="comandas">
+  <main class="gpage">
+    <div class="gk-page-head">
+      <div><h1 class="gk-h1">Comandas</h1></div>
+      <div class="gk-inline gk-gap-3"><span class="gk-caption">Prévia do plano</span><div class="gk-seg" id="seg"><button type="button" data-p="crm">Com CRM</button><button type="button" data-p="sem">Sem CRM</button></div></div>
+    </div>
+    <div class="gk-stats is-2" style="margin-bottom:var(--space-5)">
+      <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="clipboard-list" class="gk-ic"></i></span>Comandas</div><div class="gk-stat-v" id="stC"></div><div class="gk-stat-l">Comandas no período</div></div>
+      <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="package" class="gk-ic"></i></span>Gaiolas</div><div class="gk-stat-v" id="stG"></div><div class="gk-stat-l">Gaiolas nas comandas listadas</div></div>
+    </div>
+    <div class="gk-table-wrap">
+      <div class="gk-toolbar" style="flex-wrap:nowrap">
+        <div class="gk-input-wrap" style="flex:1 1 200px;min-width:160px;max-width:420px"><i data-lucide="search" class="gk-ic"></i><input class="gk-input" id="q" placeholder="Busque por número ou cliente"></div>
+        <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="fCli" data-pop="popCli"><i data-lucide="building-2" class="gk-ic"></i><span>Cliente</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popCli"><div class="gk-fp-body" id="popCliB"></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+        <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="fSt" data-pop="popSt"><i data-lucide="filter" class="gk-ic"></i><span>Status</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popSt"><div class="gk-fp-body" id="popStB"></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+        <div class="gk-pop-anchor">
+          <button class="gk-btn gk-btn-secondary" id="fPer" data-pop="popPer"><i data-lucide="calendar" class="gk-ic"></i><span>Período</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button>
+          <div class="gk-pop gk-menu" id="popPer"></div>
+        </div>
+        <span style="flex:1"></span>
+        <button class="gk-btn gk-btn-primary" id="btnNova" hidden><i data-lucide="plus" class="gk-ic"></i>Criar comanda</button>
+      </div>
+      <table class="gk-table">
+        <thead><tr><th>Comanda</th><th>Cliente</th><th>Gaiolas</th><th>Status</th><th>Data</th><th class="gk-col-actions" style="width:140px">Ações</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="gk-empty" id="empty" hidden><i data-lucide="search" class="gk-ic"></i><b>Nenhuma comanda encontrada</b>Tente ajustar os termos da busca ou remover os filtros.<div style="margin-top:var(--space-4)"><button class="gk-btn gk-btn-secondary" id="clearEmpty">Limpar filtros</button></div></div>
+      <div class="gk-tfoot"><span id="cnt"></span><div class="gk-pager" id="pager"></div></div>
+    </div>
+  </main>
+
+  <!-- detalhes -->
+  <div class="gk-overlay" id="ovD"><div class="gk-scrim" data-close="ovD"></div>
+    <div class="gk-modal is-form" role="dialog" aria-labelledby="dT">
+      <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="clipboard-list" class="gk-ic"></i></span><h2 class="gk-h2" id="dT"></h2></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovD" aria-label="Fechar"><i data-lucide="x" class="gk-ic"></i></button></div>
+      <div class="gk-modal-body" style="border-top:1px solid var(--line)">
+        <dl class="gk-mfacts" id="dF"></dl>
+        <div class="gk-caption" id="dCrm" style="display:flex;align-items:center;gap:var(--space-2);margin-top:var(--space-5)"><i data-lucide="lock" class="gk-ic"></i>Comanda gerada no CRM GAO. Somente leitura.</div>
+      </div>
+      <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovD">Fechar</button></div>
+    </div>
+  </div>
+
+  <!-- detalhe da comanda (com CRM) -->
+  <div class="gk-overlay" id="ovC"><div class="gk-scrim" data-close="ovC"></div>
+    <div class="gk-modal is-form is-lg" role="dialog" aria-labelledby="cT">
+      <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="clipboard-list" class="gk-ic"></i></span><h2 class="gk-h2" id="cT"></h2><span id="cB"></span></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovC" aria-label="Fechar"><i data-lucide="x" class="gk-ic"></i></button></div>
+      <div class="gk-modal-body is-tabs" style="border-top:1px solid var(--line);padding-top:0">
+        <div class="gk-tabs" id="cTabs" style="margin-bottom:var(--space-5)"><button class="gk-tab is-active" data-t="res">Resumo</button><button class="gk-tab" data-t="itn">Itens</button><button class="gk-tab" data-t="tmp">Linha do tempo</button><button class="gk-tab" data-t="log">Logística</button></div>
+        <div id="cP"></div>
+      </div>
+      <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovC">Fechar</button></div>
+    </div>
+  </div>
+
+  <!-- excluir comanda -->
+  <div class="gk-overlay" id="ovX"><div class="gk-scrim" data-close="ovX"></div>
+    <div class="gk-modal" role="dialog"><div class="gk-modal-body"><div class="gk-modal-icon is-bad"><i data-lucide="trash-2" class="gk-ic"></i></div><h2 class="gk-h2" id="xT">Excluir comanda?</h2><p id="xP"></p></div>
+    <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovX">Cancelar</button><button class="gk-btn gk-btn-danger" id="xOk"><i data-lucide="trash-2" class="gk-ic"></i>Excluir</button></div></div>
+  </div>
+
+  <!-- criar comanda (sem CRM) -->
+  <div class="gk-overlay" id="ovN"><div class="gk-scrim" data-close="ovN"></div>
+    <div class="gk-modal is-form" role="dialog" aria-labelledby="nT">
+      <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="clipboard-list" class="gk-ic"></i></span><h2 class="gk-h2" id="nT">Criar comanda</h2></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovN" aria-label="Fechar"><i data-lucide="x" class="gk-ic"></i></button></div>
+      <div class="gk-modal-body" style="border-top:1px solid var(--line)"><div class="gk-form">
+        <div class="gk-field"><label class="gk-label">Tipo da comanda</label><div class="gk-radios" id="nTipo"><label class="gk-radio"><input type="radio" name="nT" value="Entrega" checked>Entrega</label><label class="gk-radio"><input type="radio" name="nT" value="Coleta">Coleta</label></div></div>
+        <div class="gk-field"><label class="gk-label">Cliente<span class="gk-req">*</span></label><div id="nCliBox"></div></div>
+        <div class="gk-field-row">
+          <div class="gk-field"><label class="gk-label">Rota</label><input class="gk-input" id="nRota" value="—" readonly></div>
+          <div class="gk-field" id="nQtdF"><label class="gk-label">Quantidade de gaiolas<span class="gk-req">*</span></label><div class="gk-qty"><button type="button" class="gk-btn gk-btn-secondary gk-btn-icon" data-q="-1" aria-label="Menos"><i data-lucide="minus" class="gk-ic"></i></button><input class="gk-input" id="nQtd" value="1" inputmode="numeric"><button type="button" class="gk-btn gk-btn-secondary gk-btn-icon" data-q="1" aria-label="Mais"><i data-lucide="plus" class="gk-ic"></i></button></div></div>
+        </div>
+        <div class="gk-caption" style="display:flex;align-items:center;gap:var(--space-2)"><span id="nCapW" style="display:inline-flex"><i data-lucide="qr-code" class="gk-ic"></i></span><span id="nCap">Uma etiqueta com QR Code é gerada para cada gaiola.</span></div>
+      </div></div>
+      <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovN">Cancelar</button><button class="gk-btn gk-btn-primary" id="nOk" disabled>Criar e gerar etiquetas</button></div>
+    </div>
+  </div>
+
+  <!-- etiquetas -->
+  <div class="gk-overlay" id="ovE"><div class="gk-scrim" data-close="ovE"></div>
+    <div class="gk-modal is-form" role="dialog" aria-labelledby="eT">
+      <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="qr-code" class="gk-ic"></i></span><h2 class="gk-h2" id="eT"></h2></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovE" aria-label="Fechar"><i data-lucide="x" class="gk-ic"></i></button></div>
+      <div class="gk-modal-body" style="border-top:1px solid var(--line)"><div class="gk-caption" id="eS" style="margin-bottom:var(--space-3)"></div><div class="gk-labels" id="eG"></div></div>
+      <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovE">Fechar</button><button class="gk-btn gk-btn-primary" id="ePrint"><i data-lucide="printer" class="gk-ic"></i>Imprimir etiquetas</button></div>
+    </div>
+  </div>
+  <div class="gk-print-area" id="printArea"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
+<script src="static/js/shell.js"></script>
+<script src="static/js/kit-ui.js"></script>
+<script src="static/js/kit-icons.js"></script>
+<script src="static/js/qrcode.js"></script>
+<script src="static/js/clientes-data.js"></script>
+<script>
+(function(){
+  var $=function(id){ return document.getElementById(id); };
+  var ROTA={}; (window.GAO_CLI||[]).forEach(function(c){ ROTA[c.nome]=c.rota; });
+  var SEMB=[
+    {id:2048,cli:'Hotel Le Jardin',tipo:'Coleta',g:0,st:'Aguardando coleta',d:'17/11/2026'},
+    {id:2047,cli:'Laboratório Central',tipo:'Coleta',g:0,st:'Aguardando coleta',d:'17/11/2026'},
+    {id:2046,cli:'Hospital Amparo',tipo:'Entrega',g:6,st:'Liberada',d:'17/11/2026'},
+    {id:2045,cli:'HEMU',tipo:'Entrega',g:8,st:'Liberada',d:'17/11/2026'},
+    {id:2044,cli:'Albert Einstein',tipo:'Entrega',g:5,st:'Em trânsito',d:'17/11/2026'},
+    {id:2043,cli:'Santa Casa',tipo:'Coleta',g:4,st:'Coletada',d:'16/11/2026'},
+    {id:2042,cli:'Hotel Le Jardin',tipo:'Entrega',g:3,st:'Entregue',d:'16/11/2026'},
+    {id:2041,cli:'Laboratório Central',tipo:'Entrega',g:2,st:'Entregue',d:'16/11/2026'},
+    {id:2040,cli:'Clínica São Lucas',tipo:'Coleta',g:3,st:'Coletada',d:'13/11/2026'},
+    {id:2039,cli:'Hospital Dia',tipo:'Entrega',g:4,st:'Entregue',d:'13/11/2026'},
+    {id:2038,cli:'Hospital Amparo',tipo:'Coleta',g:6,st:'Coletada',d:'12/11/2026'},
+    {id:2037,cli:'HEMU',tipo:'Entrega',g:7,st:'Entregue',d:'12/11/2026'}
+  ];
+  var CRMB=[
+    {id:42415,cli:'Hospital Amparo',tipo:'Entrega',g:5,st:'Entregue na lavanderia',d:'17/11/2026'},
+    {id:42414,cli:'HEMU',tipo:'Coleta',g:6,st:'Aguardando coleta',d:'17/11/2026'},
+    {id:42413,cli:'Hotel Le Jardin',tipo:'Coleta',g:3,st:'Coleta realizada',d:'17/11/2026'},
+    {id:42409,cli:'Santa Casa',tipo:'Entrega',g:4,st:'Conferência realizada',d:'17/11/2026'},
+    {id:42403,cli:'Laboratório Central',tipo:'Entrega',g:2,st:'Triagem',d:'17/11/2026'},
+    {id:42398,cli:'Clínica São Lucas',tipo:'Entrega',g:3,st:'Expedição realizada',d:'17/11/2026'},
+    {id:42391,cli:'Hotel Le Jardin',tipo:'Entrega',g:4,st:'Em trânsito',d:'17/11/2026'},
+    {id:42390,cli:'Albert Einstein',tipo:'Entrega',g:5,st:'Em trânsito',d:'17/11/2026'},
+    {id:42383,cli:'Hospital Dia',tipo:'Entrega',g:4,st:'Entregue',d:'17/11/2026'},
+    {id:42364,cli:'Hospital Amparo',tipo:'Entrega',g:4,st:'Entregue',d:'15/11/2026'}
+  ];
+  var EXTRA=[];
+  var BADGE={'Liberada':'gk-badge gk-badge-info','Aguardando coleta':'gk-badge gk-badge-warn','Coleta realizada':'gk-badge gk-badge-info','Entregue na lavanderia':'gk-badge gk-badge-info','Conferência realizada':'gk-badge gk-badge-info','Triagem':'gk-badge gk-badge-info','Expedição realizada':'gk-badge gk-badge-info','Em trânsito':'gk-badge gk-badge-info','Entregue':'gk-badge gk-badge-ok','Coletada':'gk-badge gk-badge-ok'};
+  var STS=['Liberada','Aguardando coleta','Coleta realizada','Entregue na lavanderia','Conferência realizada','Triagem','Expedição realizada','Em trânsito','Entregue','Coletada'];
+  var plano=(location.hash==='#sem-crm')?'sem':'crm', M=[], nextId=2049;
+  var state={q:'',cli:[],st:[],page:1}, PAGE=10, shown=[];
+  function ini(n){ var w=n.split(' ').filter(function(x){ return x&&!/^(de|da|do|das|dos|e)$/i.test(x); }); return (w.length>1?w[0][0]+w[1][0]:n.slice(0,2)).toUpperCase(); }
+  function ava(n){ var c=(window.GAO_CLI||[]).filter(function(x){ return x.nome===n; })[0]; return '<span class="gk-avatar gk-avatar-lg">'+(c&&c.foto?'<img src="'+c.foto+'" alt="">':ini(n))+'</span>'; }
+  function badge(s){ return '<span class="'+BADGE[s]+' gk-badge-plain">'+s+'</span>'; }
+  function act(ic,tip,a){ return '<button class="gk-act" data-act="'+a+'" type="button" aria-label="'+tip+'" title="'+tip+'"><i data-lucide="'+ic+'" class="gk-ic"></i></button>'; }
+  function row(m,i){
+    return '<tr class="gk-row-link" data-i="'+i+'"><td><div class="gk-cell-main"><div><div class="gk-name">#'+m.id+'</div><div class="gk-sub">'+m.tipo+'</div></div></div></td>'
+      +'<td><div class="gk-cell-main">'+ava(m.cli)+'<div><div class="gk-name">'+m.cli+'</div><div class="gk-sub">'+ROTA[m.cli]+'</div></div></div></td>'
+      +'<td class="gk-strong">'+(m.g||'—')+'</td><td>'+badge(m.st)+'</td><td>'+m.d+'</td>'
+      +'<td class="gk-col-actions"><span class="gk-acts">'+act('eye','Ver comanda','ver')+(plano==='sem'?(m.tipo==='Entrega'?act('printer','Etiquetas','tag'):'<span class="gk-act" style="visibility:hidden"></span>')+(m.st==='Liberada'?'<button class="gk-act is-danger" data-act="del" type="button" aria-label="Excluir comanda" title="Excluir comanda"><i data-lucide="trash-2" class="gk-ic"></i></button>':'<span class="gk-act" style="visibility:hidden"></span>'):'')+'</span></td></tr>';
+  }
+  function carregar(){ M=(plano==='sem'?EXTRA.concat(SEMB):CRMB).map(function(x){ return JSON.parse(JSON.stringify(x)); }); }
+  function apply(){
+    var list=M.filter(function(m){ return (!state.q||(('#'+m.id+' '+m.cli).toLowerCase().indexOf(state.q)>=0))&&(!state.cli.length||state.cli.indexOf(m.cli)>=0)&&(!state.st.length||state.st.indexOf(m.st)>=0)&&fP.test(m.d); });
+    $('stC').textContent=list.length; $('stG').textContent=list.reduce(function(a,m){ return a+m.g; },0);
+    var total=list.length, pages=Math.max(1,Math.ceil(total/PAGE)); if(state.page>pages) state.page=pages;
+    var start=(state.page-1)*PAGE; shown=list.slice(start,start+PAGE);
+    $('tbody').innerHTML=shown.map(row).join(''); $('empty').hidden=total>0; $('tbody').closest('table').hidden=total===0;
+    $('cnt').textContent=total===0?'Nenhuma comanda encontrada':('Mostrando '+(start+1)+'–'+Math.min(start+PAGE,total)+' de '+total);
+    var pg=$('pager'); pg.innerHTML='';
+    function mk(label,page,on,dis,aria){ var b=document.createElement('button'); b.type='button'; b.className='gk-btn gk-btn-ghost gk-btn-sm'+(on?' is-active':''); b.innerHTML=label; if(aria) b.setAttribute('aria-label',aria); b.disabled=dis; if(!dis&&!on) b.addEventListener('click',function(){ state.page=page; apply(); }); pg.appendChild(b); }
+    mk('<i data-lucide="chevron-left" class="gk-ic"></i>',state.page-1,false,state.page<=1,'Anterior');
+    for(var i=1;i<=pages;i++) mk(String(i),i,i===state.page,false);
+    mk('<i data-lucide="chevron-right" class="gk-ic"></i>',state.page+1,false,state.page>=pages,'Próxima');
+    GK.icons();
+  }
+  function setPlano(p){
+    plano=p; history.replaceState(null,'',p==='sem'?'#sem-crm':'#crm');
+    document.querySelectorAll('#seg button').forEach(function(b){ b.classList.toggle('is-active',b.getAttribute('data-p')===p); });
+    $('btnNova').hidden=p!=='sem'; carregar(); state.page=1; buildFilters(); apply();
+  }
+  var fC=null, fS=null;
+  function buildFilters(){
+    var cl=[]; M.forEach(function(m){ if(cl.indexOf(m.cli)<0) cl.push(m.cli); }); cl.sort();
+    var ss=STS.filter(function(s){ return M.some(function(m){ return m.st===s; }); });
+    function opts(a){ return a.map(function(v){ return '<label class="gk-check"><input type="checkbox" value="'+v+'">'+v+'</label>'; }).join(''); }
+    $('popCliB').innerHTML=opts(cl); $('popStB').innerHTML=opts(ss);
+    state.cli=[]; state.st=[];
+    fC=GK.checkFilter({btn:'fCli',pop:'popCli',label:'Cliente',onChange:function(v){ state.cli=v; state.page=1; apply(); }});
+    fS=GK.checkFilter({btn:'fSt',pop:'popSt',label:'Status',onChange:function(v){ state.st=v; state.page=1; apply(); }});
+  }
+  $('q').addEventListener('input',function(){ state.q=this.value.toLowerCase().trim().replace('#','#'); state.page=1; apply(); });
+  var fP=GK.periodFilter({btn:'fPer',pop:'popPer',onChange:function(){ state.page=1; apply(); }});
+  $('clearEmpty').addEventListener('click',function(){ $('q').value=''; state.q=''; fC.reset(); fS.reset(); fP.reset(); });
+  document.querySelectorAll('#seg button').forEach(function(b){ b.addEventListener('click',function(){ setPlano(b.getAttribute('data-p')); }); });
+
+  /* detalhes */
+  function ver(m){
+    if(plano==='crm'){ verCrm(m); return; }
+    $('dT').textContent='Comanda #'+m.id;
+    function f(l,v,w){ return '<div'+(w?' class="is-wide"':'')+'><dt>'+l+'</dt><dd>'+v+'</dd></div>'; }
+    $('dF').innerHTML=f('Cliente',m.cli,1)+f('Rota',ROTA[m.cli])+f('Gaiolas',m.g)+f('Status',badge(m.st))+f('Data',m.d);
+    $('dCrm').hidden=plano!=='crm'; GK.open('ovD'); GK.icons();
+  }
+
+
+  /* detalhe com CRM */
+  var FLOW=[['Aguardando coleta','clock','Motorista'],['Coleta realizada','package','Motorista'],['Entregue na lavanderia','building-2','Motorista'],['Conferência realizada','clipboard-check','Área suja'],['Triagem','layers','Área suja'],['Expedição realizada','send','Expedição'],['Em trânsito','truck','Motorista'],['Entregue','check-circle-2','Motorista']];
+  var RESP=['Ronaldo Alves','Ronaldo Alves','Ronaldo Alves','Equipe área suja','Equipe área suja','Jéssica F.','Ronaldo Alves','Ronaldo Alves'];
+  var CATS={'Cirúrgico':'scissors','Hot. hospitalar':'bed-double','Paciente':'shirt'};
+  var PROD=[['Campo simples verde 120x120','Cirúrgico',14],['Campo fenestrado verde 160x160','Cirúrgico',3],['Cobertor salmão 150x220','Hot. hospitalar',77],['Fronha padrão 50x70','Hot. hospitalar',12],['Lençol maca 160x250','Hot. hospitalar',25],['Camisola listrada M','Paciente',22],['Camisola listrada G','Paciente',16],['Camisola infantil M','Paciente',6]];
+  function idx(m){ for(var i=0;i<FLOW.length;i++) if(FLOW[i][0]===m.st) return i; return 0; }
+  function hh(m,i){ var old=m.d==='15/11/2026', t=old?['09:10','09:24','10:12','15:41','18:49','20:06','02:54','08:38']:['01:10','01:24','02:12','03:41','04:49','05:06','06:54','08:38'], o=old?[0,0,0,0,0,1,2,2]:[0,0,0,0,0,0,0,0]; return String(+m.d.slice(0,2)+o[i]).padStart(2,'0')+'/11/2026 '+t[i]; }
+  function gaiolas(m){ var o=[]; for(var n=0;n<m.g;n++){ var it=[]; for(var k=0;k<4;k++){ var p=PROD[(m.id+n*3+k*2)%PROD.length]; it.push([p[0],p[1],4+((m.id+n*7+k*5)%30)]); } o.push(it); } return o; }
+  function it(p){ return '<div class="gk-it"><span class="gk-it-n">'+p[0]+'</span><span class="gk-it-q">'+p[2]+'</span></div>'; }
+  function grp(list){ var o={}; list.forEach(function(p){ (o[p[1]]=o[p[1]]||[]).push(p); }); return Object.keys(o).map(function(k){ return '<div class="gk-it-g">'+k+'</div>'+o[k].map(it).join(''); }).join(''); }
+  function aba(m,t){
+    var i=idx(m), h='';
+    if(t==='res'){
+      var conf=i>=3, exp=i>=5, kg=function(v){ return v.toLocaleString('pt-BR',{minimumFractionDigits:2})+' kg'; }, base=m.g*118;
+      function c(l,v,on){ return '<div class="gk-cell"><span>'+l+'</span><b'+(on?'':' class="is-off"')+'>'+(on?v:'—')+'</b></div>'; }
+      h='<div class="gk-cmd">'+ava(m.cli)+'<div><b>'+m.cli+'</b><span>'+ROTA[m.cli]+'</span></div><div class="gk-cmd-d"><span>Atualizada em '+hh(m,i)+'</span>'+badge(m.st)+'</div></div>'
+       +'<div class="gk-cells">'+c('Lançado',kg(base),true)+c('Conferido',kg(base*1.03),conf)+c('Expedido',kg(base*.76),exp)+c('Relave',kg(0),conf)+'</div>'
+      ;
+      if(conf) h+='<div class="gk-meters">'+[['Sujidade',24,'is-warn'],['Lixo',1,'is-bad'],['Enxoval variado',99,''],['Taxa de entrega',exp?76:0,'is-ok']].map(function(x){ return '<div><div class="gk-meter-h"><span>'+x[0]+'</span><b>'+x[1]+'%</b></div><div class="gk-meter-t"><i class="'+x[2]+'" style="width:'+x[1]+'%"></i></div></div>'; }).join('')+'</div>';
+    } else if(t==='itn'){
+      if(i<5) h='<div class="gk-empty-in">Os itens ficam disponíveis após a expedição.</div>';
+      else{
+        var G=gaiolas(m), tot=0, res={}; G.forEach(function(g){ g.forEach(function(p){ tot+=p[2]; res[p[0]]=(res[p[0]]||[p[0],p[1],0]); res[p[0]][2]+=p[2]; }); });
+        h='<div class="gk-sum-t"><div class="gk-seg" id="iSeg"><button type="button" class="is-active" data-v="g">Por gaiola</button><button type="button" data-v="p">Resumo por categoria</button></div><b>'+tot+' peças</b></div>'
+         +'<div id="iG">'+G.map(function(g,n){ var s=g.reduce(function(a,p){ return a+p[2]; },0); return '<div class="gk-gai'+(n===0?' is-open':'')+'"><button type="button" class="gk-gai-h"><i data-lucide="chevron-right" class="gk-ic"></i><b>Gaiola '+(n+1)+'</b><span>'+s+' peças</span></button><div class="gk-gai-l">'+grp(g)+'</div></div>'; }).join('')+'</div>'
+         +'<div id="iP" hidden><div class="gk-list">'+grp(Object.keys(res).map(function(k){ return res[k]; }))+'</div></div>';
+      }
+    } else if(t==='tmp'){
+      h='<ol class="gk-flows">'+FLOW.map(function(s,n){ var c=n<i?'is-done':(n===i?(n<FLOW.length-1?'is-now':'is-done'):'is-todo'); return '<li class="gk-flow '+c+'"><span class="gk-flow-ic">'+(c==='is-done'?'<i data-lucide="check" class="gk-ic"></i>':'')+'</span><div class="gk-flow-b"><div><b>'+s[0]+'</b>'+(n<=i?'<span>'+RESP[n]+'</span>':'')+'</div>'+(n<=i?'<em>'+hh(m,n)+'</em>':'')+'</div></li>'; }).join('')+'</ol>';
+    } else {
+      var L=[['Embarque',i>=6,m.g+' gaiolas com roupa · 2 fotos'],['Deslocamento',i>=6,'Cliente avisado por WhatsApp'],['Entrega',i>=7,'Recebido no cliente · assinatura e 2 fotos'],['Coleta',i>=7,'Gaiolas recolhidas · 2 fotos'],['Descarrega',i>=7,'Conferência na lavanderia']];
+      h='<ol class="gk-flows">'+L.map(function(s){ var c=s[1]?'is-done':'is-todo'; return '<li class="gk-flow '+c+'"><span class="gk-flow-ic">'+(s[1]?'<i data-lucide="check" class="gk-ic"></i>':'')+'</span><div class="gk-flow-b"><div><b>'+s[0]+'</b>'+(s[1]?'<span>'+s[2]+'</span>':'')+'</div></div></li>'; }).join('')+'</ol>';
+    }
+    $('cP').innerHTML=h; GK.icons();
+    var sg=$('iSeg'); if(sg) sg.addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return; sg.querySelectorAll('button').forEach(function(x){ x.classList.toggle('is-active',x===b); }); $('iG').hidden=b.getAttribute('data-v')!=='g'; $('iP').hidden=b.getAttribute('data-v')!=='p'; });
+    document.querySelectorAll('#cP .gk-gai-h').forEach(function(b){ b.addEventListener('click',function(){ b.parentNode.classList.toggle('is-open'); }); });
+  }
+  var curC=null;
+  function verCrm(m){
+    curC=m; $('cT').textContent='Comanda #'+m.id; $('cB').innerHTML='';
+    document.querySelectorAll('#cTabs .gk-tab').forEach(function(b){ b.classList.toggle('is-active',b.getAttribute('data-t')==='res'); });
+    aba(m,'res'); GK.open('ovC');
+  }
+  $('cTabs').addEventListener('click',function(e){ var b=e.target.closest('.gk-tab'); if(!b) return; document.querySelectorAll('#cTabs .gk-tab').forEach(function(x){ x.classList.toggle('is-active',x===b); }); aba(curC,b.getAttribute('data-t')); });
+
+  /* etiquetas */
+  function tagHTML(m,n){
+    var q=qrcode(0,'M'); q.addData('GAO|C'+m.id+'|G'+n+'/'+m.g); q.make();
+    return '<div class="gk-tag">'+q.createSvgTag(3,0)+'<div class="gk-tag-b"><b>Comanda #'+m.id+'</b><div class="gk-tag-g">Gaiola '+n+' de '+m.g+'</div><span>'+m.cli+'</span><span>'+ROTA[m.cli]+'</span></div></div>';
+  }
+  var curE=null, curX=null;
+  $('xOk').addEventListener('click',function(){ [M,EXTRA,SEMB].forEach(function(a){ var i=a.indexOf(curX); if(i>=0) a.splice(i,1); }); GK.close('ovX'); apply(); });
+  function etiquetas(m,novo){
+    curE=m; $('eT').textContent='Gerar etiquetas'; $('eS').innerHTML='<b style="color:var(--fg);font-weight:600">'+(novo?'Comanda criada':'Comanda')+' · #'+m.id+'</b><span style="display:block">'+m.g+(m.g>1?' etiquetas':' etiqueta')+', uma por gaiola.</span>';
+    var h=''; for(var n=1;n<=m.g;n++) h+=tagHTML(m,n);
+    $('eG').innerHTML=h; $('printArea').innerHTML=h; GK.open('ovE'); GK.icons();
+  }
+  $('ePrint').addEventListener('click',function(){ window.print(); });
+  
+  /* criar */
+  var ssN=null;
+  function abrirNova(){
+    $('nCliBox').innerHTML=GK.ssHTML('ssN','Selecione o cliente','Buscar cliente',(window.GAO_CLI||[]).filter(function(c){ return c.status==='ativo'; }).map(function(c){ return c.nome; }));
+    ssN=GK.searchSelect($('nCliBox').firstChild,function(v){ $('nRota').value=ROTA[v]||'—'; $('nOk').disabled=!v; });
+    $('nRota').value='—'; $('nQtd').value='1'; $('nOk').disabled=true; setTipo('Entrega'); GK.open('ovN'); GK.icons();
+  }
+  var nTipo='Entrega';
+  function setTipo(t){
+    nTipo=t; document.querySelectorAll('#nTipo input').forEach(function(i){ i.checked=i.value===t; });
+    var c=t==='Coleta'; $('nQtdF').hidden=c; $('nQtdF').parentNode.style.gridTemplateColumns=c?'1fr':''; $('nCapW').innerHTML='<i data-lucide="'+(c?'truck':'qr-code')+'" class="gk-ic"></i>';
+    $('nCap').textContent=c?'Entra no app do motorista como Aguardando coleta. O motorista informa as gaiolas ao coletar.':'Uma etiqueta com QR Code é gerada para cada gaiola.';
+    $('nOk').textContent=c?'Criar comanda de coleta':'Criar e gerar etiquetas'; GK.icons();
+  }
+  document.querySelectorAll('#nTipo input').forEach(function(i){ i.addEventListener('change',function(){ setTipo(i.value); }); });
+  $('btnNova').addEventListener('click',abrirNova);
+  document.querySelectorAll('#ovN [data-q]').forEach(function(b){ b.addEventListener('click',function(){ var v=Math.max(1,Math.min(99,(parseInt($('nQtd').value,10)||1)+(+b.getAttribute('data-q')))); $('nQtd').value=v; }); });
+  $('nQtd').addEventListener('input',function(){ this.value=this.value.replace(/\D/g,'').slice(0,2); });
+  $('nOk').addEventListener('click',function(){
+    var cli=ssN.get(); if(!cli) return; var g=Math.max(1,parseInt($('nQtd').value,10)||1);
+    var col=nTipo==='Coleta', m={id:nextId++,cli:cli,tipo:nTipo,g:col?0:g,st:col?'Aguardando coleta':'Liberada',d:'17/11/2026'}; EXTRA.unshift(m); M.unshift(m); state.page=1; GK.close('ovN'); apply(); if(!col) etiquetas(m,true);
+  });
+
+  $('tbody').addEventListener('click',function(e){
+    var tr=e.target.closest('tr'); if(!tr) return; var m=shown[+tr.getAttribute('data-i')], a=e.target.closest('[data-act]'), k=a?a.getAttribute('data-act'):'ver';
+    if(k==='tag') etiquetas(m); else if(k==='del'){ curX=m; $('xT').textContent='Excluir comanda #'+m.id+'?'; $('xP').textContent='As etiquetas já impressas desta comanda deixam de valer. Essa ação não pode ser desfeita.'; GK.open('ovX'); GK.icons(); } else ver(m);
+  });
+  GK.popovers(); setPlano(plano);
+})();
+</script>
+</body>
+</html>

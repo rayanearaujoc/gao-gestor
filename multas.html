@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GAO Gestor · Multas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+<link rel="stylesheet" href="static/css/app.css">
+<link rel="stylesheet" href="static/css/gestor.css">
+<link rel="stylesheet" href="static/css/kit.css">
+</head>
+<body data-page="multas">
+  <main class="gpage">
+    <div class="gk-page-head"><div><h1 class="gk-h1">Multas</h1></div></div>
+    <div class="gk-stats is-2" style="margin:0 0 var(--space-5)">
+      <div class="gk-card gk-stat is-grad"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="receipt" class="gk-ic"></i></span>Valor total</div><div class="gk-stat-v" id="stV"></div><div class="gk-stat-l">Soma das multas listadas</div></div>
+      <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="triangle-alert" class="gk-ic"></i></span>Multas</div><div class="gk-stat-v" id="stM"></div><div class="gk-stat-l">Registradas no período</div></div>
+    </div>
+    <div class="gk-dropzone" id="drop" style="margin-bottom:var(--space-5)" role="button" tabindex="0" aria-label="Enviar PDF da multa">
+      <span class="gk-dropzone-ic"><i data-lucide="upload" class="gk-ic"></i></span>
+      <div class="gk-dropzone-b"><b>Arraste o PDF da multa aqui</b><span>ou escolha o arquivo no computador</span></div>
+      <button type="button" class="gk-btn gk-btn-primary" id="pick"><i data-lucide="file-up" class="gk-ic"></i>Selecionar PDF</button>
+      <input type="file" id="file" accept="application/pdf,.pdf" hidden>
+    </div>
+    <div class="gk-table-wrap">
+      <div class="gk-toolbar" style="flex-wrap:nowrap">
+        <div class="gk-input-wrap" style="flex:1 1 200px;min-width:160px;max-width:440px"><i data-lucide="search" class="gk-ic"></i><input class="gk-input" id="q" placeholder="Busque por placa ou AIT"></div>
+        <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="fMot" data-pop="popMot"><i data-lucide="users" class="gk-ic"></i><span>Motorista</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popMot"><div class="gk-fp-body"><label class="gk-check"><input type="checkbox" value="Ronaldo Araújo">Ronaldo Araújo</label><label class="gk-check"><input type="checkbox" value="Bruno Castro">Bruno Castro</label><label class="gk-check"><input type="checkbox" value="Diego Martins">Diego Martins</label><label class="gk-check"><input type="checkbox" value="Paulo Ribeiro">Paulo Ribeiro</label></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+        <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="fVei" data-pop="popVei"><i data-lucide="car" class="gk-ic"></i><span>Veículo</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popVei"><div class="gk-fp-body"><label class="gk-check"><input type="checkbox" value="QRT-4A21">QRT-4A21</label><label class="gk-check"><input type="checkbox" value="PYH-5D40">PYH-5D40</label><label class="gk-check"><input type="checkbox" value="OLK-9B13">OLK-9B13</label><label class="gk-check"><input type="checkbox" value="QSD-1H78">QSD-1H78</label><label class="gk-check"><input type="checkbox" value="OGR-2C20">OGR-2C20</label><label class="gk-check"><input type="checkbox" value="PXM-7C09">PXM-7C09</label></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+        <div class="gk-pop-anchor">
+          <button class="gk-btn gk-btn-secondary" id="fPer" data-pop="popPer"><i data-lucide="calendar" class="gk-ic"></i><span>Período</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button>
+          <div class="gk-pop gk-menu" id="popPer"></div>
+        </div>
+        <button class="gk-btn gk-btn-ghost" id="clearAll" hidden>Limpar filtros</button>
+      </div>
+      <table class="gk-table">
+        <thead><tr><th>Infração</th><th>Veículo</th><th>Data e hora</th><th>Motorista</th><th>Viagem</th><th>Valor</th><th class="gk-col-actions" style="width:80px">Ações</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="gk-empty" id="empty" hidden><i data-lucide="search" class="gk-ic"></i><b>Nenhuma multa encontrada</b>Tente ajustar os termos da busca ou remover os filtros.<div style="margin-top:var(--space-4)"><button class="gk-btn gk-btn-secondary" id="clearEmpty">Limpar filtros</button></div></div>
+      <div class="gk-tfoot"><span id="cnt"></span><div class="gk-pager" id="pager"></div></div>
+    </div>
+  </main>
+
+  <div class="gk-overlay" id="ovM"><div class="gk-scrim" data-close="ovM"></div>
+    <div class="gk-modal is-form" role="dialog" aria-labelledby="mTitle">
+      <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="triangle-alert" class="gk-ic"></i></span><h2 class="gk-h2" id="mTitle">Nova multa</h2></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovM" aria-label="Fechar"><i data-lucide="x" class="gk-ic"></i></button></div>
+      <div class="gk-modal-body" style="border-top:1px solid var(--line)">
+        <div class="gk-stage" id="mAn">
+          <div class="gk-lottie" id="lot"></div>
+          <div class="gk-stage-t" id="stT">Lendo o PDF…</div>
+          <div class="gk-stage-s" id="stS"></div>
+          <div class="gk-prog"><i id="stP"></i></div>
+          <div class="gk-reads" id="stR"></div>
+        </div>
+        <div id="mRes" hidden></div>
+      </div>
+      <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovM" id="mCancel">Cancelar</button><button class="gk-btn gk-btn-primary" id="mOk" disabled>Registrar multa</button></div>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
+<script src="static/js/shell.js"></script>
+<script src="static/js/kit-ui.js"></script>
+<script src="static/js/kit-icons.js"></script>
+<script src="static/js/lottie.min.js"></script>
+<script src="static/anim/buscando.js"></script>
+<script>
+(function(){
+  var TRIPS={1044:{data:'10/11/2026',rota:'Rota Norte',mot:'Ronaldo Araújo',placa:'OGR-2C20',de:'08:12',ate:'17:40'},
+             1043:{data:'10/11/2026',rota:'Rota Leste',mot:'Bruno Castro',placa:'PXM-7C09',de:'07:40',ate:'16:55'}};
+  var M=[
+    {ait:'G012345101',placa:'PYH-5D40',infr:'Estacionar em local proibido',data:'12/11/2026',hora:'09:20',mot:'Bruno Castro',via:1047,valor:195.23,loc:'Rua 3, Setor Central, Goiânia/GO'},
+    {ait:'G012345077',placa:'OLK-9B13',infr:'Avançar o sinal vermelho',data:'11/11/2026',hora:'16:05',mot:'Paulo Ribeiro',via:1045,valor:293.47,loc:'Av. Goiás com Av. Anhanguera, Goiânia/GO'},
+    {ait:'G012344980',placa:'QRT-4A21',infr:'Velocidade acima de 20% até 50%',data:'09/11/2026',hora:'11:48',mot:'Diego Martins',via:1042,valor:195.23,loc:'Av. T-63, Setor Bueno, Goiânia/GO'},
+    {ait:'G012344912',placa:'QSD-1H78',infr:'Velocidade até 20% acima do limite',data:'08/11/2026',hora:'07:52',mot:'Ronaldo Araújo',via:1040,valor:130.16,loc:'Av. 85, Setor Marista, Goiânia/GO'},
+    {ait:'G012344871',placa:'OGR-2C20',infr:'Parar sobre a faixa de pedestres',data:'07/11/2026',hora:'15:10',mot:'Diego Martins',via:1038,valor:130.16,loc:'Rua 9, Setor Oeste, Goiânia/GO'},
+    {ait:'G012344803',placa:'PXM-7C09',infr:'Estacionar em local proibido',data:'07/11/2026',hora:'10:30',mot:'Paulo Ribeiro',via:1037,valor:195.23,loc:'Av. Contorno, Goiânia/GO'},
+    {ait:'G012344650',placa:'QRT-4A21',infr:'Transitar em faixa exclusiva de ônibus',data:'12/11/2026',hora:'06:40',mot:'Ronaldo Araújo',via:1048,valor:195.23,loc:'Av. Anhanguera, Goiânia/GO'}
+  ];
+  var NOVA={ait:'G012345678',placa:'OGR-2C20',infr:'Velocidade até 20% acima do limite',data:'10/11/2026',hora:'14:37',mot:'Ronaldo Araújo',via:1044,valor:130.16,loc:'Av. Anhanguera, km 3, Setor Central, Goiânia/GO'};
+  function key(m){ var d=m.data.split('/'); return d[2]+d[1]+d[0]+m.hora.replace(':',''); }
+  M.sort(function(a,b){ return key(b)<key(a)?-1:1; });
+  var state={q:'',mot:[],vei:[],page:1}, PAGE=10, BEST=1044, cur=null;
+  var tbody=document.getElementById('tbody'), empty=document.getElementById('empty');
+  function ini(n){ return n.split(' ').map(function(x){ return x[0]; }).slice(0,2).join(''); }
+  function brl(v){ return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  function row(m,i){
+    return '<tr class="gk-row-link" data-i="'+i+'"><td><div class="gk-cell-main"><span><span class="gk-strong">'+m.infr+'</span><span class="gk-sub" style="display:block">AIT '+m.ait+'</span></span></div></td>'
+      +'<td class="gk-strong">'+m.placa+'</td><td>'+m.data+' · '+m.hora+'</td>'
+      +'<td><div class="gk-cell-main"><span class="gk-avatar">'+ini(m.mot)+'</span><span>'+m.mot+'</span></div></td>'
+      +'<td><a class="gk-link" href="viagem.html?v='+m.via+'">#'+m.via+'</a></td><td class="gk-strong">'+brl(m.valor)+'</td>'
+      +'<td class="gk-col-actions"><span class="gk-acts"><button class="gk-act" data-ver aria-label="Ver multa" title="Ver"><i data-lucide="eye" class="gk-ic"></i></button></span></td></tr>';
+  }
+  var shown=[];
+  function apply(){
+    var list=M.filter(function(m){ return (!state.q||(m.placa+' '+m.ait).toLowerCase().indexOf(state.q)>=0)&&(!state.mot.length||state.mot.indexOf(m.mot)>=0)&&(!state.vei.length||state.vei.indexOf(m.placa)>=0)&&fP.test(m.data); });
+    document.getElementById('stM').textContent=list.length; document.getElementById('stV').textContent=brl(list.reduce(function(a,m){ return a+m.valor; },0));
+    var total=list.length, pages=Math.max(1,Math.ceil(total/PAGE)); if(state.page>pages) state.page=pages;
+    var start=(state.page-1)*PAGE; shown=list.slice(start,start+PAGE);
+    tbody.innerHTML=shown.map(row).join('');
+    empty.hidden=total>0; tbody.closest('table').hidden=total===0;
+    document.getElementById('cnt').textContent=total===0?'Nenhuma multa encontrada':('Mostrando '+(start+1)+'–'+Math.min(start+PAGE,total)+' de '+total);
+    var pg=document.getElementById('pager'); pg.innerHTML='';
+    function mk(label,page,on,dis,aria){ var b=document.createElement('button'); b.type='button'; b.className='gk-btn gk-btn-ghost gk-btn-sm'+(on?' is-active':''); b.innerHTML=label; if(aria) b.setAttribute('aria-label',aria); b.disabled=dis; if(!dis&&!on) b.addEventListener('click',function(){ state.page=page; apply(); }); pg.appendChild(b); }
+    mk('<i data-lucide="chevron-left" class="gk-ic"></i>',state.page-1,false,state.page<=1,'Anterior');
+    for(var i=1;i<=pages;i++) mk(String(i),i,i===state.page,false);
+    mk('<i data-lucide="chevron-right" class="gk-ic"></i>',state.page+1,false,state.page>=pages,'Próxima');
+    document.getElementById('clearAll').hidden=!(state.mot.length||state.vei.length||fP.active());
+    GK.icons();
+  }
+  document.getElementById('q').addEventListener('input',function(){ state.q=this.value.toLowerCase().trim(); state.page=1; apply(); });
+  var fM=GK.checkFilter({btn:'fMot',pop:'popMot',label:'Motorista',onChange:function(v){ state.mot=v; state.page=1; apply(); }});
+  var fV=GK.checkFilter({btn:'fVei',pop:'popVei',label:'Veículo',onChange:function(v){ state.vei=v; state.page=1; apply(); }});
+  var fP=GK.periodFilter({btn:'fPer',pop:'popPer',onChange:function(){ state.page=1; apply(); }});
+  function limpar(){ fM.reset(); fV.reset(); fP.reset(); }
+  document.getElementById('clearAll').addEventListener('click',limpar);
+  document.getElementById('clearEmpty').addEventListener('click',function(){ document.getElementById('q').value=''; state.q=''; limpar(); });
+
+  /* ---------- modal: análise e resultado ---------- */
+  var ovM=document.getElementById('ovM'), $=function(id){ return document.getElementById(id); }, timers=[], anim=null, des=null;
+  function T(fn,ms){ timers.push(setTimeout(fn,ms)); }
+  function pct(a,b){ var h=a.split(':'); return +h[0]+ +h[1]/60; }
+  function timeline(t,hora){
+    var A=6,B=20, ini=pct(t.de), fim=pct(t.ate), pin=pct(hora);
+    var l=(ini-A)/(B-A)*100, w=(fim-ini)/(B-A)*100, p=(pin-A)/(B-A)*100;
+    return '<div class="gk-tl"><div class="gk-tl-bar"><div class="gk-tl-seg" style="left:'+l+'%;width:'+w+'%"></div><div class="gk-tl-pin" style="left:'+p+'%"><span>Multa · '+hora+'</span></div></div><div class="gk-tl-ax"><span>Em rota das '+t.de+' às '+t.ate+'</span><span>06h – 20h</span></div></div>';
+  }
+  function tripHTML(id,best){
+    var t=TRIPS[id];
+    return '<div class="gk-trip'+(best?'':' is-sm')+'" data-id="'+id+'"><div class="gk-trip-h"><span class="gk-avatar">'+ini(t.mot)+'</span><div class="gk-trip-b"><b>'+t.mot+'</b><span>Viagem #'+id+' · '+t.rota+' · '+t.placa+(best?'':' · '+t.de+'–'+t.ate)+'</span></div><button type="button" class="gk-btn gk-btn-sm '+(best?'gk-btn-primary':'gk-btn-secondary')+'" data-best="'+(best?1:0)+'" data-des="'+id+'">Designar</button></div>'+(best?timeline(t,cur.hora):'')+'</div>';
+  }
+  function marcar(){
+    document.querySelectorAll('#mRes [data-des]').forEach(function(b){
+      var on=+b.getAttribute('data-des')===des, best=b.getAttribute('data-best')==='1';
+      b.className='gk-btn gk-btn-sm '+(on?'is-done':(best?'gk-btn-primary':'gk-btn-secondary'));
+      b.innerHTML=on?'<i data-lucide="check" class="gk-ic"></i>Designado':'Designar';
+      b.closest('.gk-trip').classList.toggle('is-picked',on);
+    });
+    $('mOk').disabled=des===null; GK.icons();
+  }
+  function resultado(){
+    var outras=Object.keys(TRIPS).filter(function(id){ return +id!==BEST; });
+    $('mRes').innerHTML='<div class="gk-ctx"><i data-lucide="file-text" class="gk-ic"></i><b>'+cur.placa+'</b>·<span>'+cur.data+' às '+cur.hora+'</span>·<span>'+brl(cur.valor)+'</span></div>'
+      +'<div class="gk-sec-t">Viagem mais provável</div>'+tripHTML(BEST,true)
+      +'<div class="gk-sec-t">Outras viagens do dia</div><div class="gk-trip-list">'+outras.map(function(id){ return tripHTML(+id,false); }).join('')+'</div>';
+    $('mAn').hidden=true; $('mRes').hidden=false; GK.icons(); marcar();
+  }
+  function abrirModal(){ GK.open('ovM'); }
+  function iniciar(file){
+    timers.forEach(clearTimeout); timers=[]; if(anim){ anim.destroy(); anim=null; }
+    cur=JSON.parse(JSON.stringify(NOVA)); des=null;
+    $('mTitle').textContent='Nova multa'; $('mAn').hidden=false; $('mRes').hidden=true; $('mOk').hidden=false; $('mOk').disabled=true; $('mCancel').textContent='Cancelar';
+    $('stT').textContent='Lendo o PDF…'; $('stS').textContent=file.name; $('stP').style.width='0'; $('stR').innerHTML='';
+    abrirModal();
+    anim=lottie.loadAnimation({container:$('lot'),renderer:'svg',loop:true,autoplay:true,animationData:window.GAO_ANIM_BUSCA});
+    function chip(l,v){ var e=document.createElement('span'); e.className='gk-read'; e.innerHTML='<em>'+l+'</em>'+v; $('stR').appendChild(e); }
+    T(function(){ $('stP').style.width='18%'; },100);
+    T(function(){ $('stT').textContent='Identificando o veículo…'; $('stS').textContent='Procurando a placa no documento'; $('stP').style.width='42%'; chip('Placa',cur.placa); },1300);
+    T(function(){ $('stT').textContent='Conferindo data e horário…'; $('stS').textContent='Quando a infração aconteceu'; $('stP').style.width='64%'; chip('Data',cur.data); chip('Hora',cur.hora); },2500);
+    T(function(){ $('stT').textContent='Buscando as viagens do dia…'; $('stS').textContent='Cruzando com '+cur.data; $('stP').style.width='88%'; chip('Viagens no dia',String(Object.keys(TRIPS).length)); },3700);
+    T(function(){ $('stT').textContent='Encontrei a viagem mais provável'; $('stS').textContent=''; $('stP').style.width='100%'; },4700);
+    T(function(){ if(anim){ anim.destroy(); anim=null; } resultado(); },5400);
+  }
+  function ver(m){
+    timers.forEach(clearTimeout); if(anim){ anim.destroy(); anim=null; } cur=m;
+    $('mTitle').textContent='Multa '+m.ait; $('mAn').hidden=true; $('mOk').hidden=true; $('mCancel').textContent='Fechar';
+    var t=TRIPS[m.via];
+    $('mRes').innerHTML='<dl class="gk-mfacts"><div class="is-wide"><dt>Infração</dt><dd>'+m.infr+'</dd></div><div><dt>Veículo</dt><dd>'+m.placa+'</dd></div><div><dt>Data e hora</dt><dd>'+m.data+' · '+m.hora+'</dd></div><div class="is-wide"><dt>Local</dt><dd>'+m.loc+'</dd></div><div><dt>AIT</dt><dd>'+m.ait+'</dd></div><div><dt>Valor</dt><dd>'+brl(m.valor)+'</dd></div></dl>'
+      +'<div class="gk-sec-t">Viagem e motorista</div><div class="gk-trip"><div class="gk-trip-h"><span class="gk-avatar">'+ini(m.mot)+'</span><div class="gk-trip-b"><b>'+m.mot+'</b><span>Viagem #'+m.via+(t?' · '+t.rota:'')+'</span></div><a class="gk-btn gk-btn-secondary gk-btn-sm" href="viagem.html?v='+m.via+'">Ver viagem</a></div></div>';
+    $('mRes').hidden=false; abrirModal();
+  }
+  $('mRes').addEventListener('click',function(e){ var b=e.target.closest('[data-des]'); if(!b) return; des=+b.getAttribute('data-des'); cur.via=des; cur.mot=TRIPS[des].mot; marcar(); });
+  $('ovM').addEventListener('click',function(e){ if(e.target.closest('[data-close]')){ timers.forEach(clearTimeout); if(anim){ anim.destroy(); anim=null; } } });
+  $('mOk').addEventListener('click',function(){
+    var m=JSON.parse(JSON.stringify(cur)); M.unshift(m); M.sort(function(a,b){ return key(b)<key(a)?-1:1; }); state.page=1; GK.close('ovM'); apply();
+  });
+  tbody.addEventListener('click',function(e){ if(e.target.closest('a')) return; var tr=e.target.closest('tr'); if(tr) ver(shown[+tr.getAttribute('data-i')]); });
+
+  /* ---------- envio do PDF ---------- */
+  var drop=$('drop'), inp=$('file');
+  function receber(f){ if(!f) return; if(!/pdf$/i.test(f.name)&&f.type!=='application/pdf') return; try{ f.url=URL.createObjectURL(f); }catch(e){} iniciar(f); }
+  drop.addEventListener('click',function(){ inp.click(); });
+  $('pick').addEventListener('click',function(e){ e.stopPropagation(); inp.click(); });
+  drop.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); inp.click(); } });
+  inp.addEventListener('change',function(){ receber(inp.files[0]); inp.value=''; });
+  ['dragenter','dragover'].forEach(function(n){ drop.addEventListener(n,function(e){ e.preventDefault(); drop.classList.add('is-over'); }); });
+  ['dragleave','drop'].forEach(function(n){ drop.addEventListener(n,function(e){ e.preventDefault(); drop.classList.remove('is-over'); }); });
+  drop.addEventListener('drop',function(e){ receber(e.dataTransfer.files[0]); });
+  window.__multasTeste=function(){ iniciar({name:'notificacao-autuacao-OGR2C20.pdf',size:48200}); };
+  GK.popovers(); apply();
+})();
+</script>
+</body>
+</html>

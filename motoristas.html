@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GAO Gestor · Motoristas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+<link rel="stylesheet" href="static/css/app.css">
+<link rel="stylesheet" href="static/css/gestor.css">
+<link rel="stylesheet" href="static/css/kit.css">
+</head>
+<body data-page="motoristas">
+  <main class="gpage">
+    <div class="gk-page-head">
+      <div><h1 class="gk-h1">Motoristas<span class="gk-h1-n" id="hN"></span></h1></div>
+    </div>
+
+    <div class="gk-table-wrap">
+      <div class="gk-toolbar" style="flex-wrap:nowrap">
+        <div class="gk-input-wrap" style="flex:1 1 200px;min-width:160px;max-width:440px"><i data-lucide="search" class="gk-ic"></i><input class="gk-input" id="q" placeholder="Busque por nome, usuário ou rota"></div>
+        <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="btnRota" data-pop="popRota"><i data-lucide="route" class="gk-ic"></i><span>Rota</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popRota"><div class="gk-fp-body"><label class="gk-check"><input type="checkbox" value="hospitalar">Hospitalar</label><label class="gk-check"><input type="checkbox" value="centro">Centro</label><label class="gk-check"><input type="checkbox" value="norte">Norte</label><label class="gk-check"><input type="checkbox" value="sul">Sul</label><label class="gk-check"><input type="checkbox" value="sem">Sem rota</label></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+        <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="btnStatus" data-pop="popStatus"><i data-lucide="filter" class="gk-ic"></i><span>Status</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popStatus"><div class="gk-fp-body"><label class="gk-check"><input type="checkbox" value="ativo">Ativo</label><label class="gk-check"><input type="checkbox" value="inativo">Inativo</label></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+        <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="btnEscala" data-pop="popEscala"><i data-lucide="user-round" class="gk-ic"></i><span>Escala</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popEscala"><div class="gk-fp-body"><label class="gk-check"><input type="checkbox" value="padrao">Padrão</label><label class="gk-check"><input type="checkbox" value="folg">Folguista</label></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+        <button class="gk-btn gk-btn-ghost" id="clearAll" hidden>Limpar filtros</button>
+        <span class="gk-spacer"></span>
+        <button class="gk-btn gk-btn-primary" id="btnNovo"><i data-lucide="plus" class="gk-ic"></i>Cadastrar motorista</button>
+      </div>
+      <table class="gk-table">
+        <thead><tr><th>Motorista</th><th>Rota atual</th><th>Perfil de escala</th><th>Situação</th><th class="gk-col-actions" style="width:152px">Ações</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="gk-empty" id="empty" hidden><i data-lucide="search" class="gk-ic"></i><b>Nenhum motorista encontrado</b>Tente ajustar os termos da busca ou remover os filtros.<div style="margin-top:var(--space-4)"><button class="gk-btn gk-btn-secondary" id="clearEmpty">Limpar filtros</button></div></div>
+      <div class="gk-tfoot"><span id="cnt">Mostrando 1–10 de 10</span><div class="gk-pager" id="pager"></div></div>
+    </div>
+  </main>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
+<script src="static/js/shell.js"></script>
+<script src="static/js/kit-ui.js"></script>
+<script src="static/js/kit-icons.js"></script>
+<script src="static/js/motorista-form.js"></script>
+<script>
+(function(){
+  var MOT=[
+    {nome:'Ronaldo Araújo',user:'ronaldo.araujo',ini:'RA',foto:'static/img/ronaldo.webp',rotas:['hospitalar','centro'],rotaLbl:'Rota Hospitalar',rk:'hospitalar',perfil:'padrao',status:'ativo',tel:'(11) 99982-4510'},
+    {nome:'Gustavo Lima',user:'gustavo.lima',ini:'GL',rotas:['hospitalar'],rotaLbl:'Rota Hospitalar',rk:'hospitalar',perfil:'padrao',status:'ativo'},
+    {nome:'Carlos Henrique',user:'carlos.henrique',ini:'CH',rotas:['centro'],rotaLbl:'Rota Centro',rk:'centro',perfil:'padrao',status:'ativo'},
+    {nome:'Mariana Lopes',user:'mariana.lopes',ini:'ML',rotas:['sul'],rotaLbl:'Rota Sul',rk:'sul',perfil:'padrao',status:'ativo'},
+    {nome:'Felipe Moraes',user:'felipe.moraes',ini:'FM',rotas:['norte'],rotaLbl:'Rota Norte',rk:'norte',perfil:'padrao',status:'ativo'},
+    {nome:'Paulo César',user:'paulo.cesar',ini:'PC',rotas:[],rotaLbl:'Sem rota',rk:'sem',perfil:'folg',status:'ativo'},
+    {nome:'Rodrigo Alves',user:'rodrigo.alves',ini:'RA',rotas:['centro'],rotaLbl:'Rota Centro',rk:'centro',perfil:'padrao',status:'ativo'},
+    {nome:'Anderson Souza',user:'anderson.souza',ini:'AS',rotas:[],rotaLbl:'Sem rota',rk:'sem',perfil:'folg',status:'ativo'},
+    {nome:'Thiago Nunes',user:'thiago.nunes',ini:'TN',rotas:['sul'],rotaLbl:'Rota Sul',rk:'sul',perfil:'padrao',status:'inativo'},
+    {nome:'Bruno Castro',user:'bruno.castro',ini:'BC',rotas:[],rotaLbl:'Sem rota',rk:'sem',perfil:'folg',status:'ativo'}
+  ];
+  var state={rota:[],status:[],escala:[],q:'',page:1}, PAGE=10, cur=null;
+  var tbody=document.getElementById('tbody'), empty=document.getElementById('empty');
+
+  function row(m,i){
+    var ava = m.foto ? '<span class="gk-avatar gk-avatar-lg"><img src="'+m.foto+'" alt=""></span>' : '<span class="gk-avatar gk-avatar-lg">'+m.ini+'</span>';
+    return '<tr class="gk-row-link" data-i="'+i+'">'
+      +'<td><div class="gk-cell-main">'+ava+'<div><div class="gk-name">'+m.nome+'</div><div class="gk-sub">@'+m.user+'</div></div></div></td>'
+      +'<td class="gk-strong"'+(m.rk==='sem'?' style="color:var(--warn-ink)"':'')+'>'+m.rotaLbl+'</td>'
+      +'<td><span class="gk-badge gk-badge-plain">'+(m.perfil==='folg'?'Folguista':'Padrão')+'</span></td>'
+      +'<td>'+(m.status==='ativo'?'<span class="gk-badge gk-badge-ok gk-badge-plain">Ativo</span>':'<span class="gk-badge gk-badge-plain">Inativo</span>')+'</td>'
+      +'<td class="gk-col-actions"><span class="gk-acts"><a class="gk-act" href="motorista.html" aria-label="Ver motorista" title="Ver"><i data-lucide="eye" class="gk-ic"></i></a><button class="gk-act" data-act="edit" type="button" aria-label="Editar" title="Editar"><i data-lucide="pencil" class="gk-ic"></i></button><button class="gk-act is-danger" data-act="del" type="button" aria-label="Excluir" title="Excluir"><i data-lucide="trash-2" class="gk-ic"></i></button></span></td></tr>';
+  }
+  document.getElementById('hN').textContent=MOT.length+(MOT.length===1?' cadastrado':' cadastrados');
+  function apply(){
+    var list=MOT.map(function(m,i){ return {m:m,i:i}; }).filter(function(o){ var m=o.m;
+      var txt=(m.nome+' '+m.user+' '+m.rotaLbl).toLowerCase();
+      return (!state.status.length||state.status.indexOf(m.status)>=0)&&(!state.escala.length||state.escala.indexOf(m.perfil)>=0)&&(!state.rota.length||state.rota.indexOf(m.rk)>=0)&&(!state.q||txt.indexOf(state.q)>=0); });
+    var total=list.length, pages=Math.max(1,Math.ceil(total/PAGE)); if(state.page>pages) state.page=pages;
+    var start=(state.page-1)*PAGE, shown=list.slice(start,start+PAGE);
+    tbody.innerHTML=shown.map(function(o){ return row(o.m,o.i); }).join('');
+    empty.hidden=total>0; tbody.closest('table').hidden=total===0;
+    document.getElementById('cnt').textContent = total===0?'Nenhum motorista encontrado':('Mostrando '+(start+1)+'–'+Math.min(start+PAGE,total)+' de '+total);
+    var pg=document.getElementById('pager'); pg.innerHTML='';
+    function mk(label,page,on,dis,aria){ var b=document.createElement('button'); b.type='button'; b.className='gk-btn gk-btn-ghost gk-btn-sm'+(on?' is-active':''); b.innerHTML=label; if(aria) b.setAttribute('aria-label',aria); b.disabled=dis; if(!dis&&!on) b.addEventListener('click',function(){ state.page=page; apply(); }); pg.appendChild(b); }
+    mk('<i data-lucide="chevron-left" class="gk-ic"></i>',state.page-1,false,state.page<=1,'Anterior');
+    for(var i=1;i<=pages;i++) mk(String(i),i,i===state.page,false);
+    mk('<i data-lucide="chevron-right" class="gk-ic"></i>',state.page+1,false,state.page>=pages,'Próxima');
+    document.getElementById('clearAll').hidden=!(state.rota.length||state.status.length||state.escala.length);
+    GK.icons();
+  }
+  document.getElementById('q').addEventListener('input',function(){ state.q=this.value.toLowerCase().trim(); state.page=1; apply(); });
+  var fRota=GK.checkFilter({btn:'btnRota',pop:'popRota',label:'Rota',onChange:function(v){ state.rota=v; state.page=1; apply(); }});
+  var fStatus=GK.checkFilter({btn:'btnStatus',pop:'popStatus',label:'Status',onChange:function(v){ state.status=v; state.page=1; apply(); }});
+  var fEscala=GK.checkFilter({btn:'btnEscala',pop:'popEscala',label:'Escala',onChange:function(v){ state.escala=v; state.page=1; apply(); }});
+  function clearAll(){ fRota.reset(); fStatus.reset(); fEscala.reset(); }
+  document.getElementById('clearAll').addEventListener('click',clearAll);
+  document.getElementById('clearEmpty').addEventListener('click',function(){ document.getElementById('q').value=''; state.q=''; clearAll(); });
+  document.getElementById('btnNovo').addEventListener('click',function(){ GKMot.novo(); });
+
+  tbody.addEventListener('click',function(e){
+    var tr=e.target.closest('tr'); if(!tr) return; cur=MOT[tr.getAttribute('data-i')];
+    var act=e.target.closest('[data-act]');
+    if(act){ e.stopPropagation(); if(act.getAttribute('data-act')==='edit') GKMot.editar(cur,function(n){ var m=cur; for(var k in n){ if(k!=='foto'||n[k]) m[k]=n[k]; } var RLB={hospitalar:'Rota Hospitalar',centro:'Rota Centro',norte:'Rota Norte',sul:'Rota Sul'}; m.rk=m.rotas.length?m.rotas[0]:'sem'; m.rotaLbl=m.rotas.length?m.rotas.map(function(r){return RLB[r];}).join(', '):'Sem rota'; apply(); }); else GKMot.excluir(cur.nome); return; }
+    if(e.target.closest('a')) return;
+    location.href='motorista.html';
+  });
+  apply();
+})();
+</script>
+</body>
+</html>

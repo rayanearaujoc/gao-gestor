@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GAO Gestor · Suporte</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+<link rel="stylesheet" href="static/css/app.css">
+<link rel="stylesheet" href="static/css/gestor.css">
+<link rel="stylesheet" href="static/css/kit.css">
+</head>
+<body data-page="suporte">
+  <main class="gpage">
+    <div class="gk-page-head"><div><h1 class="gk-h1">Suporte</h1></div></div>
+    <div class="gk-sup">
+      <div class="gk-sup-hero">
+        <h2 class="gk-sup-t">Como podemos ajudar?</h2>
+        <p class="gk-sup-sub">Encontre respostas sobre a plataforma ou fale com a nossa equipe.</p>
+        <div class="gk-sup-search"><input class="gk-input" id="q" placeholder="Busque por uma dúvida"><span class="gk-sup-search-btn"><i data-lucide="search" class="gk-ic"></i></span></div>
+      </div>
+
+      <div class="gk-sup-cats" id="cats"></div>
+
+      <div class="gk-sup-sec">
+        <div class="gk-sup-sech"><h3 class="gk-h2" id="secT"></h3><span class="gk-sup-n" id="secN"></span></div>
+        <div class="gk-card gk-faq" id="faq"></div>
+        <div class="gk-card gk-empty" id="empty" hidden><i data-lucide="search" class="gk-ic"></i><b>Nenhuma pergunta encontrada</b>Tente outros termos ou peça ajuda para a nossa equipe.</div>
+      </div>
+
+      <div class="gk-sup-sec">
+        <h3 class="gk-h2">Ainda tem uma dúvida?</h3>
+        <div class="gk-cta is-row">
+          <span class="gk-cta-ic"><i data-lucide="headphones" class="gk-ic"></i></span>
+          <div class="gk-cta-t"><b>Falar com a equipe</b><span>Problema, plano ou cobrança.</span></div>
+          <button class="gk-btn gk-cta-btn" id="btnAjuda"><i data-lucide="message-circle" class="gk-ic"></i>Pedir ajuda</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- pedir ajuda -->
+  <div class="gk-overlay" id="ovH"><div class="gk-scrim" data-close="ovH"></div>
+    <div class="gk-modal is-form" role="dialog" aria-labelledby="hT">
+      <div id="hForm">
+        <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="headphones" class="gk-ic"></i></span><h2 class="gk-h2" id="hT">Pedir ajuda</h2></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovH" aria-label="Fechar"><i data-lucide="x" class="gk-ic"></i></button></div>
+        <div class="gk-modal-body" style="border-top:1px solid var(--line)"><div class="gk-form">
+          <div class="gk-field"><label class="gk-label">Sobre o que você quer falar?<span class="gk-req">*</span></label><div class="gk-radios is-col" id="hTopics"></div></div>
+          <div class="gk-field" id="hExtraF" hidden><label class="gk-label" id="hExtraL"></label><select class="gk-select" id="hExtra"></select></div>
+          <div class="gk-field"><label class="gk-label">Mensagem<span class="gk-req">*</span></label><textarea class="gk-textarea" id="hMsg" style="height:112px;padding:var(--space-3);resize:none" placeholder="Conte com poucas palavras o que você precisa"></textarea></div>
+        </div></div>
+        <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovH">Cancelar</button><button class="gk-btn gk-btn-primary" id="hOk" disabled><i data-lucide="send" class="gk-ic"></i>Enviar pedido</button></div>
+      </div>
+      <div class="gk-modal-body gk-done" id="hDone" hidden></div>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
+<script src="static/js/shell.js"></script>
+<script src="static/js/kit-ui.js"></script>
+<script src="static/js/kit-icons.js"></script>
+<script>
+(function(){
+  var $=function(id){ return document.getElementById(id); };
+  /* cada assunto vai para uma caixa de e-mail diferente (mapear) */
+  var TOPICS=[
+    {k:'problema',t:'Problema no sistema',to:'suporte@gao.com.br',x:{l:'Onde aconteceu?',o:['Início ou Operação','Comandas','Clientes','Rotas','Motoristas','Veículos','Viagens e comprovantes','Multas','App do motorista','Outro']}},
+    {k:'duvida',t:'Dúvida de uso',to:'suporte@gao.com.br'},
+    {k:'plano',t:'Trocar de plano',to:'comercial@gao.com.br',x:{l:'Plano desejado',o:['Com CRM GAO','Sem CRM']}},
+    {k:'cobranca',t:'Cobrança e pagamento',to:'financeiro@gao.com.br'},
+    {k:'sugestao',t:'Sugestão de melhoria',to:'produto@gao.com.br'}
+  ];
+  var FAQ=[
+    {c:'Primeiros passos',q:'Por onde começo a configurar o sistema?',a:'Cadastre primeiro os motoristas e os veículos. Depois crie as rotas, escolhendo ao menos um motorista em cada uma, e por último cadastre os clientes, cada um com a sua rota.'},
+    {c:'Primeiros passos',q:'Como conecto o WhatsApp da minha empresa?',a:'Vá em Configurações, abra a aba Assistente WhatsApp e leia o QR Code com o número da empresa. Esse número envia os avisos automáticos aos clientes durante as viagens.'},
+    {c:'Primeiros passos',q:'Qual a diferença entre o plano com CRM e sem CRM?',a:'Com o CRM da GAO, as comandas chegam do CRM e seguem os status dele. Sem o CRM, a logística cria as comandas manualmente em Comandas, com os status Liberada, Em trânsito e Entregue para entregas, e Aguardando coleta e Coletada para coletas.'},
+    {c:'Primeiros passos',q:'Por que um cliente aparece como pendente?',a:'O cliente fica pendente até ter endereço completo (com CEP), WhatsApp para contato e uma rota. Complete o cadastro em Clientes e ele passa a Ativo.'},
+    {c:'Primeiros passos',q:'Onde vejo o plano da minha empresa?',a:'Em Configurações, na aba Geral. Lá ficam o plano contratado, o Assistente WhatsApp e os dados da empresa.'},
+    {c:'Operação',q:'Como crio uma comanda sem o CRM?',a:'Em Comandas, clique em Criar comanda, escolha Entrega ou Coleta e o cliente. A entrega gera as etiquetas com QR Code, uma por gaiola. A coleta já nasce como Aguardando coleta.'},
+    {c:'Operação',q:'Como funciona a coleta?',a:'A comanda de coleta entra no app do motorista quando está como Aguardando coleta. O motorista informa as gaiolas na parada, e a comanda passa a Coletada.'},
+    {c:'Operação',q:'Uma comanda pode ser entrega e coleta ao mesmo tempo?',a:'Não. Cada comanda é uma entrega ou uma coleta. Só as viagens e os comprovantes podem aparecer como Entrega e coleta, quando a mesma parada tem as duas.'},
+    {c:'Operação',q:'O que significa Em trânsito?',a:'A comanda já foi carregada pelo motorista e está a caminho do cliente. Depois da entrega ela passa a Entregue.'},
+    {c:'Operação',q:'Com dois motoristas na mesma rota, quem fica com a comanda?',a:'Quem carregar primeiro. A comanda sai da lista do outro motorista assim que é carregada.'},
+    {c:'Operação',q:'O que fazer quando uma comanda fica sem ninguém carregar?',a:'Em Operação, abra o aviso de comandas sem carregar, escolha as comandas e designe a um motorista. Elas passam a aparecer no app dele.'},
+    {c:'Operação',q:'O que fazer quando uma viagem fica parada?',a:'Em Operação, abra o aviso de viagem parada. O sistema mostra uma mensagem padrão para você enviar ao motorista pelo WhatsApp.'},
+    {c:'Operação',q:'Como designo um motorista para a rota do dia?',a:'Os motoristas de cada rota vêm do cadastro. Para reforçar uma rota, abra Operação e use o botão de designar motorista. Ele vale só para hoje e o cadastro não muda.'},
+    {c:'Operação',q:'Posso excluir uma comanda?',a:'Só enquanto ela está Liberada, ou seja, antes de o motorista carregar. Depois disso a comanda faz parte do histórico e não pode mais ser excluída.'},
+    {c:'Operação',q:'Como reimprimo as etiquetas de uma comanda?',a:'Na lista de Comandas, use o ícone de impressora na linha da comanda de entrega. Cada gaiola tem a sua etiqueta com QR Code.'},
+    {c:'Cadastros',q:'Como cadastro um cliente?',a:'Em Clientes, clique em Cadastrar cliente e preencha os dados, o endereço com CEP, o WhatsApp e a rota. Sem esses dados o cliente fica pendente.'},
+    {c:'Cadastros',q:'Posso colocar um cliente em mais de uma rota?',a:'Não. Cada cliente pertence a uma única rota, para não haver dúvida de qual rota leva a comanda.'},
+    {c:'Cadastros',q:'Como crio uma rota?',a:'Em Rotas, clique em criar rota, escolha os clientes e selecione os motoristas. Toda rota precisa ter pelo menos um motorista.'},
+    {c:'Cadastros',q:'Um motorista pode atender mais de uma rota?',a:'Pode. Motoristas e rotas se relacionam de vários para vários: uma rota tem um ou mais motoristas, e um motorista pode estar em mais de uma rota.'},
+    {c:'Cadastros',q:'O que acontece quando inativo um motorista?',a:'Ele perde o acesso ao app, mas o histórico de viagens continua guardado.'},
+    {c:'Cadastros',q:'Para que serve o cadastro de veículos?',a:'Os veículos aparecem nas viagens e ajudam a identificar de quem é uma multa, pela placa do veículo.'},
+    {c:'Histórico',q:'Como vejo as viagens de um período?',a:'Em Viagens, use o filtro Período (todos, 7 dias, 30 dias ou este mês). Os números do topo da tela acompanham o filtro.'},
+    {c:'Histórico',q:'O que encontro em Comprovantes?',a:'A lista dos comprovantes das paradas atendidas. Dá para buscar e filtrar por cliente, motorista e período.'},
+    {c:'Histórico',q:'Como designo uma multa a um motorista?',a:'Em Multas, envie o PDF. O sistema encontra a placa e o dia, mostra as viagens daquele dia e você escolhe o motorista em Designar.'},
+    {c:'Histórico',q:'Que informações a multa mostra?',a:'A infração e o número do AIT, o veículo, a data e a hora, o motorista, a viagem e o valor. O valor total das multas do período aparece no topo da tela.'},
+    {c:'Plano',q:'Como troco de plano?',a:'Clique em Pedir ajuda, escolha Trocar de plano e diga qual você quer. Nossa equipe comercial responde por e-mail.'},
+    {c:'Plano',q:'Posso alterar os dados da empresa?',a:'Os dados em Configurações são só de leitura. Para alterar, fale com a GAO por Pedir ajuda.'},
+    {c:'Plano',q:'Como trocar o número do WhatsApp da empresa?',a:'Fale com a equipe por Pedir ajuda e peça a troca do número. O novo número precisa ser conectado de novo pelo QR Code.'},
+    {c:'Plano',q:'Como relato um problema no sistema?',a:'Clique em Pedir ajuda, escolha Problema no sistema, diga onde aconteceu e descreva o que viu. A mensagem vai direto para o time de suporte.'}
+  ];
+  var CATS=[
+    {c:'Primeiros passos',ic:'clipboard-check'},{c:'Operação',ic:'truck'},{c:'Cadastros',ic:'users'},{c:'Histórico',ic:'receipt'},{c:'Plano',ic:'credit-card'}
+  ], cat='Primeiros passos', q='';
+  function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function cnt(c){ return FAQ.filter(function(f){ return f.c===c; }).length; }
+  function render(){
+    $('cats').innerHTML=CATS.map(function(x){ var on=!q&&x.c===cat; return '<button type="button" class="gk-sup-cat'+(on?' is-active':'')+'" data-c="'+x.c+'"><span class="gk-sup-cat-ic"><i data-lucide="'+x.ic+'" class="gk-ic"></i></span><span class="gk-sup-cat-t"><b>'+x.c+'</b><span>'+cnt(x.c)+' perguntas</span></span></button>'; }).join('');
+    var l=FAQ.filter(function(f){ return q?(f.q+' '+f.a).toLowerCase().indexOf(q)>=0:f.c===cat; });
+    $('secT').textContent=q?'Resultados da busca':cat; $('secN').textContent=l.length+(l.length===1?' pergunta':' perguntas');
+    $('faq').innerHTML=l.map(function(f){ return '<div class="gk-faq-i"><button type="button" class="gk-faq-q" aria-expanded="false"><span>'+esc(f.q)+'</span><i data-lucide="plus" class="gk-ic gk-faq-plus"></i><i data-lucide="minus" class="gk-ic gk-faq-minus"></i></button><div class="gk-faq-a" hidden>'+esc(f.a)+GK.feedbackHTML('Esta resposta ajudou?')+'</div></div>'; }).join('');
+    $('faq').hidden=!l.length; $('empty').hidden=l.length>0; GK.icons();
+  }
+  $('cats').addEventListener('click',function(e){ var b=e.target.closest('[data-c]'); if(b){ cat=b.getAttribute('data-c'); q=''; $('q').value=''; render(); } });
+  $('q').addEventListener('input',function(){ q=this.value.toLowerCase().trim(); render(); });
+  $('faq').addEventListener('click',function(e){ var b=e.target.closest('.gk-faq-q'); if(!b) return; var i=b.parentNode, a=i.querySelector('.gk-faq-a'), on=a.hidden; a.hidden=!on; i.classList.toggle('is-open',on); b.setAttribute('aria-expanded',on); });
+
+  /* pedir ajuda */
+  var sel=null;
+  $('hTopics').innerHTML=TOPICS.map(function(t){ return '<label class="gk-radio"><input type="radio" name="hT" value="'+t.k+'">'+t.t+'</label>'; }).join('');
+  function chk(){ $('hOk').disabled=!(sel&&$('hMsg').value.trim().length>=10); }
+  function setTopic(k){
+    sel=TOPICS.filter(function(t){ return t.k===k; })[0]||null;
+    document.querySelectorAll('#hTopics input').forEach(function(i){ i.checked=sel&&i.value===sel.k; });
+    var x=sel&&sel.x; $('hExtraF').hidden=!x; if(x){ $('hExtraL').textContent=x.l; $('hExtra').innerHTML='<option value="">Selecione</option>'+x.o.map(function(o){ return '<option>'+o+'</option>'; }).join(''); }
+    chk();
+  }
+  function abrir(k){ $('hForm').hidden=false; $('hDone').hidden=true; $('hMsg').value=''; setTopic(k||null); GK.open('ovH'); GK.icons(); }
+  $('hTopics').addEventListener('change',function(e){ setTopic(e.target.value); });
+  $('hMsg').addEventListener('input',chk);
+  $('btnAjuda').addEventListener('click',function(){ abrir(); });
+  $('hOk').addEventListener('click',function(){
+    var p='GAO-'+Math.floor(10000+Math.random()*89999);
+    $('hForm').hidden=true; $('hDone').hidden=false;
+    $('hDone').innerHTML='<div class="gk-done-ic"><i data-lucide="check" class="gk-ic"></i></div><h3 class="gk-h2">Pedido enviado</h3><p>Recebemos sua mensagem sobre <b>'+sel.t.toLowerCase()+'</b>. Nossa equipe responde por e-mail em até 1 dia útil.</p><div class="gk-caption">Protocolo '+p+'</div><button class="gk-btn gk-btn-secondary" data-close="ovH">Fechar</button>';
+    GK.icons();
+  });
+  GK.popovers(); render();
+})();
+</script>
+</body>
+</html>

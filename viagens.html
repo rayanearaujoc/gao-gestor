@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GAO Gestor · Viagens</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+<link rel="stylesheet" href="static/css/app.css">
+<link rel="stylesheet" href="static/css/gestor.css">
+<link rel="stylesheet" href="static/css/kit.css">
+</head>
+<body data-page="viagens">
+  <main class="gpage">
+    <div class="gk-page-head"><div><h1 class="gk-h1">Viagens</h1></div></div>
+    <div class="gk-stats is-3" style="margin-bottom:var(--space-5)">
+      <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="route" class="gk-ic"></i></span>Viagens</div><div class="gk-stat-v" id="stV"></div><div class="gk-stat-l">Viagens no período</div></div>
+      <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="gauge" class="gk-ic"></i></span>Km rodados</div><div class="gk-stat-v" id="stK"></div><div class="gk-stat-l">Somente viagens concluídas</div></div>
+      <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="building-2" class="gk-ic"></i></span>Clientes atendidos</div><div class="gk-stat-v" id="stC"></div><div class="gk-stat-l">Paradas nas viagens</div></div>
+    </div>
+    <div class="gk-table-wrap">
+      <div class="gk-toolbar" style="flex-wrap:nowrap">
+        <div class="gk-input-wrap" style="flex:1 1 200px;min-width:160px;max-width:440px"><i data-lucide="search" class="gk-ic"></i><input class="gk-input" id="q" placeholder="Busque por ID"></div>
+        <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="fRota" data-pop="popRota"><i data-lucide="route" class="gk-ic"></i><span>Rota</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popRota"><div class="gk-fp-body"><label class="gk-check"><input type="checkbox" value="Rota Hospitalar">Rota Hospitalar</label><label class="gk-check"><input type="checkbox" value="Rota Oeste">Rota Oeste</label><label class="gk-check"><input type="checkbox" value="Rota Centro">Rota Centro</label><label class="gk-check"><input type="checkbox" value="Rota Sul">Rota Sul</label><label class="gk-check"><input type="checkbox" value="Rota Norte">Rota Norte</label><label class="gk-check"><input type="checkbox" value="Rota Leste">Rota Leste</label></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+        <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="fMot" data-pop="popMot"><i data-lucide="users" class="gk-ic"></i><span>Motorista</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popMot"><div class="gk-fp-body"><label class="gk-check"><input type="checkbox" value="Ronaldo Araújo">Ronaldo Araújo</label><label class="gk-check"><input type="checkbox" value="Bruno Castro">Bruno Castro</label><label class="gk-check"><input type="checkbox" value="Diego Martins">Diego Martins</label><label class="gk-check"><input type="checkbox" value="Paulo Ribeiro">Paulo Ribeiro</label></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+        <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="fSt" data-pop="popSt"><i data-lucide="filter" class="gk-ic"></i><span>Status</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popSt"><div class="gk-fp-body"><label class="gk-check"><input type="checkbox" value="Em andamento">Em andamento</label><label class="gk-check"><input type="checkbox" value="Concluída">Concluída</label></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+        <div class="gk-pop-anchor">
+          <button class="gk-btn gk-btn-secondary" id="fPer" data-pop="popPer"><i data-lucide="calendar" class="gk-ic"></i><span>Período</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button>
+          <div class="gk-pop gk-menu" id="popPer"></div>
+        </div>
+        <button class="gk-btn gk-btn-ghost" id="clearAll" hidden>Limpar filtros</button>
+      </div>
+      <table class="gk-table is-compact">
+        <thead><tr><th>Viagem</th><th>Data</th><th>Rota</th><th>Motorista</th><th>Clientes</th><th>Ocorrências</th><th>Status</th><th class="gk-col-actions" style="width:80px">Ações</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="gk-empty" id="empty" hidden><i data-lucide="search" class="gk-ic"></i><b>Nenhuma viagem encontrada</b>Tente ajustar os termos da busca ou remover os filtros.<div style="margin-top:var(--space-4)"><button class="gk-btn gk-btn-secondary" id="clearEmpty">Limpar filtros</button></div></div>
+      <div class="gk-tfoot"><span id="cnt"></span><div class="gk-pager" id="pager"></div></div>
+    </div>
+  </main>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
+<script src="static/js/shell.js"></script>
+<script src="static/js/kit-ui.js"></script>
+<script src="static/js/kit-icons.js"></script>
+<script>
+(function(){
+  var ROTAS=['Rota Hospitalar','Rota Oeste','Rota Centro','Rota Sul','Rota Norte','Rota Leste'], MOT=['Ronaldo Araújo','Bruno Castro','Diego Martins','Paulo Ribeiro'];
+  var PLACAS=['QRT-4A21','PXM-7C09','OGR-2C20','OLK-9B13','QSD-1H78','PYH-5D40'];
+  var KM=[551,214,187,342,96,268,431,175,309,122,254,388], OC=[0,2,0,1,0,0,3,0,1,0,0,0], CL=[4,3,5,4,2,3,6,3,4,2,3,5];
+  var V=[]; for(var i=0;i<12;i++){ var d=12-Math.floor(i/2); V.push({id:1048-i,data:(d<10?'0':'')+d+'/11/2026',rota:ROTAS[i%6],mot:MOT[i%4],placa:PLACAS[(i*5)%6],cli:CL[i],km:KM[i],oc:OC[i],st:i===0?'Em andamento':'Concluída'}); }
+  var state={q:'',rota:[],mot:[],st:[],page:1}, PAGE=10;
+  var tbody=document.getElementById('tbody'), empty=document.getElementById('empty');
+  function ini(n){ return n.split(' ').map(function(x){ return x[0]; }).slice(0,2).join(''); }
+  function row(v){
+    return '<tr class="gk-row-link" data-id="'+v.id+'"><td class="gk-strong">#'+v.id+'</td><td>'+v.data+'</td><td class="gk-strong">'+v.rota+'</td>'
+      +'<td><div class="gk-cell-main"><span class="gk-avatar">'+ini(v.mot)+'</span><span>'+v.mot+'</span></div></td><td>'+v.cli+'</td>'
+      +'<td>'+(v.oc?'<span class="gk-strong" style="color:var(--warn-ink)">'+v.oc+'</span>':'<span class="gk-caption">—</span>')+'</td>'
+      +'<td>'+(v.st==='Em andamento'?'<span class="gk-badge gk-badge-info gk-badge-plain">Em andamento</span>':'<span class="gk-badge gk-badge-ok gk-badge-plain">Concluída</span>')+'</td>'
+      +'<td class="gk-col-actions"><span class="gk-acts"><a class="gk-act" href="viagem.html?v='+v.id+'" aria-label="Ver viagem" title="Ver"><i data-lucide="eye" class="gk-ic"></i></a></span></td></tr>';
+  }
+  function apply(){
+    var list=V.filter(function(v){ return (!state.q||String(v.id).indexOf(state.q.replace('#',''))>=0)&&(!state.rota.length||state.rota.indexOf(v.rota)>=0)&&(!state.mot.length||state.mot.indexOf(v.mot)>=0)&&(!state.st.length||state.st.indexOf(v.st)>=0)&&fP.test(v.data); });
+    var nf=function(n){ return n.toLocaleString('pt-BR'); };
+    document.getElementById('stV').textContent=nf(list.length); document.getElementById('stK').textContent=nf(list.reduce(function(a,v){ return a+(v.st==='Concluída'?v.km:0); },0)); document.getElementById('stC').textContent=nf(list.reduce(function(a,v){ return a+v.cli; },0));
+    var total=list.length, pages=Math.max(1,Math.ceil(total/PAGE)); if(state.page>pages) state.page=pages;
+    var start=(state.page-1)*PAGE, shown=list.slice(start,start+PAGE);
+    tbody.innerHTML=shown.map(row).join('');
+    empty.hidden=total>0; tbody.closest('table').hidden=total===0;
+    document.getElementById('cnt').textContent=total===0?'Nenhuma viagem encontrada':('Mostrando '+(start+1)+'–'+Math.min(start+PAGE,total)+' de '+total);
+    var pg=document.getElementById('pager'); pg.innerHTML='';
+    function mk(label,page,on,dis,aria){ var b=document.createElement('button'); b.type='button'; b.className='gk-btn gk-btn-ghost gk-btn-sm'+(on?' is-active':''); b.innerHTML=label; if(aria) b.setAttribute('aria-label',aria); b.disabled=dis; if(!dis&&!on) b.addEventListener('click',function(){ state.page=page; apply(); }); pg.appendChild(b); }
+    mk('<i data-lucide="chevron-left" class="gk-ic"></i>',state.page-1,false,state.page<=1,'Anterior');
+    for(var i=1;i<=pages;i++) mk(String(i),i,i===state.page,false);
+    mk('<i data-lucide="chevron-right" class="gk-ic"></i>',state.page+1,false,state.page>=pages,'Próxima');
+    document.getElementById('clearAll').hidden=!(state.rota.length||state.mot.length||state.st.length||fP.active());
+    GK.icons();
+  }
+  document.getElementById('q').addEventListener('input',function(){ state.q=this.value.toLowerCase().trim(); state.page=1; apply(); });
+  var fR=GK.checkFilter({btn:'fRota',pop:'popRota',label:'Rota',onChange:function(v){ state.rota=v; state.page=1; apply(); }});
+  var fM=GK.checkFilter({btn:'fMot',pop:'popMot',label:'Motorista',onChange:function(v){ state.mot=v; state.page=1; apply(); }});
+  var fS=GK.checkFilter({btn:'fSt',pop:'popSt',label:'Status',onChange:function(v){ state.st=v; state.page=1; apply(); }});
+  var fP=GK.periodFilter({btn:'fPer',pop:'popPer',onChange:function(){ state.page=1; apply(); }});
+  function limpar(){ fR.reset(); fM.reset(); fS.reset(); fP.reset(); }
+  document.getElementById('clearAll').addEventListener('click',limpar);
+  document.getElementById('clearEmpty').addEventListener('click',function(){ document.getElementById('q').value=''; state.q=''; limpar(); });
+  tbody.addEventListener('click',function(e){ if(e.target.closest('a')) return; var tr=e.target.closest('tr'); if(tr) location.href='viagem.html?v='+tr.getAttribute('data-id'); });
+  GK.popovers(); apply();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GAO Gestor · Veículos</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+<link rel="stylesheet" href="static/css/app.css">
+<link rel="stylesheet" href="static/css/gestor.css">
+<link rel="stylesheet" href="static/css/kit.css">
+</head>
+<body data-page="veiculos">
+  <main class="gpage">
+    <div class="gk-page-head">
+      <div><h1 class="gk-h1">Veículos<span class="gk-h1-n" id="hN"></span></h1></div>
+    </div>
+
+    <div class="gk-table-wrap">
+      <div class="gk-toolbar" style="flex-wrap:nowrap">
+        <div class="gk-input-wrap" style="flex:1 1 200px;min-width:160px;max-width:440px"><i data-lucide="search" class="gk-ic"></i><input class="gk-input" id="q" placeholder="Busque por placa ou modelo"></div>
+        <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="btnTipo" data-pop="popTipo"><i data-lucide="car" class="gk-ic"></i><span>Tipo</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popTipo"><div class="gk-fp-body"><label class="gk-check"><input type="checkbox" value="Van">Van</label><label class="gk-check"><input type="checkbox" value="Furgão">Furgão</label><label class="gk-check"><input type="checkbox" value="Caminhão">Caminhão</label><label class="gk-check"><input type="checkbox" value="Utilitário">Utilitário</label></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+        <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="btnStatus" data-pop="popStatus"><i data-lucide="filter" class="gk-ic"></i><span>Status</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popStatus"><div class="gk-fp-body"><label class="gk-check"><input type="checkbox" value="ativo">Ativo</label><label class="gk-check"><input type="checkbox" value="inativo">Inativo</label></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+        <button class="gk-btn gk-btn-ghost" id="clearAll" hidden>Limpar filtros</button>
+        <span class="gk-spacer"></span>
+        <button class="gk-btn gk-btn-primary" id="btnNovo"><i data-lucide="plus" class="gk-ic"></i>Cadastrar veículo</button>
+      </div>
+      <table class="gk-table is-compact">
+        <thead><tr><th>Placa</th><th>Modelo</th><th>Capacidade</th><th>Tipo</th><th>Situação</th><th class="gk-col-actions" style="width:112px">Ações</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="gk-empty" id="empty" hidden><i data-lucide="search" class="gk-ic"></i><b>Nenhum veículo encontrado</b>Tente ajustar os termos da busca ou remover os filtros.<div style="margin-top:var(--space-4)"><button class="gk-btn gk-btn-secondary" id="clearEmpty">Limpar filtros</button></div></div>
+      <div class="gk-tfoot"><span id="cnt"></span><div class="gk-pager" id="pager"></div></div>
+    </div>
+  </main>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
+<script src="static/js/shell.js"></script>
+<script src="static/js/kit-ui.js"></script>
+<script src="static/js/kit-icons.js"></script>
+<script src="static/js/veiculo-form.js"></script>
+<script>
+(function(){
+  var VEIC=[
+    {placa:'QRT-4A21',modelo:'Fiat Ducato',cap:'40',tipo:'Van',ano:'2021',status:'ativo'},
+    {placa:'PXM-7C09',modelo:'Renault Master',cap:'36',tipo:'Furgão',ano:'2020',status:'ativo'},
+    {placa:'OGR-2C20',modelo:'Mercedes Sprinter',cap:'44',tipo:'Van',ano:'2022',status:'ativo'},
+    {placa:'OLK-9B13',modelo:'Iveco Daily',cap:'50',tipo:'Caminhão',ano:'2019',status:'ativo'},
+    {placa:'QSD-1H78',modelo:'VW Delivery',cap:'60',tipo:'Caminhão',ano:'',status:'ativo'},
+    {placa:'PYH-5D40',modelo:'Fiat Fiorino',cap:'12',tipo:'Utilitário',ano:'2018',status:'ativo'},
+    {placa:'RVA-8E62',modelo:'Peugeot Boxer',cap:'38',tipo:'',ano:'',status:'ativo'},
+    {placa:'OMN-3G91',modelo:'Renault Master',cap:'36',tipo:'Furgão',ano:'2017',status:'inativo'}
+  ];
+  var state={q:'',tipo:[],status:[],page:1}, PAGE=10;
+  var tbody=document.getElementById('tbody'), empty=document.getElementById('empty');
+  function dash(v){ return v?v:'<span class="gk-caption">—</span>'; }
+  function row(v,i){
+    return '<tr class="gk-row-link" data-i="'+i+'"><td class="gk-strong">'+v.placa+'</td><td>'+v.modelo+'</td><td>'+v.cap+' gaiolas</td><td>'+dash(v.tipo)+'</td>'
+      +'<td>'+(v.status==='ativo'?'<span class="gk-badge gk-badge-ok gk-badge-plain">Ativo</span>':'<span class="gk-badge gk-badge-plain">Inativo</span>')+'</td>'
+      +'<td class="gk-col-actions"><span class="gk-acts"><button class="gk-act" data-act="edit" type="button" aria-label="Editar" title="Editar"><i data-lucide="pencil" class="gk-ic"></i></button><button class="gk-act is-danger" data-act="del" type="button" aria-label="Excluir" title="Excluir"><i data-lucide="trash-2" class="gk-ic"></i></button></span></td></tr>';
+  }
+  document.getElementById('hN').textContent=VEIC.length+(VEIC.length===1?' cadastrado':' cadastrados');
+  function apply(){
+    var list=VEIC.map(function(v,i){ return {v:v,i:i}; }).filter(function(o){ var v=o.v;
+      return (!state.q||(v.placa+' '+v.modelo).toLowerCase().indexOf(state.q)>=0)&&(!state.tipo.length||state.tipo.indexOf(v.tipo)>=0)&&(!state.status.length||state.status.indexOf(v.status)>=0); });
+    var total=list.length, pages=Math.max(1,Math.ceil(total/PAGE)); if(state.page>pages) state.page=pages;
+    var start=(state.page-1)*PAGE, shown=list.slice(start,start+PAGE);
+    tbody.innerHTML=shown.map(function(o){ return row(o.v,o.i); }).join('');
+    empty.hidden=total>0; tbody.closest('table').hidden=total===0;
+    document.getElementById('cnt').textContent = total===0?'Nenhum veículo encontrado':('Mostrando '+(start+1)+'–'+Math.min(start+PAGE,total)+' de '+total);
+    var pg=document.getElementById('pager'); pg.innerHTML='';
+    function mk(label,page,on,dis,aria){ var b=document.createElement('button'); b.type='button'; b.className='gk-btn gk-btn-ghost gk-btn-sm'+(on?' is-active':''); b.innerHTML=label; if(aria) b.setAttribute('aria-label',aria); b.disabled=dis; if(!dis&&!on) b.addEventListener('click',function(){ state.page=page; apply(); }); pg.appendChild(b); }
+    mk('<i data-lucide="chevron-left" class="gk-ic"></i>',state.page-1,false,state.page<=1,'Anterior');
+    for(var i=1;i<=pages;i++) mk(String(i),i,i===state.page,false);
+    mk('<i data-lucide="chevron-right" class="gk-ic"></i>',state.page+1,false,state.page>=pages,'Próxima');
+    document.getElementById('clearAll').hidden=!(state.tipo.length||state.status.length);
+    GK.icons();
+  }
+  document.getElementById('q').addEventListener('input',function(){ state.q=this.value.toLowerCase().trim(); state.page=1; apply(); });
+  var fTipo=GK.checkFilter({btn:'btnTipo',pop:'popTipo',label:'Tipo',onChange:function(v){ state.tipo=v; state.page=1; apply(); }});
+  var fStatus=GK.checkFilter({btn:'btnStatus',pop:'popStatus',label:'Status',onChange:function(v){ state.status=v; state.page=1; apply(); }});
+  document.getElementById('clearAll').addEventListener('click',function(){ fTipo.reset(); fStatus.reset(); });
+  document.getElementById('clearEmpty').addEventListener('click',function(){ document.getElementById('q').value=''; state.q=''; fTipo.reset(); fStatus.reset(); });
+  document.getElementById('btnNovo').addEventListener('click',function(){ GKVeic.novo(function(n){ VEIC.push(n); apply(); }); });
+  tbody.addEventListener('click',function(e){
+    var tr=e.target.closest('tr'); if(!tr) return; var v=VEIC[tr.getAttribute('data-i')], act=e.target.closest('[data-act]');
+    if(act&&act.getAttribute('data-act')==='del'){ GKVeic.excluir(v.modelo+' · '+v.placa,function(){ VEIC.splice(VEIC.indexOf(v),1); apply(); }); return; }
+    GKVeic.editar(v,function(n){ for(var k in n) v[k]=n[k]; apply(); });
+  });
+  apply();
+})();
+</script>
+</body>
+</html>

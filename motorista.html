@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GAO Gestor · Ronaldo Araújo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+<link rel="stylesheet" href="static/css/app.css">
+<link rel="stylesheet" href="static/css/gestor.css">
+<link rel="stylesheet" href="static/css/kit.css">
+</head>
+<body data-page="motoristas">
+  <main class="gpage">
+    <div class="gk-subhead">
+      <a class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" href="motoristas.html" aria-label="Voltar"><i data-lucide="chevron-left" class="gk-ic"></i></a>
+      <nav class="gk-crumbs"><a href="motoristas.html">Motoristas</a><i data-lucide="chevron-right" class="gk-ic"></i><span class="is-current">Ronaldo Araújo</span></nav>
+    </div>
+
+    <div class="gk-stack" style="gap:var(--space-5)">
+      <!-- Cabeçalho do perfil -->
+      <div class="gk-card">
+        <div class="gk-card-body">
+          <div class="gk-pstrip">
+            <div class="gk-inline gk-gap-3" style="flex-wrap:nowrap">
+              <span class="gk-avatar" id="pAva" style="width:48px;height:48px"><img src="static/img/ronaldo.webp" alt="Ronaldo Araújo"></span>
+              <div style="min-width:0">
+                <div class="gk-inline"><h2 class="gk-h2" id="pNome">Ronaldo Araújo</h2><span class="gk-badge gk-badge-ok gk-badge-plain" id="pStatus">Ativo</span></div>
+                <div class="gk-caption" id="pUser">@ronaldo.araujo</div>
+              </div>
+            </div>
+            <span class="gk-vr"></span>
+            <div class="gk-facts">
+              <div class="gk-fact"><div class="gk-fact-l">Telefone</div><div class="gk-fact-v" id="pTel">(11) 99982-4510</div></div>
+              <div class="gk-fact"><div class="gk-fact-l">Escala</div><div class="gk-fact-v" id="pEscala">Padrão</div></div>
+              <div class="gk-fact"><div class="gk-fact-l">Rotas</div><div class="gk-fact-v" id="pRotas"><span class="gk-ms-chip">Rota Hospitalar</span><span class="gk-ms-chip">Rota Centro</span></div></div>
+            </div>
+            <div class="gk-pop-anchor" style="margin-left:auto">
+              <button class="gk-btn gk-btn-secondary gk-btn-icon" data-pop="popAcoes" aria-label="Ações"><i data-lucide="more-horizontal" class="gk-ic"></i></button>
+              <div class="gk-pop gk-menu is-right" id="popAcoes"><button class="gk-menu-item" id="btnEditar"><i data-lucide="pencil" class="gk-ic"></i>Editar</button><button class="gk-menu-item is-danger" id="btnDel"><i data-lucide="trash-2" class="gk-ic"></i>Excluir</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cards de estatística -->
+      <div class="gk-stats is-3">
+        <div class="gk-card gk-stat is-grad"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="trending-up" class="gk-ic"></i></span>Desempenho</div><div class="gk-stat-v" id="mD">96,1%</div><div class="gk-stat-l" id="mDl">123 de 128 viagens concluídas</div></div>
+        <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="map" class="gk-ic"></i></span>Viagens</div><div class="gk-stat-v" id="mV">128</div><div class="gk-stat-l">Total de viagens realizadas</div></div>
+        <a class="gk-card gk-stat is-link" href="multas.html" style="text-decoration:none;color:inherit"><span class="gk-stat-arrow"><i data-lucide="chevron-right" class="gk-ic"></i></span><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="alert-triangle" class="gk-ic"></i></span>Multas</div><div class="gk-stat-v">2</div><div class="gk-stat-l">Registros vinculados ao motorista</div></a>
+      </div>
+
+      <!-- Histórico de viagens -->
+      <section>
+        <h2 class="gk-h2" style="margin-bottom:var(--space-3)">Histórico de viagens</h2>
+        <div class="gk-table-wrap">
+          <div class="gk-toolbar">
+            <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="fStatus" data-pop="popStatus"><i data-lucide="filter" class="gk-ic"></i><span>Status</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popStatus"><div class="gk-fp-body"><label class="gk-check"><input type="checkbox" value="concluida">Concluída</label><label class="gk-check"><input type="checkbox" value="nao">Não realizada</label></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+            <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="fRota" data-pop="popRota"><i data-lucide="route" class="gk-ic"></i><span>Rota</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popRota"><div class="gk-fp-body"><label class="gk-check"><input type="checkbox" value="hospitalar">Rota Hospitalar</label><label class="gk-check"><input type="checkbox" value="centro">Rota Centro</label></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+            <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="fCli" data-pop="popCli"><i data-lucide="building-2" class="gk-ic"></i><span>Cliente</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popCli"><div class="gk-fp-body"><label class="gk-check"><input type="checkbox" value="lucas">Hosp. São Lucas</label><label class="gk-check"><input type="checkbox" value="santa">Santa Casa</label><label class="gk-check"><input type="checkbox" value="central">Hosp. Central</label><label class="gk-check"><input type="checkbox" value="vida">Clínica Vida</label><label class="gk-check"><input type="checkbox" value="sirio">Hosp. Sírio</label></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+            <div class="gk-pop-anchor">
+              <button class="gk-btn gk-btn-secondary" id="fPer" data-pop="popPer"><i data-lucide="calendar" class="gk-ic"></i><span>Período</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button>
+              <div class="gk-pop gk-menu" id="popPer"></div>
+            </div>
+            <span class="gk-spacer"></span>
+            <button class="gk-btn gk-btn-ghost" id="trClear" hidden>Limpar</button>
+          </div>
+          <table class="gk-table is-compact">
+            <thead><tr><th>Data</th><th>Rota</th><th>Clientes atendidos</th><th>Status</th><th class="gk-col-actions">Ações</th></tr></thead>
+            <tbody id="trBody">
+              <tr data-status="concluida" data-rota="hospitalar" data-c="lucas,santa,central"><td>12/11/2026</td><td class="gk-strong">Rota Hospitalar</td><td>Hosp. São Lucas <span class="gk-strong" style="color:var(--muted)">+2</span></td><td><span class="gk-badge gk-badge-ok gk-badge-plain">Concluída</span></td><td class="gk-col-actions"><span class="gk-acts"><button class="gk-act" aria-label="Ver rota" title="Ver rota"><i data-lucide="eye" class="gk-ic"></i></button></span></td></tr>
+              <tr data-status="concluida" data-rota="centro" data-c="santa,vida"><td>11/11/2026</td><td class="gk-strong">Rota Centro</td><td>Santa Casa <span class="gk-strong" style="color:var(--muted)">+1</span></td><td><span class="gk-badge gk-badge-ok gk-badge-plain">Concluída</span></td><td class="gk-col-actions"><span class="gk-acts"><button class="gk-act" aria-label="Ver rota" title="Ver rota"><i data-lucide="eye" class="gk-ic"></i></button></span></td></tr>
+              <tr data-status="nao" data-rota="hospitalar" data-c=""><td>10/11/2026</td><td class="gk-strong">Rota Hospitalar</td><td><span class="gk-caption">—</span></td><td><span class="gk-badge gk-badge-bad gk-badge-plain">Não realizada</span></td><td class="gk-col-actions"><span class="gk-acts"><button class="gk-act" aria-label="Ver rota" title="Ver rota"><i data-lucide="eye" class="gk-ic"></i></button></span></td></tr>
+              <tr data-status="concluida" data-rota="hospitalar" data-c="central,lucas,sirio"><td>09/11/2026</td><td class="gk-strong">Rota Hospitalar</td><td>Hosp. Central <span class="gk-strong" style="color:var(--muted)">+2</span></td><td><span class="gk-badge gk-badge-ok gk-badge-plain">Concluída</span></td><td class="gk-col-actions"><span class="gk-acts"><button class="gk-act" aria-label="Ver rota" title="Ver rota"><i data-lucide="eye" class="gk-ic"></i></button></span></td></tr>
+              <tr data-status="concluida" data-rota="centro" data-c="vida"><td>08/11/2026</td><td class="gk-strong">Rota Centro</td><td>Clínica Vida</td><td><span class="gk-badge gk-badge-ok gk-badge-plain">Concluída</span></td><td class="gk-col-actions"><span class="gk-acts"><button class="gk-act" aria-label="Ver rota" title="Ver rota"><i data-lucide="eye" class="gk-ic"></i></button></span></td></tr>
+              <tr data-status="concluida" data-rota="hospitalar" data-c="lucas,santa"><td>07/11/2026</td><td class="gk-strong">Rota Hospitalar</td><td>Hosp. São Lucas <span class="gk-strong" style="color:var(--muted)">+1</span></td><td><span class="gk-badge gk-badge-ok gk-badge-plain">Concluída</span></td><td class="gk-col-actions"><span class="gk-acts"><button class="gk-act" aria-label="Ver rota" title="Ver rota"><i data-lucide="eye" class="gk-ic"></i></button></span></td></tr>
+              <tr data-status="concluida" data-rota="centro" data-c="santa,vida,sirio"><td>06/11/2026</td><td class="gk-strong">Rota Centro</td><td>Santa Casa <span class="gk-strong" style="color:var(--muted)">+2</span></td><td><span class="gk-badge gk-badge-ok gk-badge-plain">Concluída</span></td><td class="gk-col-actions"><span class="gk-acts"><button class="gk-act" aria-label="Ver rota" title="Ver rota"><i data-lucide="eye" class="gk-ic"></i></button></span></td></tr>
+              <tr data-status="nao" data-rota="hospitalar" data-c=""><td>05/11/2026</td><td class="gk-strong">Rota Hospitalar</td><td><span class="gk-caption">—</span></td><td><span class="gk-badge gk-badge-bad gk-badge-plain">Não realizada</span></td><td class="gk-col-actions"><span class="gk-acts"><button class="gk-act" aria-label="Ver rota" title="Ver rota"><i data-lucide="eye" class="gk-ic"></i></button></span></td></tr>
+              <tr data-status="concluida" data-rota="centro" data-c="central,vida"><td>04/11/2026</td><td class="gk-strong">Rota Centro</td><td>Hosp. Central <span class="gk-strong" style="color:var(--muted)">+1</span></td><td><span class="gk-badge gk-badge-ok gk-badge-plain">Concluída</span></td><td class="gk-col-actions"><span class="gk-acts"><button class="gk-act" aria-label="Ver rota" title="Ver rota"><i data-lucide="eye" class="gk-ic"></i></button></span></td></tr>
+              <tr data-status="concluida" data-rota="hospitalar" data-c="lucas,santa,central,sirio"><td>03/11/2026</td><td class="gk-strong">Rota Hospitalar</td><td>Hosp. São Lucas <span class="gk-strong" style="color:var(--muted)">+3</span></td><td><span class="gk-badge gk-badge-ok gk-badge-plain">Concluída</span></td><td class="gk-col-actions"><span class="gk-acts"><button class="gk-act" aria-label="Ver rota" title="Ver rota"><i data-lucide="eye" class="gk-ic"></i></button></span></td></tr>
+            </tbody>
+          </table>
+          <div class="gk-tfoot"><span>Mostrando <b id="trShown">1–10</b> de <span id="trTot">128</span> viagens</span>
+            <div class="gk-pager">
+              <button class="gk-btn gk-btn-ghost gk-btn-sm gk-btn-icon" disabled aria-label="Anterior"><i data-lucide="chevron-left" class="gk-ic"></i></button>
+              <button class="gk-btn gk-btn-ghost gk-btn-sm is-active">1</button><button class="gk-btn gk-btn-ghost gk-btn-sm">2</button><button class="gk-btn gk-btn-ghost gk-btn-sm">3</button>
+              <button class="gk-btn gk-btn-ghost gk-btn-sm gk-btn-icon" aria-label="Próxima"><i data-lucide="chevron-right" class="gk-ic"></i></button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
+<script src="static/js/shell.js"></script>
+<script src="static/js/kit-ui.js"></script>
+<script src="static/js/kit-icons.js"></script>
+<script src="static/js/motorista-form.js"></script>
+<script>
+(function(){
+  var f={status:[],rota:[],cli:[]}, rows=document.querySelectorAll('#trBody tr');
+  function apply(){
+    var n=0,c=0; rows.forEach(function(r){ var ok=(!f.status.length||f.status.indexOf(r.getAttribute('data-status'))>=0)&&(!f.rota.length||f.rota.indexOf(r.getAttribute('data-rota'))>=0)&&(!f.cli.length||(r.getAttribute('data-c')||'').split(',').some(function(x){ return f.cli.indexOf(x)>=0; }))&&fp.test(r.firstElementChild.textContent); r.hidden=!ok; if(ok){ n++; if(r.getAttribute('data-status')==='concluida') c++; } });
+    document.getElementById('trShown').textContent=n?('1–'+n):'0';
+    document.getElementById('trClear').hidden=!(f.status.length||f.rota.length||f.cli.length||fp.active());
+    var N=rows.length, C=[].filter.call(rows,function(r){ return r.getAttribute('data-status')==='concluida'; }).length, all=(n===N);
+    var v=all?128:Math.round(128*n/N), cc=all?123:Math.min(v,Math.round(123*c/Math.max(C,1)));
+    document.getElementById('mV').textContent=v; document.getElementById('mD').textContent=v?(Math.round(cc/v*1000)/10).toLocaleString('pt-BR',{minimumFractionDigits:1})+'%':'—';
+    document.getElementById('trTot').textContent=v; document.getElementById('mDl').textContent=cc+' de '+v+' viagens concluídas';
+  }
+  var fs=GK.checkFilter({btn:'fStatus',pop:'popStatus',label:'Status',onChange:function(v){ f.status=v; apply(); }});
+  var fr=GK.checkFilter({btn:'fRota',pop:'popRota',label:'Rota',onChange:function(v){ f.rota=v; apply(); }});
+  var fc=GK.checkFilter({btn:'fCli',pop:'popCli',label:'Cliente',onChange:function(v){ f.cli=v; apply(); }});
+  var fp=GK.periodFilter({btn:'fPer',pop:'popPer',onChange:function(){ apply(); }});
+  document.getElementById('trClear').addEventListener('click',function(){ fs.reset(); fr.reset(); fc.reset(); fp.reset(); });
+  var RON={nome:'Ronaldo Araújo',user:'ronaldo.araujo',ini:'RA',foto:'static/img/ronaldo.webp',rotas:['hospitalar','centro'],perfil:'padrao',status:'ativo',tel:'(11) 99982-4510'};
+  var RL={hospitalar:'Rota Hospitalar',centro:'Rota Centro',norte:'Rota Norte',sul:'Rota Sul'};
+  function pintar(){
+    document.getElementById('pNome').textContent=RON.nome; document.getElementById('pUser').textContent='@'+RON.user; document.getElementById('pTel').textContent=RON.tel||'—';
+    document.getElementById('pEscala').textContent=RON.perfil==='folg'?'Folguista':'Padrão';
+    document.getElementById('pRotas').innerHTML=RON.rotas.length?RON.rotas.map(function(r){return '<span class="gk-ms-chip">'+RL[r]+'</span>';}).join(''):'<span class="gk-caption">Sem rota</span>';
+    var st=document.getElementById('pStatus'); st.textContent=RON.status==='ativo'?'Ativo':'Inativo'; st.className='gk-badge gk-badge-plain'+(RON.status==='ativo'?' gk-badge-ok':'');
+    var img=document.querySelector('#pAva img'); if(img&&RON.foto) img.src=RON.foto;
+  }
+  document.getElementById('btnEditar').addEventListener('click',function(){ document.getElementById('popAcoes').classList.remove('is-open'); GKMot.editar(RON,function(n){ for(var k in n){ if(k!=='foto'||n[k]) RON[k]=n[k]; } pintar(); }); });
+  document.getElementById('btnDel').addEventListener('click',function(){ document.getElementById('popAcoes').classList.remove('is-open'); GKMot.excluir('Ronaldo Araújo',function(){ location.href='motoristas.html'; }); });
+  apply();
+})();
+</script>
+</body>
+</html>
