@@ -903,10 +903,10 @@ button.gk-attn-c{font:inherit;text-align:left;cursor:pointer;width:100%}
 .gk-tl-lg i.is-ring{background:var(--card);box-shadow:inset 0 0 0 2px var(--ok)}
 
 /* mapa esquemático da rota */
-.gk-mp{position:relative;aspect-ratio:5/2;margin-bottom:var(--space-4);border-radius:var(--radius-md);background:var(--row);overflow:hidden}
+.gk-mp{position:relative;aspect-ratio:3/2;margin-bottom:var(--space-4);border-radius:var(--radius-md);background:var(--row);overflow:hidden}
 .gk-mp svg{position:absolute;inset:0;width:100%;height:100%}
 .gk-mp-r{stroke:var(--card)}
-.gk-mp-p{fill:none;stroke:var(--primary);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.gk-mp-p{fill:none;stroke:var(--dc,var(--primary));stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 .gk-mp-p.is-rest{stroke:var(--ph);stroke-width:2;stroke-dasharray:2 6}
 .gk-mp-s{position:absolute;top:var(--space-3);left:var(--space-4);display:grid;gap:2px}
 .gk-mp-s.is-r{left:auto;right:var(--space-4);text-align:right}
@@ -955,3 +955,79 @@ button.gk-drv-c:hover{border-color:var(--line-strong)}
 .gk-lg-i b{margin-left:auto}
 .gk-chart-h{align-items:center}
 .gk-chart-h .gk-stat-h{font-size:14px}
+
+/* confirmação rápida (toast) */
+.gk-toasts{position:fixed;left:50%;top:var(--space-5);transform:translateX(-50%);z-index:500;display:grid;justify-items:center;pointer-events:none}
+.gk-toast{display:flex;align-items:center;gap:var(--space-3);padding:10px var(--space-4) 10px var(--space-3);background:var(--card);color:var(--fg);border:1px solid var(--line-strong);border-radius:var(--radius-lg);box-shadow:0 4px 12px rgba(15,23,42,.08);font-size:13px;line-height:18px;font-weight:500;animation:gkToast .22s ease backwards}
+.gk-toast.is-out{opacity:0;transform:translateY(-6px);transition:opacity .2s,transform .2s}
+.gk-toast-ic{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--ok-bg);color:var(--ok-ink);flex:none}
+@keyframes gkToast{from{opacity:0;transform:translateY(-10px)}}
+@media (prefers-reduced-motion:reduce){.gk-toast{animation:none}.gk-toast.is-out{transition:none}}
+
+/* painel lateral largo + vários motoristas no mapa */
+.gk-drawer.is-lg{width:var(--modal-lg-w)}
+.gk-overlay.is-open .gk-drawer{animation:gk-drawer-in .2s ease backwards}
+@keyframes gk-drawer-in{from{opacity:0;transform:translateX(24px)}}
+@media (prefers-reduced-motion:reduce){.gk-overlay.is-open .gk-drawer{animation:none}}
+.gk-drv-c .gk-avatar{box-shadow:inset 0 0 0 2px var(--dc,transparent)}
+.gk-tl-d.is-av{display:grid;place-items:center;width:24px;height:24px;margin:-12px 0 0 -12px;background:var(--card);color:var(--dc,var(--primary));box-shadow:inset 0 0 0 2px var(--dc,var(--primary)),0 0 0 2px var(--card);font:700 10px/1 var(--font-sans)}
+.gk-mp .gk-tl-d.is-av{margin:-12px 0 0 -12px}
+.gk-tl-d.is-av.is-now::after{border-color:var(--dc,var(--primary));inset:-6px}
+.gk-mp .gk-tl-d.is-av.is-now::before{background:var(--dc,var(--primary));inset:-14px}
+.gk-tl-d.is-av.is-stop{color:var(--warn-ink);box-shadow:inset 0 0 0 2px var(--warn),0 0 0 2px var(--card)}
+.gk-tl-d.is-av.is-stop::after{border-color:var(--warn)}
+.gk-tl-i b em{font-style:normal;color:var(--dc)}
+.gk-drawer .gk-tl-list{max-height:none;overflow:visible}
+.gk-mp svg *{vector-effect:non-scaling-stroke}
+.gk-tl-lg i.is-ln{width:14px;height:3px;border-radius:2px}
+.gk-tl-lg b{font-weight:600;color:var(--fg)}
+.gk-drawer .gk-tl-lg{gap:var(--space-3)}
+
+/* avisos de ação compactos */
+.gk-attn{grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:var(--space-3)}
+.gk-attn-c{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:var(--space-3);row-gap:0;padding:var(--space-3) var(--space-4)}
+.gk-attn-k{grid-column:1;font-size:12px;line-height:16px}
+.gk-attn-a{grid-column:2;grid-row:1;margin-top:0;font-size:12px;line-height:16px}
+.gk-attn-v{grid-column:1/-1;font-size:15px;line-height:22px;font-weight:600;margin-top:2px}
+.gk-attn-t{grid-column:1/-1;font-size:12px;line-height:16px}
+.gk-attn-c{grid-template-columns:minmax(0,1fr)}
+.gk-attn-a{grid-column:1;grid-row:auto;margin-top:var(--space-2)}
+.gk-tl-d.is-av.is-now::after{inset:-4px}
+.gk-mp .gk-tl-d.is-av.is-now::before{inset:-8px}
+.gk-attn-a .gk-ic{order:-1}
+.gk-attn-c:hover .gk-attn-a .gk-ic{transform:translateX(2px)}
+.gk-attn-a{justify-self:end}
+.gk-attn-a .gk-ic{order:0}
+.gk-attn-c:hover .gk-attn-a .gk-ic{transform:translateX(3px)}
+.gk-attn-c{grid-template-columns:minmax(0,1fr) auto;align-items:center}
+.gk-attn-k{grid-column:1/-1}
+.gk-attn-v{grid-column:1;grid-row:2;margin-top:0}
+.gk-attn-a{grid-column:2;grid-row:2;margin-top:0;justify-self:end}
+.gk-attn{gap:var(--space-4)}
+.gk-attn-c{padding:var(--space-4) var(--space-5);row-gap:var(--space-1)}
+
+/* gráfico de área: linha do previsto */
+.gk-ac-p{fill:none;stroke:var(--ph);stroke-width:2;stroke-dasharray:2 5;stroke-linecap:round}
+.gk-ac-d.is-plan{background:var(--card);box-shadow:inset 0 0 0 2px var(--ph),0 0 0 2px var(--card)}
+.gk-tl-lg i.is-dash{background:repeating-linear-gradient(90deg,var(--ph) 0 3px,transparent 3px 6px)}
+
+/* colunas: feito x previsto por hora */
+.gk-bc-c.has-plan{position:relative}
+.gk-bc-c.has-plan i{position:absolute;bottom:0;left:50%;transform:translateX(-50%)}
+.gk-bc-c i.is-p{background:var(--line-strong);border-radius:4px 4px 0 0}
+.gk-tl-lg i.is-sq{width:8px;height:8px;border-radius:2px}
+.gk-chart-m{white-space:nowrap}
+/* colunas por hora: versão leve */
+.gk-bc:has(.has-plan) .gk-bc-plot{height:120px}
+.gk-bc-c.has-plan i{width:8px;border-radius:var(--radius-full)}
+.gk-bc-c i.is-p{background:var(--line-strong);opacity:.55}
+.gk-bc-c.has-plan:hover,.gk-bc-c.has-plan:focus-visible{background:transparent}
+.gk-bc-c.has-plan:hover i:not(.is-p){opacity:1}
+.gk-bc-c.has-plan:hover i.is-p{opacity:.9}
+
+/* cores dos motoristas: azul, amarelo, vermelho, escuro; halo discreto */
+.gk-tl-d.is-av{color:var(--di,var(--dc,var(--primary)))}
+.gk-tl-d.is-av.is-now::after{inset:-3px}
+.gk-mp .gk-tl-d.is-av.is-now::before{inset:-6px;opacity:.12}
+.gk-tl-i b em{color:var(--di,var(--dc))}
+.gk-tl-i b em{color:inherit}

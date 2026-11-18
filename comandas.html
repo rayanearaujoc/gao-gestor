@@ -245,7 +245,7 @@
     return '<div class="gk-tag">'+q.createSvgTag(3,0)+'<div class="gk-tag-b"><b>Comanda #'+m.id+'</b><div class="gk-tag-g">Gaiola '+n+' de '+m.g+'</div><span>'+m.cli+'</span><span>'+ROTA[m.cli]+'</span></div></div>';
   }
   var curE=null, curX=null;
-  $('xOk').addEventListener('click',function(){ [M,EXTRA,SEMB].forEach(function(a){ var i=a.indexOf(curX); if(i>=0) a.splice(i,1); }); GK.close('ovX'); apply(); });
+  $('xOk').addEventListener('click',function(){ [M,EXTRA,SEMB].forEach(function(a){ var i=a.indexOf(curX); if(i>=0) a.splice(i,1); }); GK.close('ovX'); GK.toast('Comanda excluída'); apply(); });
   function etiquetas(m,novo){
     curE=m; $('eT').textContent='Gerar etiquetas'; $('eS').innerHTML='<b style="color:var(--fg);font-weight:600">'+(novo?'Comanda criada':'Comanda')+' · #'+m.id+'</b><span style="display:block">'+m.g+(m.g>1?' etiquetas':' etiqueta')+', uma por gaiola.</span>';
     var h=''; for(var n=1;n<=m.g;n++) h+=tagHTML(m,n);
@@ -273,7 +273,7 @@
   $('nQtd').addEventListener('input',function(){ this.value=this.value.replace(/\D/g,'').slice(0,2); });
   $('nOk').addEventListener('click',function(){
     var cli=ssN.get(); if(!cli) return; var g=Math.max(1,parseInt($('nQtd').value,10)||1);
-    var col=nTipo==='Coleta', m={id:nextId++,cli:cli,tipo:nTipo,g:col?0:g,st:col?'Aguardando coleta':'Liberada',d:'17/11/2026'}; EXTRA.unshift(m); M.unshift(m); state.page=1; GK.close('ovN'); apply(); if(!col) etiquetas(m,true);
+    var col=nTipo==='Coleta', m={id:nextId++,cli:cli,tipo:nTipo,g:col?0:g,st:col?'Aguardando coleta':'Liberada',d:'17/11/2026'}; EXTRA.unshift(m); M.unshift(m); state.page=1; GK.close('ovN'); apply(); if(col) GK.toast('Comanda de coleta criada'); else etiquetas(m,true);
   });
 
   $('tbody').addEventListener('click',function(e){

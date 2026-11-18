@@ -29,7 +29,7 @@
   $('rtSave').addEventListener('click',function(){
     var v=$('rtNome').value.trim(), f=$('rtNome').closest('.gk-field');
     if(!v){ f.classList.add('is-error'); f.querySelector('.gk-error').hidden=false; $('rtNome').focus(); return; }
-    GK.close('ovRota'); if(onSave) onSave({ nome:v, cli:cli.get(), mot:mot.get() });
+    GK.close('ovRota'); GK.toast(mode==='novo'?'Rota cadastrada':'Alterações salvas'); if(onSave) onSave({ nome:v, cli:cli.get(), mot:mot.get() });
   });
   function abrir(){ GK.open('ovRota'); }
   window.GKRota={
@@ -40,6 +40,6 @@
       initial=snap(); $('rtSave').disabled=true; abrir(); },
     excluir:function(nome,cb){ onDel=cb||null; $('rtDelText').textContent=(nome||'A rota')+' será removida. Os clientes vinculados ficam sem rota até você designar outra.'; GK.open('ovDelRt'); }
   };
-  $('rtDelOk').addEventListener('click',function(){ GK.close('ovDelRt'); if(onDel) onDel(); });
+  $('rtDelOk').addEventListener('click',function(){ GK.close('ovDelRt'); GK.toast('Rota excluída'); if(onDel) onDel(); });
   GK.popovers(); GK.icons();
 })();

@@ -88,8 +88,8 @@
     var b=$('wBtn'); b.className='gk-btn '+(on?'gk-btn-secondary':'gk-btn-primary'); b.textContent=on?'Desconectar':'Conectar número';
   }
   $('wBtn').addEventListener('click',function(){ GK.open(on?'ovWppOff':'ovWpp'); });
-  $('wOk').addEventListener('click',function(){ on=true; GK.close('ovWpp'); pintar(); });
-  $('wOffOk').addEventListener('click',function(){ on=false; GK.close('ovWppOff'); pintar(); });
+  $('wOk').addEventListener('click',function(){ on=true; GK.close('ovWpp'); GK.toast('WhatsApp conectado'); pintar(); });
+  $('wOffOk').addEventListener('click',function(){ on=false; GK.close('ovWppOff'); GK.toast('WhatsApp desconectado'); pintar(); });
   document.querySelectorAll('.gk-sidetab').forEach(function(t){ t.addEventListener('click',function(){
     document.querySelectorAll('.gk-sidetab').forEach(function(x){ x.classList.toggle('is-active',x===t); });
     document.querySelectorAll('[data-p]').forEach(function(p){ p.hidden=p.getAttribute('data-p')!==t.getAttribute('data-t'); }); }); });

@@ -174,7 +174,7 @@
   $('mRes').addEventListener('click',function(e){ var b=e.target.closest('[data-des]'); if(!b) return; des=+b.getAttribute('data-des'); cur.via=des; cur.mot=TRIPS[des].mot; marcar(); });
   $('ovM').addEventListener('click',function(e){ if(e.target.closest('[data-close]')){ timers.forEach(clearTimeout); if(anim){ anim.destroy(); anim=null; } } });
   $('mOk').addEventListener('click',function(){
-    var m=JSON.parse(JSON.stringify(cur)); M.unshift(m); M.sort(function(a,b){ return key(b)<key(a)?-1:1; }); state.page=1; GK.close('ovM'); apply();
+    var m=JSON.parse(JSON.stringify(cur)); M.unshift(m); M.sort(function(a,b){ return key(b)<key(a)?-1:1; }); state.page=1; GK.close('ovM'); GK.toast('Multa designada ao motorista'); apply();
   });
   tbody.addEventListener('click',function(e){ if(e.target.closest('a')) return; var tr=e.target.closest('tr'); if(tr) ver(shown[+tr.getAttribute('data-i')]); });
 

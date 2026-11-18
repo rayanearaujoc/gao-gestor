@@ -111,7 +111,7 @@
   $('motNext').addEventListener('click',function(){
     if(step===1){ goto(2); return; }
     if(!validar('#motP2')) return;
-    GK.close('ovMot');
+    GK.close('ovMot'); GK.toast(mode==='novo'?'Motorista cadastrado':'Alterações salvas');
     if(onSave){ var fi=foto.querySelector('img');
       onSave({ nome:$('motNome').value.trim(), user:$('motUser').value.trim(), tel:$('motTel').value, perfil:$('motPerfil').value,
         rotas:[].map.call(msMenu.querySelectorAll('input[type=checkbox]:checked'),function(c){return c.value;}),
@@ -147,6 +147,6 @@
     },
     excluir:function(nome,cb){ onDel=cb||null; $('delText').textContent=(nome||'Este motorista')+' será removido do cadastro. Esta ação não pode ser desfeita.'; GK.open('ovDel'); }
   };
-  $('delOk').addEventListener('click',function(){ GK.close('ovDel'); if(onDel) onDel(); });
+  $('delOk').addEventListener('click',function(){ GK.close('ovDel'); GK.toast('Motorista excluído'); if(onDel) onDel(); });
   GK.popovers(); GK.icons();
 })();

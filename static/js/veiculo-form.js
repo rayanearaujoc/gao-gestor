@@ -40,7 +40,7 @@
   $('vcSave').addEventListener('click',function(){
     var ok=true;
     document.querySelectorAll('#vcForm [data-required]').forEach(function(inp){ var bad=!inp.value.trim() || (inp.id==='vcPlaca'&&inp.value.replace('-','').length<7); var f=inp.closest('.gk-field'); f.classList.toggle('is-error',bad); f.querySelector('.gk-error').hidden=!bad; if(bad&&ok){ inp.focus(); ok=false; } });
-    if(!ok) return; GK.close('ovVeic'); if(onSave) onSave(dados());
+    if(!ok) return; GK.close('ovVeic'); GK.toast(mode==='novo'?'Veículo cadastrado':'Alterações salvas'); if(onSave) onSave(dados());
   });
   function reset(){ document.querySelectorAll('#vcForm .gk-field').forEach(function(f){ f.classList.remove('is-error'); var e=f.querySelector('.gk-error'); if(e) e.hidden=true; }); }
   window.GKVeic={
@@ -53,6 +53,6 @@
       initial=snap(); $('vcSave').disabled=true; GK.open('ovVeic'); },
     excluir:function(rotulo,cb){ onDel=cb||null; $('vcDelText').textContent=(rotulo||'Este veículo')+' será removido do cadastro. Para manter o histórico de viagens, inative o veículo em vez de excluir.'; GK.open('ovDelVc'); }
   };
-  $('vcDelOk').addEventListener('click',function(){ GK.close('ovDelVc'); if(onDel) onDel(); });
+  $('vcDelOk').addEventListener('click',function(){ GK.close('ovDelVc'); GK.toast('Veículo excluído'); if(onDel) onDel(); });
   GK.popovers(); GK.icons();
 })();

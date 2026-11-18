@@ -138,7 +138,7 @@
   }
   document.querySelectorAll('#ovCli .gk-stepper-i').forEach(function(b){ b.addEventListener('click',function(){ goto(+b.getAttribute('data-go')); }); });
   $('clBack').addEventListener('click',function(){ if(step===1) GK.close('ovCli'); else goto(step-1); });
-  $('clNext').addEventListener('click',function(){ if(step<N){ goto(step+1); return; } var d=dados(); GK.close('ovCli'); if(onSave) onSave(d); });
+  $('clNext').addEventListener('click',function(){ if(step<N){ goto(step+1); return; } var d=dados(); GK.close('ovCli'); GK.toast(mode==='novo'?'Cliente cadastrado':(original==='pendente'?'Cadastro do cliente concluído':'Alterações salvas')); if(onSave) onSave(d); });
   document.querySelectorAll('#clForm .gk-input,#clForm .gk-select').forEach(function(el){ el.addEventListener('input',function(){ var f=el.closest('.gk-field'); f.classList.remove('is-error'); var e=f.querySelector('.gk-error'); if(e) e.hidden=true; dirty(); }); el.addEventListener('change',dirty); });
 
   var ssCat=GK.searchSelect($('clCatSS'),function(v){ $('clCat').value=v; var f=$('clCat').closest('.gk-field'); f.classList.remove('is-error'); var e=f.querySelector('.gk-error'); if(e) e.hidden=true; dirty(); });
@@ -160,7 +160,7 @@
     $('clSw').checked=d.status!=='inativo'; original=d.status||'pendente'; setFoto(d.foto||null); $('clCat').value=d.cat||''; ssCat.set(d.cat||''); ssCat.disable(origem==='crm');
   }
   var onDel=null;
-  $('clDelOk').addEventListener('click',function(){ GK.close('ovDelCli'); if(onDel) onDel(); });
+  $('clDelOk').addEventListener('click',function(){ GK.close('ovDelCli'); GK.toast('Cliente excluído'); if(onDel) onDel(); });
   window.GKCli={
     excluir:function(nome,cb){ onDel=cb||null; $('clDelText').textContent=(nome||'Este cliente')+' será removido do cadastro e deixa de receber comandas. Para manter o histórico de entregas, inative o cliente em vez de excluir.'; GK.open('ovDelCli'); },
     novo:function(cb){ onSave=cb||null; mode='novo'; $('clTitle').textContent='Cadastrar cliente'; $('clLog').hidden=true; preencher({origem:'manual',status:'pendente'}); step=1; goto(1); GK.open('ovCli'); $('clNome').focus(); },
