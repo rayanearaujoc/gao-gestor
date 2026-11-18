@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GAO Gestor · Cadastrar rota</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+<link rel="stylesheet" href="static/css/app.css">
+<link rel="stylesheet" href="static/css/gestor.css">
+</head>
+<body data-page="rotas">
+  <main class="gpage">
+    <div class="gp-head2">
+      <a class="gp-back" href="rotas.html" aria-label="Voltar"><i data-lucide="chevron-left"></i></a>
+      <div class="gp-head2-txt">
+        <nav class="gp-crumb"><a href="rotas.html">Rotas</a><span class="sep">›</span><b>Cadastrar rota</b></nav>
+        <h1>Cadastrar rota</h1>
+      </div>
+    </div>
+
+    <form class="mform mform-1col" onsubmit="return false">
+      <div class="mform-sec">
+        <div class="msec-head">
+          <div><div class="msec-h">Dados da rota</div><p class="msec-d">Nome, clientes atendidos e motoristas designados.</p></div>
+        </div>
+
+        <div class="mfield" style="margin-bottom:20px">
+          <label>Nome da rota <span class="req">*</span></label>
+          <input class="minput" id="fNome" type="text" data-required placeholder="Ex.: Rota Hospitalar">
+          <div class="field-err">Dê um nome à rota.</div>
+        </div>
+
+        <div class="mgrid">
+          <div class="mfield">
+            <label>Clientes atendidos</label>
+            <div class="gms" id="cliMS">
+              <div class="gms-field"><span class="gms-ph">Selecione os clientes</span><i class="gms-chev" data-lucide="chevron-down"></i></div>
+              <div class="gms-menu">
+                <div class="gms-search"><i data-lucide="search"></i><input type="text" placeholder="Buscar cliente"></div>
+                <div class="gms-opts">
+                  <label><input type="checkbox" value="amparo" data-nm="Hospital Amparo"> Hospital Amparo</label>
+                  <label><input type="checkbox" value="hemu" data-nm="HEMU · Hospital da Mulher"> HEMU · Hospital da Mulher</label>
+                  <label><input type="checkbox" value="santacasa" data-nm="Santa Casa"> Santa Casa</label>
+                  <label><input type="checkbox" value="saolucas" data-nm="Clínica São Lucas"> Clínica São Lucas</label>
+                  <label><input type="checkbox" value="central" data-nm="Laboratório Central"> Laboratório Central</label>
+                  <label><input type="checkbox" value="hospitaldia" data-nm="Hospital Dia"> Hospital Dia</label>
+                </div>
+                <div class="gms-none">Nenhum cliente encontrado</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mfield">
+            <label>Motoristas designados</label>
+            <div class="gms" id="motMS">
+              <div class="gms-field"><span class="gms-ph">Selecione os motoristas</span><i class="gms-chev" data-lucide="chevron-down"></i></div>
+              <div class="gms-menu">
+                <div class="gms-search"><i data-lucide="search"></i><input type="text" placeholder="Buscar motorista"></div>
+                <div class="gms-opts">
+                  <label><input type="checkbox" value="ronaldo" data-nm="Ronaldo Araújo"> Ronaldo Araújo</label>
+                  <label><input type="checkbox" value="thiago" data-nm="Thiago Nunes"> Thiago Nunes</label>
+                  <label><input type="checkbox" value="marcos" data-nm="Marcos Lima"> Marcos Lima</label>
+                  <label><input type="checkbox" value="pedro" data-nm="Pedro Alves"> Pedro Alves</label>
+                  <label><input type="checkbox" value="joao" data-nm="João Mendes"> João Mendes</label>
+                </div>
+                <div class="gms-none">Nenhum motorista encontrado</div>
+              </div>
+            </div>
+            <div class="mhint">Vários motoristas podem fazer a mesma rota.</div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="mbar">
+      <span class="mbar-note">Confira os dados antes de cadastrar.</span>
+      <div class="mbar-actions">
+        <a class="gp-btn gp-btn-ghost gp-btn-lg2" href="rotas.html">Cancelar</a>
+        <button class="gp-btn gp-btn-lg2" type="button" id="btnSave">Cadastrar rota</button>
+      </div>
+    </div>
+  </main>
+<script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
+<script src="static/js/shell.js"></script>
+<script>
+  (function(){
+    var form=document.querySelector('.mform');
+    function initMulti(ms,onChange){
+      var field=ms.querySelector('.gms-field'),menu=ms.querySelector('.gms-menu'),ph=ms.querySelector('.gms-ph'),
+          search=ms.querySelector('.gms-search input'),opts=ms.querySelector('.gms-opts'),none=ms.querySelector('.gms-none');
+      function render(){
+        field.querySelectorAll('.gms-chip').forEach(function(c){c.remove();});
+        var checked=opts.querySelectorAll('input:checked');
+        ph.style.display=checked.length?'none':'';
+        checked.forEach(function(inp){
+          var chip=document.createElement('span');chip.className='gms-chip';
+          chip.innerHTML='<span>'+inp.getAttribute('data-nm')+'</span><button type="button" aria-label="Remover"><i data-lucide="x"></i></button>';
+          chip.querySelector('button').addEventListener('click',function(e){e.stopPropagation();inp.checked=false;render();onChange&&onChange();});
+          field.appendChild(chip);
+        });
+        if(window.lucide&&lucide.createIcons)lucide.createIcons();
+      }
+      field.addEventListener('click',function(e){if(e.target.closest('.gms-chip'))return;
+        menu.classList.toggle('show');if(menu.classList.contains('show')&&search)setTimeout(function(){search.focus();},0);});
+      opts.addEventListener('change',function(){render();onChange&&onChange();});
+      if(search)search.addEventListener('input',function(){
+        var qv=search.value.toLowerCase(),vis=0;
+        opts.querySelectorAll('label').forEach(function(l){var ok=l.textContent.toLowerCase().indexOf(qv)>=0;l.style.display=ok?'':'none';if(ok)vis++;});
+        if(none)none.style.display=vis?'none':'block';
+      });
+      render();
+    }
+    initMulti(document.getElementById('cliMS'));
+    initMulti(document.getElementById('motMS'));
+    document.addEventListener('click',function(e){if(!e.target.closest('.gms'))document.querySelectorAll('.gms-menu.show').forEach(function(m){m.classList.remove('show');});});
+
+    var reqs=form.querySelectorAll('.minput[data-required]');
+    reqs.forEach(function(inp){inp.addEventListener('input',function(){inp.classList.remove('err');inp.closest('.mfield').classList.remove('invalid');});});
+    document.getElementById('btnSave').addEventListener('click',function(){
+      var ok=true;
+      reqs.forEach(function(inp){var bad=!inp.value.trim();inp.classList.toggle('err',bad);inp.closest('.mfield').classList.toggle('invalid',bad);if(bad)ok=false;});
+      if(!ok){var f=form.querySelector('.minput.err');if(f)f.focus();return;}
+      location.href='rotas.html';
+    });
+  })();
+</script>
+</body>
+</html>

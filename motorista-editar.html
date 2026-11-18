@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GAO Gestor · Editar motorista</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+<link rel="stylesheet" href="static/css/app.css">
+<link rel="stylesheet" href="static/css/gestor.css">
+</head>
+<body data-page="motoristas">
+  <main class="gpage">
+    <div class="gp-head2">
+      <a class="gp-back" href="motorista.html" aria-label="Voltar"><i data-lucide="chevron-left"></i></a>
+      <div class="gp-head2-txt">
+        <nav class="gp-crumb"><a href="motoristas.html">Motoristas</a><span class="sep">›</span><a href="motorista.html" id="crumbName">Ronaldo Araújo</a><span class="sep">›</span><b>Editar</b></nav>
+        <h1>Editar motorista</h1>
+      </div>
+    </div>
+
+    <form class="mform" onsubmit="return false">
+      <!-- Dados do motorista -->
+      <div class="mform-sec" id="card1">
+        <div class="msec-head">
+          <span class="mstep" id="step1"><span class="n">1</span></span>
+          <div><div class="msec-h">Dados do motorista</div><p class="msec-d">Informações de identificação e escala.</p></div>
+        </div>
+
+        <div class="mphoto">
+          <button type="button" class="mphoto-ava" id="btnFoto" aria-label="Alterar foto">
+            <img id="avaImg" src="static/img/ronaldo.webp" alt="">
+            <span id="avaIni" class="mphoto-ini" hidden>RA</span>
+            <span class="mphoto-badge"><i data-lucide="camera"></i></span>
+          </button>
+          <div class="mphoto-txt">
+            <div class="mphoto-h">Foto de perfil</div>
+            <div class="mphoto-acts">
+              <button type="button" class="gp-btn gp-btn-ghost gp-btn-sm" id="btnAdd">Alterar foto</button>
+              <button type="button" class="mphoto-rm" id="btnFotoRm" hidden>Remover foto</button>
+            </div>
+          </div>
+          <input type="file" id="fotoInput" accept="image/*" hidden>
+        </div>
+
+        <div class="mgrid">
+          <div class="mfield">
+            <label>Nome completo <span class="req">*</span></label>
+            <input class="minput" id="fNome" type="text" data-required value="Ronaldo Araújo">
+            <div class="field-err">Preencha o nome completo.</div>
+          </div>
+          <div class="mfield">
+            <label>Telefone de contato <span class="req">*</span></label>
+            <input class="minput" id="fTel" type="tel" inputmode="tel" data-required value="(11) 99982-4510">
+            <div class="field-err">Preencha o telefone.</div>
+          </div>
+          <div class="mfield">
+            <label>Rotas designadas</label>
+            <div class="gms" id="rotasMS">
+              <div class="gms-field" id="rotasField">
+                <span class="gms-ph" id="rotasPh">Selecione as rotas</span>
+                <i class="gms-chev" data-lucide="chevron-down"></i>
+              </div>
+              <div class="gms-menu" id="rotasMenu">
+                <label><input type="checkbox" value="hospitalar" data-nm="Rota Hospitalar" checked> Rota Hospitalar</label>
+                <label><input type="checkbox" value="centro" data-nm="Rota Centro" checked> Rota Centro</label>
+                <label><input type="checkbox" value="norte" data-nm="Rota Norte"> Rota Norte</label>
+                <label><input type="checkbox" value="sul" data-nm="Rota Sul"> Rota Sul</label>
+              </div>
+            </div>
+          </div>
+          <div class="mfield">
+            <label>Perfil de escala</label>
+            <select class="gsel gsel-full" id="perfil">
+              <option value="padrao">Padrão</option>
+              <option value="folg">Folguista</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acesso ao app -->
+      <div class="mform-sec" id="card2">
+        <div class="msec-head">
+          <span class="mstep" id="step2"><span class="n">2</span></span>
+          <div><div class="msec-h">Acesso ao app</div><p class="msec-d">Dados usados pelo motorista para entrar no aplicativo.</p></div>
+        </div>
+        <div class="mgrid">
+          <div class="mfield">
+            <label>Usuário <span class="req">*</span></label>
+            <div class="minput-ic">
+              <i class="lead" data-lucide="at-sign"></i>
+              <input class="minput" id="fUser" type="text" autocapitalize="none" data-required value="ronaldo.araujo">
+            </div>
+            <div class="field-err">Informe o usuário.</div>
+            <div class="mhint">O usuário deve ser único. Não use espaços.</div>
+          </div>
+          <div class="mfield">
+            <label>Senha</label>
+            <div class="mpass">
+              <i class="lead" data-lucide="lock"></i>
+              <input class="minput" id="senha" type="password" placeholder="••••••••">
+              <button type="button" class="mpass-eye" id="eye" aria-label="Mostrar senha"><i data-lucide="eye"></i></button>
+            </div>
+            <ul class="pwrules" id="pwRules">
+              <li data-r="len">Pelo menos 8 caracteres</li>
+              <li data-r="upper">Uma letra maiúscula</li>
+              <li data-r="lower">Uma letra minúscula</li>
+              <li data-r="num">Um número</li>
+              <li data-r="spec">Um caractere especial (recomendado)</li>
+            </ul>
+            <div class="mhint">Deixe em branco para manter a senha atual.</div>
+          </div>
+        </div>
+
+        <div class="mstatus-row mstatus-in">
+          <div><div class="msec-h">Status de acesso</div><p class="msec-d">Ao inativar, o motorista perde o acesso ao app.</p></div>
+          <div class="mstatus-tog">
+            <label class="gsw"><input type="checkbox" id="statusSw" checked><span class="track"></span></label>
+            <span class="st-on" id="statusTxt">Ativo</span>
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+    <div class="mbar">
+      <div class="mbar-left">
+        <button class="mbar-del" type="button" id="btnDel"><i data-lucide="trash-2"></i> Excluir cadastro</button>
+        <div class="medit-log" id="editLog">Cadastro criado em 22/10/2026 · última edição em 10/11/2026.</div>
+      </div>
+      <div class="mbar-actions">
+        <a class="gp-btn gp-btn-ghost gp-btn-lg2" href="motorista.html">Cancelar</a>
+        <button class="gp-btn gp-btn-lg2" type="button" id="btnSave">Salvar alterações</button>
+      </div>
+    </div>
+  </main>
+
+  <div class="gmodal" id="delModal" role="dialog" aria-modal="true">
+    <div class="gmodal-box">
+      <div class="gmodal-ic"><i data-lucide="trash-2"></i></div>
+      <h3>Excluir motorista?</h3>
+      <p id="delText">Ronaldo Araújo será removido do cadastro. Esta ação não pode ser desfeita.</p>
+      <div class="gmodal-foot">
+        <button class="gp-btn gp-btn-ghost" type="button" id="delCancel">Cancelar</button>
+        <button class="gp-btn gp-btn-danger" type="button" id="delOk"><i data-lucide="trash-2"></i> Excluir</button>
+      </div>
+    </div>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
+<script src="static/js/shell.js"></script>
+<script>
+  (function(){
+    var form=document.querySelector('.mform'),
+        ms=document.getElementById('rotasMS'),field=document.getElementById('rotasField'),
+        menu=document.getElementById('rotasMenu'),ph=document.getElementById('rotasPh'),
+        perfilSel=document.getElementById('perfil');
+    function renderChips(){
+      field.querySelectorAll('.gms-chip').forEach(function(c){c.remove();});
+      var checked=menu.querySelectorAll('input:checked');
+      ph.style.display=checked.length?'none':'';
+      checked.forEach(function(inp){
+        var chip=document.createElement('span');chip.className='gms-chip';
+        chip.innerHTML='<span>'+inp.getAttribute('data-nm')+'</span><button type="button" aria-label="Remover"><i data-lucide="x"></i></button>';
+        chip.querySelector('button').addEventListener('click',function(e){e.stopPropagation();inp.checked=false;renderChips();updateDirty();});
+        field.appendChild(chip);
+      });
+      if(window.lucide&&lucide.createIcons)lucide.createIcons();
+    }
+    field.addEventListener('click',function(){menu.classList.toggle('show');});
+    menu.addEventListener('change',renderChips);
+    document.addEventListener('click',function(e){if(!ms.contains(e.target))menu.classList.remove('show');});
+
+    // máscara de telefone: (99) 99999-9999
+    (function(){var tel=document.getElementById('fTel');if(!tel)return;
+      function mk(v){v=v.replace(/\D/g,'').slice(0,11);
+        if(v.length<=2)return v.length?('('+v):'';
+        if(v.length<=6)return '('+v.slice(0,2)+') '+v.slice(2);
+        if(v.length<=10)return '('+v.slice(0,2)+') '+v.slice(2,6)+'-'+v.slice(6);
+        return '('+v.slice(0,2)+') '+v.slice(2,7)+'-'+v.slice(7);}
+      tel.addEventListener('input',function(){tel.value=mk(tel.value);});
+    })();
+    renderChips();
+
+    var sw=document.getElementById('statusSw'),stx=document.getElementById('statusTxt');
+
+    // foto (redimensiona)
+    var fotoInput=document.getElementById('fotoInput'),avaImg=document.getElementById('avaImg'),
+        avaIni=document.getElementById('avaIni'),btnRm=document.getElementById('btnFotoRm'),fotoData='';
+    function resizeImg(file,cb){var r=new FileReader();r.onload=function(){var img=new Image();img.onload=function(){
+      var max=220,w=img.width,h=img.height,s=Math.min(max/w,max/h,1),cw=Math.round(w*s),ch=Math.round(h*s);
+      var cv=document.createElement('canvas');cv.width=cw;cv.height=ch;cv.getContext('2d').drawImage(img,0,0,cw,ch);
+      cb(cv.toDataURL('image/jpeg',0.85));};img.src=r.result;};r.readAsDataURL(file);}
+    function pickFoto(){fotoInput.click();}
+    document.getElementById('btnFoto').addEventListener('click',pickFoto);
+    document.getElementById('btnAdd').addEventListener('click',pickFoto);
+    fotoInput.addEventListener('change',function(){var f=fotoInput.files&&fotoInput.files[0];if(!f)return;
+      resizeImg(f,function(data){fotoData=data;avaImg.src=data;avaImg.hidden=false;avaIni.hidden=true;btnRm.hidden=false;updateDirty();});});
+    btnRm.addEventListener('click',function(){fotoData='';avaImg.hidden=true;avaImg.removeAttribute('src');avaIni.hidden=false;btnRm.hidden=true;fotoInput.value='';updateDirty();});
+
+    // senha: olho + regras ao vivo
+    var eye=document.getElementById('eye'),senha=document.getElementById('senha'),rules=document.getElementById('pwRules');
+    eye.addEventListener('click',function(){
+      var show=senha.type==='password';senha.type=show?'text':'password';
+      eye.innerHTML='<i data-lucide="'+(show?'eye-off':'eye')+'"></i>';
+      if(window.lucide&&lucide.createIcons)lucide.createIcons();
+    });
+    function setR(r,ok){var li=rules.querySelector('[data-r="'+r+'"]');if(li)li.classList.toggle('ok',ok);}
+    function validatePw(){var v=senha.value;
+      setR('len',v.length>=8);setR('upper',/[A-Z]/.test(v));setR('lower',/[a-z]/.test(v));
+      setR('num',/[0-9]/.test(v));setR('spec',/[^A-Za-z0-9]/.test(v));}
+    senha.addEventListener('focus',function(){rules.classList.add('show');});
+    senha.addEventListener('blur',function(){if(!senha.value)rules.classList.remove('show');});
+    senha.addEventListener('input',validatePw);
+
+    // status
+    sw.addEventListener('change',function(){stx.textContent=sw.checked?'Ativo':'Inativo';stx.classList.toggle('off',!sw.checked);syncInactive();updateDirty();});
+
+    // carrega motorista por índice (?i=)
+    var editIdx=null;
+    try{
+      var qi=new URLSearchParams(location.search).get('i');
+      if(qi!==null){var lst=JSON.parse(localStorage.getItem('gao_new_motoristas')||'[]'),md=lst[+qi];
+        if(md){editIdx=+qi;
+          document.getElementById('fNome').value=md.nome||'';
+          document.getElementById('fTel').value=md.tel||'';
+          document.getElementById('fUser').value=md.user||'';
+          menu.querySelectorAll('input').forEach(function(c){c.checked=(md.rotas||[]).indexOf(c.value)>=0;});
+          perfilSel.value=md.perfil||'padrao';
+          sw.checked=(md.status!=='inativo');stx.textContent=sw.checked?'Ativo':'Inativo';stx.classList.toggle('off',!sw.checked);
+          if(md.foto){fotoData=md.foto;avaImg.src=md.foto;avaImg.hidden=false;avaIni.hidden=true;btnRm.hidden=false;}
+          else{avaImg.hidden=true;avaImg.removeAttribute('src');avaIni.hidden=false;avaIni.textContent=(md.nome||'').trim().split(/\s+/).map(function(w){return w[0]||'';}).slice(0,2).join('').toUpperCase();}
+          var cn=document.getElementById('crumbName');if(cn)cn.textContent=md.nome||'Motorista';
+          var dt=document.getElementById('delText');if(dt)dt.textContent=(md.nome||'Este motorista')+' será removido do cadastro. Esta ação não pode ser desfeita.';
+          var el=document.getElementById('editLog');
+          if(el){function fmtD(ms){var d=new Date(ms),p=function(n){return(n<10?'0':'')+n;};return p(d.getDate())+'/'+p(d.getMonth()+1)+'/'+d.getFullYear();}
+            var c=md.createdAt?fmtD(md.createdAt):'—';
+            el.textContent='Cadastro criado em '+c+' · '+(md.updatedAt?('última edição em '+fmtD(md.updatedAt)):'ainda não editado')+'.';}
+        }
+      }
+    }catch(e){}
+    renderChips();
+
+    // validação + salvar
+    var reqs=form.querySelectorAll('.minput[data-required]');
+    reqs.forEach(function(inp){inp.addEventListener('input',function(){inp.classList.remove('err');inp.closest('.mfield').classList.remove('invalid');});});
+    function cardDone(sel){var r=document.querySelectorAll(sel+' .minput[data-required]');return r.length>0&&Array.prototype.every.call(r,function(i){return i.value.trim();});}
+    function checkSteps(){document.getElementById('step1').classList.toggle('done',cardDone('#card1'));document.getElementById('step2').classList.toggle('done',cardDone('#card2'));}
+    reqs.forEach(function(inp){inp.addEventListener('input',checkSteps);});
+    checkSteps();
+    document.getElementById('btnSave').addEventListener('click',function(){
+      var ok=true;
+      reqs.forEach(function(inp){var bad=!inp.value.trim();inp.classList.toggle('err',bad);inp.closest('.mfield').classList.toggle('invalid',bad);if(bad)ok=false;});
+      if(!ok){var f=form.querySelector('.minput.err');if(f)f.focus();return;}
+      if(editIdx!==null){try{
+        var lst=JSON.parse(localStorage.getItem('gao_new_motoristas')||'[]');
+        if(lst[editIdx]){
+          var rotas=[],rotasNm=[];menu.querySelectorAll('input:checked').forEach(function(c){rotas.push(c.value);rotasNm.push(c.getAttribute('data-nm'));});
+          lst[editIdx].nome=document.getElementById('fNome').value.trim();
+          lst[editIdx].tel=document.getElementById('fTel').value.trim();
+          lst[editIdx].user=document.getElementById('fUser').value.trim();
+          lst[editIdx].perfil=perfilSel.value;
+          lst[editIdx].rotas=rotas;lst[editIdx].rotasNm=rotasNm;
+          lst[editIdx].status=sw.checked?'ativo':'inativo';
+          lst[editIdx].foto=fotoData||'';
+          lst[editIdx].updatedAt=Date.now();
+          localStorage.setItem('gao_new_motoristas',JSON.stringify(lst));
+        }
+      }catch(e){}}
+      location.href='motorista.html';
+    });
+
+    // excluir
+    var m=document.getElementById('delModal');
+    document.getElementById('btnDel').addEventListener('click',function(){m.classList.add('show');});
+    document.getElementById('delCancel').addEventListener('click',function(){m.classList.remove('show');});
+    m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('show');});
+    document.getElementById('delOk').addEventListener('click',function(){
+      if(editIdx!==null){try{var lst=JSON.parse(localStorage.getItem('gao_new_motoristas')||'[]');lst.splice(editIdx,1);localStorage.setItem('gao_new_motoristas',JSON.stringify(lst));}catch(e){}}
+      location.href='motoristas.html';
+    });
+
+    // card de acesso apagado quando inativo
+    function syncInactive(){document.getElementById('card2').classList.toggle('inactive',!sw.checked);}
+    syncInactive();
+
+    // "Salvar alterações" só ativo quando algo muda
+    var btnSaveEl=document.getElementById('btnSave');
+    function stateStr(){var r=[];menu.querySelectorAll('input:checked').forEach(function(c){r.push(c.value);});r.sort();
+      return JSON.stringify([document.getElementById('fNome').value,document.getElementById('fTel').value,document.getElementById('fUser').value,senha.value,perfilSel.value,r,sw.checked,fotoData]);}
+    var initialState=stateStr();
+    function updateDirty(){btnSaveEl.disabled=(stateStr()===initialState);}
+    ['fNome','fTel','fUser'].forEach(function(id){document.getElementById(id).addEventListener('input',updateDirty);});
+    senha.addEventListener('input',updateDirty);
+    perfilSel.addEventListener('change',updateDirty);
+    menu.addEventListener('change',updateDirty);
+    updateDirty();
+  })();
+</script>
+</body>
+</html>
