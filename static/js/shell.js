@@ -433,3 +433,6 @@
   if(document.readyState !== 'loading') build();
   else document.addEventListener('DOMContentLoaded', build);
 })();
+
+/* ?novo=1 abre o modal de cadastro da tela (usado pelos Primeiros passos do Início) */
+window.addEventListener('load',function(){ if(!/[?&]novo=1/.test(location.search)) return; setTimeout(function(){ var b=document.getElementById('btnNovo')||document.getElementById('btnNova'); if(b) b.click(); try{ history.replaceState(null,'',location.pathname); }catch(e){} },250); });

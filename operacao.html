@@ -356,5 +356,17 @@
   })();
 })();
 </script>
+<script>
+/* sem dados: explica o que a tela é (os blocos reais aparecem depois da primeira rota) */
+(function(){
+  if(!window.GAO_VAZIO) return;
+  var it=[['triangle-alert','Precisam de ação','Atrasos e pendências aparecem aqui em destaque, para você resolver na hora.'],['chart-column','Entregas e coletas','O andamento do dia, hora a hora, e a situação de cada comanda.'],['route','Rotas de hoje','Cada rota com o motorista, as paradas e o status, ao vivo.']];
+  var c=document.createElement('section'); c.className='gk-card gk-explain';
+  c.innerHTML='<div class="gk-explain-h"><b>Acompanhe o dia em tempo real</b><p>A Operação mostra o que está acontecendo hoje. Ela começa a se preencher quando as comandas são liberadas para entrega e os motoristas saem para a rua.</p><a class="gk-btn" href="rotas.html?novo=1"><i data-lucide="plus" class="gk-ic"></i>Criar rotas</a></div><div class="gk-explain-g">'+it.map(function(x){ return '<div class="gk-explain-i"><i data-lucide="'+x[0]+'" class="gk-ic"></i><b>'+x[1]+'</b><span>'+x[2]+'</span></div>'; }).join('')+'</div>';
+  ['acSec'].forEach(function(i){ document.getElementById(i).hidden=true; });
+  document.querySelector('.gk-charts').hidden=true; document.querySelector('.gk-table-wrap').closest('section').hidden=true;
+  document.getElementById('acSec').parentNode.insertBefore(c,document.getElementById('acSec')); GK.icons();
+})();
+</script>
 </body>
 </html>
