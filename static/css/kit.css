@@ -1192,3 +1192,12 @@ body.gk-login-page{padding:0;background:var(--card)}
 .gk-explain-i b{font-size:13px;line-height:20px;font-weight:600}
 .gk-explain-i span{font-size:12px;line-height:16px;color:var(--muted)}
 @media (max-width:760px){.gk-explain-g{grid-template-columns:1fr}}
+
+/* transição suave entre páginas (View Transitions entre documentos: Chrome, Edge e Safari recentes; nos outros a troca é instantânea) */
+@view-transition{navigation:auto}
+.gao-side{view-transition-name:gao-side}
+::view-transition-old(root){animation:gkVtOut .12s ease both}
+::view-transition-new(root){animation:gkVtIn .26s cubic-bezier(.2,.7,.2,1) .04s both}
+@keyframes gkVtOut{to{opacity:0}}
+@keyframes gkVtIn{from{opacity:0;transform:translateY(6px)}}
+@media (prefers-reduced-motion:reduce){@view-transition{navigation:none}}
