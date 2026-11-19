@@ -260,3 +260,20 @@ document.addEventListener('click',function(e){
   GK.toast=function(msg,ms){ try{ sessionStorage.setItem(KEY,JSON.stringify({m:msg,t:Date.now()})); }catch(e){} show(msg,ms); };
   document.addEventListener('DOMContentLoaded',function(){ try{ var o=JSON.parse(sessionStorage.getItem(KEY)||'null'); if(o&&Date.now()-o.t<4000) show(o.m,Math.max(1200,3200-(Date.now()-o.t))); else sessionStorage.removeItem(KEY); }catch(e){} });
 })();
+
+/* estado vazio (GK.emptyHTML): ícone em quadrado azul-claro, título, uma linha de apoio e a ação principal */
+(function(){
+  GK.emptyHTML=function(o){
+    return '<div class="gk-empty gk-empty-first"><span class="gk-empty-ic"><i data-lucide="'+o.icon+'" class="gk-ic"></i></span><b>'+o.title+'</b>'+(o.text?'<span>'+o.text+'</span>':'')
+      +(o.btn?'<button type="button" class="gk-btn gk-btn-primary"'+(o.btn.id?' id="'+o.btn.id+'"':'')+'><i data-lucide="'+(o.btn.icon||'plus')+'" class="gk-ic"></i>'+o.btn.label+'</button>':'')+'</div>';
+  };
+})();
+
+/* lista sem nenhum registro (primeiro uso): esconde rodapé, desativa a barra e mostra o estado vazio com a ação */
+(function(){
+  GK.firstUse=function(zero,o){
+    var w=document.querySelector('.gk-table-wrap'), v=document.getElementById('vazio'); if(!w||!v) return;
+    w.classList.toggle('is-vazio',zero); var f=w.querySelector('.gk-tfoot'); if(f) f.hidden=zero; v.hidden=!zero;
+    if(zero&&!v.innerHTML){ v.innerHTML=GK.emptyHTML(o); GK.icons(); var b=v.querySelector('button'); if(b) b.addEventListener('click',function(){ var n=document.getElementById('btnNovo')||document.getElementById('btnNova'); if(n) n.click(); }); }
+  };
+})();

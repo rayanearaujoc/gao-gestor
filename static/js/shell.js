@@ -9,6 +9,8 @@
    Abrir o menu no mobile: qualquer elemento [data-gao-menu].
    ============================================================ */
 (function(){
+  // modo "telas vazias" (para ver o primeiro uso): ?vazio=1 liga, ?vazio=0 desliga; fica salvo na sessão
+  try{ var mv=/[?&]vazio=([01])/.exec(location.search); if(mv){ if(mv[1]==='1') sessionStorage.setItem('gao_vazio','1'); else sessionStorage.removeItem('gao_vazio'); } window.GAO_VAZIO=sessionStorage.getItem('gao_vazio')==='1'; }catch(e){ window.GAO_VAZIO=false; }
   // aplica o tema salvo o quanto antes (evita a maior parte do flash)
   try{ if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark') document.documentElement.setAttribute('data-theme','dark'); }catch(e){}
   var NAV_TOP = [
@@ -124,6 +126,7 @@
     h += '<div class="gao-pop" id="gaoPop">'
       + '<a class="gao-pop-item me" href="perfil.html"><span class="pii"><i data-lucide="circle-user-round"></i></span> Meu perfil</a>'
       + '<button class="gao-pop-item" id="gaoThemeItem" type="button"><span class="pii"><i data-lucide="moon"></i></span> Modo escuro</button>'
+      + '<button class="gao-pop-item" id="gaoVazioItem" type="button"><span class="pii"><i data-lucide="'+(window.GAO_VAZIO?'database':'inbox')+'"></i></span> '+(window.GAO_VAZIO?'Ver com dados':'Ver telas vazias')+'</button>'
       + '<div class="gao-pop-dv"></div>'
       + '<a class="gao-pop-item" href="login.html"><span class="pii"><i data-lucide="log-out"></i></span> Sair</a>'
       + '</div>'
@@ -285,7 +288,7 @@
     // rodapé do sistema (todas as páginas): direitos e versão à esquerda, suporte à direita
     if(!document.querySelector('.gk-foot')){
       var ft=document.createElement('footer'); ft.className='gk-foot';
-      ft.innerHTML='<span>© '+new Date().getFullYear()+' GAO Logística. Todos os direitos reservados.</span><span class="gk-foot-r"><a href="suporte.html">Suporte</a><span>Versão 1.0</span></span>';
+      ft.innerHTML='<span>© '+new Date().getFullYear()+' GAO Sistemas. Todos os direitos reservados.</span><span class="gk-foot-r"><a href="suporte.html">Suporte</a><span>Versão 1.0</span></span>';
       var mm=document.querySelector('main'); if(mm&&mm.parentNode) mm.parentNode.insertBefore(ft,mm.nextSibling); else document.body.appendChild(ft);
       document.body.classList.add('has-gk-foot');
     }
@@ -370,6 +373,9 @@
       var next=(document.documentElement.getAttribute('data-theme')==='dark')?'light':'dark';
       save('gao_theme', next); applyTheme(next); icons();
     });
+
+    var vz=document.getElementById('gaoVazioItem');
+    if(vz) vz.addEventListener('click', function(){ try{ if(window.GAO_VAZIO) sessionStorage.removeItem('gao_vazio'); else sessionStorage.setItem('gao_vazio','1'); }catch(e){} location.reload(); });
 
     // suporte: abrir o modal pelo item "Suporte" do menu
 

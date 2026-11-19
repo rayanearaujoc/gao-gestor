@@ -30,6 +30,7 @@
         <thead><tr><th>Cliente</th><th>Rota</th><th>WhatsApp</th><th>Status</th><th class="gk-col-actions" style="width:128px">Ações</th></tr></thead>
         <tbody id="tbody"></tbody>
       </table>
+      <div id="vazio" hidden></div>
       <div class="gk-empty" id="empty" hidden><i data-lucide="search" class="gk-ic"></i><b>Nenhum cliente encontrado</b>Tente ajustar os termos da busca ou remover os filtros.<div style="margin-top:var(--space-4)"><button class="gk-btn gk-btn-secondary" id="clearEmpty">Limpar filtros</button></div></div>
       <div class="gk-tfoot"><span id="cnt"></span><div class="gk-pager" id="pager"></div></div>
     </div>
@@ -68,7 +69,9 @@
     var total=list.length, pages=Math.max(1,Math.ceil(total/PAGE)); if(state.page>pages) state.page=pages;
     var start=(state.page-1)*PAGE, shown=list.slice(start,start+PAGE);
     tbody.innerHTML=shown.map(function(o){ return row(o.v,o.i); }).join('');
-    empty.hidden=total>0; tbody.closest('table').hidden=total===0;
+    var zero=CLI.length===0; empty.hidden=zero||total>0; tbody.closest('table').hidden=total===0;
+    document.querySelector('.gk-table-wrap').classList.toggle('is-vazio',zero); document.querySelector('.gk-tfoot').hidden=zero; document.getElementById('vazio').hidden=!zero;
+    if(zero&&!document.getElementById('vazio').innerHTML){ document.getElementById('vazio').innerHTML=GK.emptyHTML({icon:'building-2',title:'Nenhum cliente ainda',text:'Cadastre o primeiro cliente para criar comandas e entrar numa rota.',btn:{id:'btnNovo2',label:'Cadastrar cliente'}}); document.getElementById('btnNovo2').addEventListener('click',function(){ document.getElementById('btnNovo').click(); }); }
     document.getElementById('cnt').textContent = total===0?'Nenhum cliente encontrado':('Mostrando '+(start+1)+'–'+Math.min(start+PAGE,total)+' de '+total);
     var pg=document.getElementById('pager'); pg.innerHTML='';
     function mk(label,page,on,dis,aria){ var b=document.createElement('button'); b.type='button'; b.className='gk-btn gk-btn-ghost gk-btn-sm'+(on?' is-active':''); b.innerHTML=label; if(aria) b.setAttribute('aria-label',aria); b.disabled=dis; if(!dis&&!on) b.addEventListener('click',function(){ state.page=page; apply(); }); pg.appendChild(b); }

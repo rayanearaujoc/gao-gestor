@@ -29,6 +29,7 @@
         <thead><tr><th>Placa</th><th>Modelo</th><th>Capacidade</th><th>Tipo</th><th>Situação</th><th class="gk-col-actions" style="width:112px">Ações</th></tr></thead>
         <tbody id="tbody"></tbody>
       </table>
+      <div id="vazio" hidden></div>
       <div class="gk-empty" id="empty" hidden><i data-lucide="search" class="gk-ic"></i><b>Nenhum veículo encontrado</b>Tente ajustar os termos da busca ou remover os filtros.<div style="margin-top:var(--space-4)"><button class="gk-btn gk-btn-secondary" id="clearEmpty">Limpar filtros</button></div></div>
       <div class="gk-tfoot"><span id="cnt"></span><div class="gk-pager" id="pager"></div></div>
     </div>
@@ -51,6 +52,7 @@
     {placa:'RVA-8E62',modelo:'Peugeot Boxer',cap:'38',tipo:'',ano:'',status:'ativo'},
     {placa:'OMN-3G91',modelo:'Renault Master',cap:'36',tipo:'Furgão',ano:'2017',status:'inativo'}
   ];
+  if(window.GAO_VAZIO) VEIC.length=0;
   var state={q:'',tipo:[],status:[],page:1}, PAGE=10;
   var tbody=document.getElementById('tbody'), empty=document.getElementById('empty');
   function dash(v){ return v?v:'<span class="gk-caption">—</span>'; }
@@ -66,7 +68,8 @@
     var total=list.length, pages=Math.max(1,Math.ceil(total/PAGE)); if(state.page>pages) state.page=pages;
     var start=(state.page-1)*PAGE, shown=list.slice(start,start+PAGE);
     tbody.innerHTML=shown.map(function(o){ return row(o.v,o.i); }).join('');
-    empty.hidden=total>0; tbody.closest('table').hidden=total===0;
+    var zero=VEIC.length===0; empty.hidden=zero||total>0; tbody.closest('table').hidden=total===0;
+    GK.firstUse(zero,{icon:'truck',title:'Nenhum veículo ainda',text:'Cadastre a placa e o modelo de cada veículo.',btn:{label:'Cadastrar veículo'}});
     document.getElementById('cnt').textContent = total===0?'Nenhum veículo encontrado':('Mostrando '+(start+1)+'–'+Math.min(start+PAGE,total)+' de '+total);
     var pg=document.getElementById('pager'); pg.innerHTML='';
     function mk(label,page,on,dis,aria){ var b=document.createElement('button'); b.type='button'; b.className='gk-btn gk-btn-ghost gk-btn-sm'+(on?' is-active':''); b.innerHTML=label; if(aria) b.setAttribute('aria-label',aria); b.disabled=dis; if(!dis&&!on) b.addEventListener('click',function(){ state.page=page; apply(); }); pg.appendChild(b); }

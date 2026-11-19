@@ -36,6 +36,7 @@
           <thead><tr><th>Rota</th><th>Motoristas de hoje</th><th>Comandas</th><th>Coletas</th><th>Paradas</th><th>Status</th><th class="gk-col-actions" style="width:112px">Ações</th></tr></thead>
           <tbody id="tbody"></tbody>
         </table>
+        <div id="vazio" hidden></div>
         <div class="gk-empty" id="empty" hidden><i data-lucide="search" class="gk-ic"></i><b>Nenhuma rota encontrada</b>Tente ajustar os termos da busca ou remover os filtros.</div>
         <div class="gk-tfoot"><span id="cnt"></span></div>
       </div>
@@ -118,11 +119,13 @@
     {nome:'Rota Oeste',cli:3,lib:3,tot:3,col:1,par:[0,3],st:'Aguardando início',m:[{n:'Paulo César',c:0,e:0,hoje:true}]},
     {nome:'Rota Leste',cli:4,lib:3,tot:3,col:0,par:[0,4],st:'Aguardando início',m:[{n:'Anderson Souza',c:0,e:0}]}
   ];
+  if(window.GAO_VAZIO) R.length=0;
   var TEL={'Ronaldo Araújo':'(62) 99982-4510','Gustavo Lima':'(62) 99874-3321','Carlos Henrique':'(62) 99655-1208','Mariana Lopes':'(62) 99731-9046','Felipe Moraes':'(62) 98812-7743','Paulo César':'(62) 99420-5518','Rodrigo Alves':'(62) 99841-2207','Anderson Souza':'(62) 98563-1190','Bruno Castro':'(62) 99317-6602'};
   var PEND=[
     {id:42352,rota:'Rota Leste',cli:'Hospital Dia',g:4,h:'1 dia e 3 h'},{id:42351,rota:'Rota Leste',cli:'Laboratório Central',g:3,h:'1 dia e 1 h'},{id:42347,rota:'Rota Leste',cli:'Hospital Dia',g:2,h:'1 dia'},
     {id:42349,rota:'Rota Oeste',cli:'HEMU',g:6,h:'1 dia e 5 h'},{id:42344,rota:'Rota Oeste',cli:'HEMU',g:4,h:'1 dia e 2 h'}
   ];
+  if(window.GAO_VAZIO) PEND.length=0;
   var BADGE={'Aguardando início':'gk-badge gk-badge-warn','Carregando':'gk-badge gk-badge-info','Em andamento':'gk-badge gk-badge-info','Concluída':'gk-badge gk-badge-ok'};
   var STS=['Aguardando início','Carregando','Em andamento','Concluída'];
   var state={q:'',st:[]}, shown=[];
@@ -159,7 +162,8 @@
     var q=state.q;
     var list=R.filter(function(r){ return (!q||(r.nome+' '+r.m.map(function(x){return x.n;}).join(' ')).toLowerCase().indexOf(q)>=0)&&(!state.st.length||state.st.indexOf(r.st)>=0); });
     shown=list; $('tbody').innerHTML=list.map(function(r){ return row(r,R.indexOf(r)); }).join('');
-    $('empty').hidden=list.length>0; $('tbody').closest('table').hidden=!list.length;
+    var zero=R.length===0; $('empty').hidden=zero||list.length>0; $('tbody').closest('table').hidden=!list.length;
+    GK.firstUse(zero,{icon:'route',title:'Nenhuma rota hoje',text:'As rotas do dia aparecem aqui quando houver comandas liberadas para entrega.'});
     $('cnt').textContent=list.length?('Mostrando '+list.length+' de '+R.length+' rotas'):'Nenhuma rota encontrada';
     $('clearAll').hidden=!state.st.length; renderAvisos(); GK.icons();
   }
@@ -338,6 +342,7 @@
   /* vindo da Início: abre direto o que resolve a pendência */
   setTimeout(function(){ if(location.hash==='#sem-carregar') abrirPend(); else if(location.hash==='#paradas'){ var P=paradas(); if(P.length>1) abrirLista(); else if(P.length) abrirViagem(P[0].r,P[0].m); } },250);
   (function(){
+    if(!R.length){ ['chBars','chDonut'].forEach(function(i){ $(i).innerHTML=GK.emptyHTML({icon:'chart-column',title:'Sem dados ainda',text:'Aparece quando as rotas do dia começarem.'}); }); $('chM').textContent=''; $('chD').textContent=''; var lg=document.querySelector('.gk-charts .gk-tl-lg'); if(lg) lg.hidden=true; GK.icons(); return; }
     var h={}, tot=R.reduce(function(a,r){ return a+r.tot; },0), e=0, tr=0, co=0, ac=R.reduce(function(a,r){ return a+r.col; },0);
     R.forEach(function(r,ri){ r.m.forEach(function(m,mi){ tr+=m.c-m.e; evts(r,mi).forEach(function(x){ if(x.k==='col'||x.k==='ent'){ if(x.k==='col') co++; else e++; var k0=Math.floor(x.t/60); h[k0]=(h[k0]||0)+1; } }); }); });
     var it=[], T=tot+ac+co, hs=Math.floor(NOW/60), pl=function(k){ return Math.round(T*Math.pow((k-6)/11,1.6)); }, feitas=0, prev=0;

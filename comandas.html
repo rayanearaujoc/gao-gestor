@@ -36,6 +36,7 @@
         <thead><tr><th>Comanda</th><th>Cliente</th><th>Gaiolas</th><th>Status</th><th>Data</th><th class="gk-col-actions" style="width:140px">Ações</th></tr></thead>
         <tbody id="tbody"></tbody>
       </table>
+      <div id="vazio" hidden></div>
       <div class="gk-empty" id="empty" hidden><i data-lucide="search" class="gk-ic"></i><b>Nenhuma comanda encontrada</b>Tente ajustar os termos da busca ou remover os filtros.<div style="margin-top:var(--space-4)"><button class="gk-btn gk-btn-secondary" id="clearEmpty">Limpar filtros</button></div></div>
       <div class="gk-tfoot"><span id="cnt"></span><div class="gk-pager" id="pager"></div></div>
     </div>
@@ -149,13 +150,15 @@
       +'<td class="gk-strong">'+(m.g||'—')+'</td><td>'+badge(m.st)+'</td><td>'+m.d+'</td>'
       +'<td class="gk-col-actions"><span class="gk-acts">'+act('eye','Ver comanda','ver')+(plano==='sem'?(m.tipo==='Entrega'?act('printer','Etiquetas','tag'):'<span class="gk-act" style="visibility:hidden"></span>')+(m.st==='Liberada'?'<button class="gk-act is-danger" data-act="del" type="button" aria-label="Excluir comanda" title="Excluir comanda"><i data-lucide="trash-2" class="gk-ic"></i></button>':'<span class="gk-act" style="visibility:hidden"></span>'):'')+'</span></td></tr>';
   }
-  function carregar(){ M=(plano==='sem'?EXTRA.concat(SEMB):CRMB).map(function(x){ return JSON.parse(JSON.stringify(x)); }); }
+  function carregar(){ M=(window.GAO_VAZIO?(plano==='sem'?EXTRA:[]):(plano==='sem'?EXTRA.concat(SEMB):CRMB)).map(function(x){ return JSON.parse(JSON.stringify(x)); }); }
   function apply(){
     var list=M.filter(function(m){ return (!state.q||(('#'+m.id+' '+m.cli).toLowerCase().indexOf(state.q)>=0))&&(!state.cli.length||state.cli.indexOf(m.cli)>=0)&&(!state.st.length||state.st.indexOf(m.st)>=0)&&fP.test(m.d); });
     $('stC').textContent=list.length; $('stG').textContent=list.reduce(function(a,m){ return a+m.g; },0);
     var total=list.length, pages=Math.max(1,Math.ceil(total/PAGE)); if(state.page>pages) state.page=pages;
     var start=(state.page-1)*PAGE; shown=list.slice(start,start+PAGE);
-    $('tbody').innerHTML=shown.map(row).join(''); $('empty').hidden=total>0; $('tbody').closest('table').hidden=total===0;
+    $('tbody').innerHTML=shown.map(row).join(''); var zero=M.length===0; $('empty').hidden=zero||total>0; $('tbody').closest('table').hidden=total===0;
+    if(zero){ var v=$('vazio'); v.innerHTML=''; }
+    GK.firstUse(zero,plano==='sem'?{icon:'clipboard-list',title:'Nenhuma comanda ainda',text:'Crie a primeira comanda para liberar a entrega e gerar as etiquetas.',btn:{label:'Criar comanda'}}:{icon:'clipboard-list',title:'Nenhuma comanda ainda',text:'As comandas chegam do CRM GAO assim que a expedição é realizada.'});
     $('cnt').textContent=total===0?'Nenhuma comanda encontrada':('Mostrando '+(start+1)+'–'+Math.min(start+PAGE,total)+' de '+total);
     var pg=$('pager'); pg.innerHTML='';
     function mk(label,page,on,dis,aria){ var b=document.createElement('button'); b.type='button'; b.className='gk-btn gk-btn-ghost gk-btn-sm'+(on?' is-active':''); b.innerHTML=label; if(aria) b.setAttribute('aria-label',aria); b.disabled=dis; if(!dis&&!on) b.addEventListener('click',function(){ state.page=page; apply(); }); pg.appendChild(b); }

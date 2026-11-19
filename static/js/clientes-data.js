@@ -16,4 +16,5 @@
   var CAT={'Hospital Amparo':'Hospital','HEMU':'Hospital','Santa Casa':'Hospital','Clínica São Lucas':'Clínica médica','Laboratório Central':'Laboratório de análises','Hospital Dia':'Hospital','Clínica Vida Plena':'Clínica médica','Hospital Santa Marta':'Hospital','Clínica Bem Estar':'Clínica médica','Albert Einstein':'Hospital','Hotel Le Jardin':'Hotel'};
   GAO_CLI.forEach(function(c){ c.cat=CAT[c.nome]||''; c.origem=(c.nome==='Hospital Dia'||c.nome==='Clínica Bem Estar')?'manual':'crm'; c.tel='(62) 3000-0000'; if(c.cep) c.pin={x:.5,y:.62}; });
   GAO_CLI.forEach(function(c){ if(c.nome==='Albert Einstein') c.foto='static/img/albert-einstein.jpg'; if(c.nome==='Hotel Le Jardin') c.foto='static/img/le-jardin.jpg'; });
+  if(window.GAO_VAZIO) window.GAO_CLI=[];
 })();

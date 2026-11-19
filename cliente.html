@@ -125,7 +125,9 @@
   function render(){
     var l=lista();
     tbody.innerHTML=l.map(function(c){ return '<tr data-id="'+c.id+'"><td><label class="gk-check"><input type="checkbox" data-sel="'+c.id+'"'+(sel[c.id]?' checked':'')+' aria-label="Selecionar"></label></td><td>'+c.data+'</td><td>'+c.quem+'</td><td>'+c.tipo+'</td><td class="gk-col-actions"><span class="gk-acts"><a class="gk-act" href="comprovantes.html" aria-label="Ver comprovante" title="Ver"><i data-lucide="eye" class="gk-ic"></i></a></span></td></tr>'; }).join('');
-    $('empty').hidden=l.length>0; tbody.closest('table').hidden=l.length===0;
+    var zero=COMP.length===0, em=$('empty'); if(!em.__o) em.__o=em.innerHTML;
+    em.innerHTML=zero?GK.emptyHTML({icon:'file-check',title:'Nenhum comprovante ainda',text:'Os comprovantes aparecem aqui depois da primeira entrega ou coleta deste cliente.'}):em.__o; em.className=zero?'':'gk-empty'; if(zero) GK.icons(); var tf0=document.querySelector('.gk-tfoot'); if(tf0) tf0.hidden=zero;
+    em.hidden=l.length>0; tbody.closest('table').hidden=l.length===0;
     $('cnt').textContent=l.length?('Mostrando 1–'+l.length+' de '+l.length+' comprovantes'):'Nenhum comprovante encontrado';
     $('trClear').hidden=!(f.tipo.length||f.q||fP.active()); cards(l); contagem(); GK.icons();
   }

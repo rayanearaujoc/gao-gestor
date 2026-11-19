@@ -51,8 +51,9 @@
 (function(){
   var $=function(id){ return document.getElementById(id); }, pt=function(n,d){ return n.toFixed(d==null?1:d).replace('.',','); };
   var HOJE={ent:9,entTot:18,col:1,colTot:7,rotas:4,rotasTot:7};
-  $('hT').textContent=HOJE.ent+' de '+HOJE.entTot+' entregas feitas';
-  $('hM').innerHTML=GK.sp(HOJE.rotas+' rotas na rua · '+HOJE.col+' de '+HOJE.colTot+' coletas feitas · '+HOJE.rotasTot+' rotas hoje');
+  var VZ=!!window.GAO_VAZIO;
+  $('hT').textContent=VZ?'Nenhuma entrega hoje':HOJE.ent+' de '+HOJE.entTot+' entregas feitas';
+  $('hM').innerHTML=VZ?'Nenhuma rota saiu ainda':GK.sp(HOJE.rotas+' rotas na rua · '+HOJE.col+' de '+HOJE.colTot+' coletas feitas · '+HOJE.rotasTot+' rotas hoje');
 
   /* dados de exemplo: 200 dias fechados até ontem (hoje fica só na faixa azul) */
   var N=200, W=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'], WL=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'], MES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
@@ -73,6 +74,12 @@
   function delta(el,dv,txt,inv){ dv=Math.round(dv*10)/10; if(dv===0) txt=txt.replace(/^[+−]/,''); el.textContent=txt; el.className='gk-delta'+(dv===0?'':((dv>0)!==!!inv?' is-up':' is-down')); }
   function lbl(j,n){ var st=n<=31?5:(n<=62?10:15); return n<=7?W[new Date(2026,10,16-(N-1-j)).getDay()]:((N-1-j)%st===0?String(new Date(2026,10,16-(N-1-j)).getDate()):''); }
   function desenha(a,b){
+    if(VZ){
+      ['kT','kV','kK'].forEach(function(i){ $(i).textContent='—'; }); $('kM').textContent='R$ 0,00'; $('kMl').textContent='nenhuma multa';
+      ['kTd','kVd','kKd'].forEach(function(i){ $(i).textContent=''; $(i).className='gk-delta'; });
+      ['c1','c2','c3','c4'].forEach(function(i){ $(i).innerHTML=GK.emptyHTML({icon:'chart-column',title:'Sem dados ainda',text:'Aparece depois da primeira entrega.'}); });
+      ['c1m','c2m','c3m','c4m'].forEach(function(i){ $(i).textContent=''; }); var lg=document.querySelector('.gk-tl-lg'); if(lg) lg.hidden=true; GK.icons(); return;
+    }
     var n=b-a, P=agg(a,b), Q=agg(a-n,a), ant=n===7?'vs semana anterior':'vs período anterior', sg=function(x){ return x>0?'+':(x<0?'−':''); };
     $('kT').textContent=pt(P.rate)+'%'; delta($('kTd'),P.rate-Q.rate,sg(P.rate-Q.rate)+pt(Math.abs(P.rate-Q.rate))+' pt');
     $('kV').textContent=P.v.toLocaleString('pt-BR'); var pv=Math.round((P.v-Q.v)/Q.v*100); delta($('kVd'),pv,sg(pv)+Math.abs(pv)+'%');
@@ -113,6 +120,10 @@
     if(a<0||b>N) return GK.toast('Sem dados nesse intervalo');
     if(a-(b-a)<0) return GK.toast('Sem dados do período anterior para comparar');
     aplica(a,b,curto(a)+' – '+curto(b-1)); });
+  if(VZ){ var PS=[['users','Cadastre os motoristas','Quem vai dirigir e usar o app','motoristas.html'],['truck','Cadastre os veículos','Placa e modelo de cada um','veiculos.html'],['route','Crie as rotas','Escolha o motorista de cada rota','rotas.html'],['building-2','Cadastre os clientes','Endereço, WhatsApp e a rota de cada um','clientes.html'],['message-circle','Conecte o WhatsApp da empresa','Para avisar os clientes das entregas','configuracoes.html']];
+    var sc=document.createElement('section'); sc.className='gk-card gk-first'; sc.style.marginBottom='var(--space-5)';
+    sc.innerHTML='<div class="gk-first-h"><b>Primeiros passos</b><span class="gk-caption">0 de '+PS.length+'</span></div>'+PS.map(function(p){ return '<a class="gk-first-i" href="'+p[3]+'"><span class="gk-first-n"></span><span class="gk-first-t"><b>'+p[1]+'</b><span>'+p[2]+'</span></span><i data-lucide="chevron-right" class="gk-ic"></i></a>'; }).join('');
+    var hero=document.querySelector('.gk-hero'); hero.parentNode.insertBefore(sc,hero); }
   GK.popovers(); GK.icons();
 })();
 </script>

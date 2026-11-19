@@ -249,6 +249,19 @@
   ntOk.addEventListener('click',function(){ OC[cur].notas.push({by:'Marina Alves',d:'19/11/2026',t:nt.value.trim()}); nt.value=''; ntOk.disabled=true; pintaNotas(); GK.toast('Nota adicionada'); });
   renderOc();
   apply();
+  /* motorista recém-cadastrado: sem histórico (modo telas vazias) */
+  if(window.GAO_VAZIO){
+    OC.length=0; renderOc();
+    ['mD','mK','mM','mO'].forEach(function(i){ var e=document.getElementById(i); if(e) e.textContent=i==='mM'||i==='mO'?'0':'—'; }); ['mDl','mKl'].forEach(function(i){ var e=document.getElementById(i); if(e) e.textContent=''; });
+    ['cV','cO'].forEach(function(i){ document.getElementById(i).textContent='0'; });
+    var tc=document.querySelector('#pTabs .gk-tab[data-t=multas] .gk-count'); if(tc) tc.textContent='0';
+    var vz=function(ic,t,x){ return GK.emptyHTML({icon:ic,title:t,text:x}); };
+    var tb=document.getElementById('trBody'), tt=tb.closest('table'); tt.hidden=true; var te=document.getElementById('trEmpty'); te.className=''; te.hidden=false; te.innerHTML=vz('route','Nenhuma viagem ainda','As viagens aparecem aqui depois da primeira rota deste motorista.');
+    var tf=te.nextElementSibling; if(tf&&tf.classList.contains('gk-tfoot')) tf.hidden=true;
+    var mt=document.querySelector('#tpMultas table'); if(mt){ mt.hidden=true; var mf=document.querySelector('#tpMultas .gk-tfoot'); if(mf) mf.hidden=true; var md=document.createElement('div'); md.innerHTML=vz('receipt','Nenhuma multa','Nenhuma multa designada a este motorista.'); mt.parentNode.insertBefore(md,mt); }
+    document.querySelectorAll('#tpOcorrencias .gk-tfoot').forEach(function(f){ f.hidden=true; });
+    GK.icons();
+  }
 })();
 </script>
 </body>

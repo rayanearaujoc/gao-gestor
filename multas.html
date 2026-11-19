@@ -38,6 +38,7 @@
         <thead><tr><th>Infração</th><th>Veículo</th><th>Data e hora</th><th>Motorista</th><th>Viagem</th><th>Valor</th><th class="gk-col-actions" style="width:80px">Ações</th></tr></thead>
         <tbody id="tbody"></tbody>
       </table>
+      <div id="vazio" hidden></div>
       <div class="gk-empty" id="empty" hidden><i data-lucide="search" class="gk-ic"></i><b>Nenhuma multa encontrada</b>Tente ajustar os termos da busca ou remover os filtros.<div style="margin-top:var(--space-4)"><button class="gk-btn gk-btn-secondary" id="clearEmpty">Limpar filtros</button></div></div>
       <div class="gk-tfoot"><span id="cnt"></span><div class="gk-pager" id="pager"></div></div>
     </div>
@@ -79,6 +80,7 @@
     {ait:'G012344803',placa:'PXM-7C09',infr:'Estacionar em local proibido',data:'07/11/2026',hora:'10:30',mot:'Paulo Ribeiro',via:1037,valor:195.23,loc:'Av. Contorno, Goiânia/GO'},
     {ait:'G012344650',placa:'QRT-4A21',infr:'Transitar em faixa exclusiva de ônibus',data:'12/11/2026',hora:'06:40',mot:'Ronaldo Araújo',via:1048,valor:195.23,loc:'Av. Anhanguera, Goiânia/GO'}
   ];
+  if(window.GAO_VAZIO) M.length=0;
   var NOVA={ait:'G012345678',placa:'OGR-2C20',infr:'Velocidade até 20% acima do limite',data:'10/11/2026',hora:'14:37',mot:'Ronaldo Araújo',via:1044,valor:130.16,loc:'Av. Anhanguera, km 3, Setor Central, Goiânia/GO'};
   function key(m){ var d=m.data.split('/'); return d[2]+d[1]+d[0]+m.hora.replace(':',''); }
   M.sort(function(a,b){ return key(b)<key(a)?-1:1; });
@@ -100,7 +102,8 @@
     var total=list.length, pages=Math.max(1,Math.ceil(total/PAGE)); if(state.page>pages) state.page=pages;
     var start=(state.page-1)*PAGE; shown=list.slice(start,start+PAGE);
     tbody.innerHTML=shown.map(row).join('');
-    empty.hidden=total>0; tbody.closest('table').hidden=total===0;
+    var zero=M.length===0; empty.hidden=zero||total>0; tbody.closest('table').hidden=total===0;
+    GK.firstUse(zero,{icon:'receipt',title:'Nenhuma multa ainda',text:'Envie o PDF da primeira multa acima para designar o motorista.'});
     document.getElementById('cnt').textContent=total===0?'Nenhuma multa encontrada':('Mostrando '+(start+1)+'–'+Math.min(start+PAGE,total)+' de '+total);
     var pg=document.getElementById('pager'); pg.innerHTML='';
     function mk(label,page,on,dis,aria){ var b=document.createElement('button'); b.type='button'; b.className='gk-btn gk-btn-ghost gk-btn-sm'+(on?' is-active':''); b.innerHTML=label; if(aria) b.setAttribute('aria-label',aria); b.disabled=dis; if(!dis&&!on) b.addEventListener('click',function(){ state.page=page; apply(); }); pg.appendChild(b); }

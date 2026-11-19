@@ -1086,8 +1086,79 @@ a.gk-hero.is-row:hover{filter:brightness(1.06)}
 @media (prefers-reduced-motion:reduce){.gk-hero-live{animation:none}}
 .gk-hero-meta{display:flex;align-items:center;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,.86)}
 .gk-hero .gk-sep{background:rgba(255,255,255,.4)}
-.gk-hero.is-row .gk-btn{flex:none;position:relative;z-index:1}
-.gk-delta{margin-left:var(--space-2);font-size:12px;font-weight:600;color:var(--muted)}
-.gk-delta.is-up{color:var(--ok-ink)}
-.gk-delta.is-down{color:var(--bad-ink)}
+.gk-hero.is-row .gk-btn{flex:none;position:relative;z-index:1;background:rgba(255,255,255,.16);border-color:transparent;color:#fff;transition:background .15s}
+a.gk-hero.is-row:hover .gk-btn{background:rgba(255,255,255,.26)}
+.gk-delta{display:inline-flex;align-items:center;gap:4px;margin-left:var(--space-2);padding:2px 6px;border-radius:var(--radius-sm);background:var(--row);font-size:12px;line-height:16px;font-weight:600;color:var(--muted);vertical-align:middle}
+.gk-delta.is-up{background:var(--ok-bg);color:var(--ok-ink)}
+.gk-delta.is-down{background:var(--bad-bg);color:var(--bad-ink)}
+.gk-delta.is-up::before,.gk-delta.is-down::before{content:"";width:8px;height:8px;background:currentColor;clip-path:polygon(50% 10%,100% 90%,0 90%)}
+.gk-delta.is-down::before{transform:rotate(180deg)}
 .gk-sec-h{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);margin-bottom:var(--space-3)}
+
+/* anexo de imagens num formulário (lista de miniaturas) */
+.gk-attach{display:flex;flex-direction:column;gap:var(--space-1)}
+.gk-attach:not(:empty){margin-top:var(--space-2)}
+.gk-attach-i{display:flex;align-items:center;gap:var(--space-2);padding:var(--space-1) var(--space-1) var(--space-1) var(--space-1);border:1px solid var(--line);border-radius:var(--radius-md)}
+.gk-attach-i img{width:32px;height:32px;object-fit:cover;border-radius:var(--radius-sm);flex:none}
+.gk-attach-i span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+
+/* tela de login (duas metades): painel da empresa à esquerda, formulário à direita */
+.gk-login{display:grid;grid-template-columns:minmax(360px,5fr) 7fr;min-height:100vh;background:var(--card)}
+.gk-login-side{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:var(--space-8);background:linear-gradient(160deg,var(--primary),var(--read));color:#fff}
+.gk-login-side::after{content:"";position:absolute;left:-12%;bottom:-18%;width:92%;aspect-ratio:1;background:url(../img/flor.svg) center/contain no-repeat;filter:brightness(0) invert(1);opacity:.08;pointer-events:none}
+.gk-login-mark{position:relative;z-index:1;width:40px;height:40px;border-radius:var(--radius-full);background:rgba(255,255,255,.16);display:grid;place-items:center}
+.gk-login-mark img{width:22px;height:22px;filter:brightness(0) invert(1)}
+.gk-login-card{position:relative;z-index:1;max-width:320px;padding:var(--space-4) var(--space-5);border-radius:var(--radius-lg);background:var(--card);color:var(--fg);box-shadow:var(--shadow-panel)}
+.gk-login-card .gk-caption{display:block;margin-bottom:var(--space-1)}
+.gk-login-card b{font-size:20px;line-height:28px;font-weight:700}
+.gk-login-card svg{display:block;width:100%;height:56px;margin-top:var(--space-2)}
+.gk-login-main{position:relative;z-index:1;display:flex;flex-direction:column;min-width:0;margin-left:calc(var(--space-6) * -1);background:var(--card);border-radius:var(--space-6) 0 0 var(--space-6);box-shadow:-12px 0 40px rgba(16,24,40,.22)}
+.gk-login-box{width:min(100%,360px);margin:auto;padding:var(--space-8) var(--space-4)}
+.gk-login-logo{display:block;height:44px;width:auto;margin-bottom:var(--space-8)}
+.gk-login-box .gk-h1{margin:0 0 var(--space-5)}
+.gk-login-box .gk-form{display:flex;flex-direction:column;gap:var(--space-4)}
+.gk-login-box .gk-btn-primary{width:100%;height:var(--ctl-md)}
+.gk-login-link{align-self:flex-end;margin-top:calc(var(--space-2) * -1);font-size:12px;color:var(--primary);background:none;border:0;cursor:pointer;padding:0}
+.gk-login-link:hover{text-decoration:underline}
+.gk-login-back{display:inline-flex;align-items:center;gap:var(--space-1);margin-bottom:var(--space-5);font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer;padding:0}
+.gk-login-back:hover{color:var(--fg)}
+.gk-login-ok{text-align:left}
+.gk-login-ok p{margin:0 0 var(--space-5);color:var(--muted)}
+.gk-login-foot{padding:var(--space-4);text-align:center;font-size:12px;line-height:16px;color:var(--muted)}
+@media (max-width:899px){.gk-login{grid-template-columns:1fr}.gk-login-side{display:none}.gk-login-main{margin-left:0;border-radius:0;box-shadow:none}}
+body.gk-login-page{padding:0;background:var(--card)}
+/* login com fotos da empresa no painel (passam sozinhas); sem foto, vale o painel azul */
+.gk-login-side.has-photo::after,.gk-login-side.has-photo .gk-login-card{display:none}
+.gk-login-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.2s ease}
+.gk-login-photo.is-on{opacity:1}
+.gk-login-side.has-photo::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(15,23,42,.28) 0,rgba(15,23,42,0) 28%,rgba(15,23,42,0) 55%,var(--read) 135%)}
+
+.gk-login-dots{position:absolute;z-index:2;left:var(--space-8);bottom:var(--space-8);display:flex;gap:var(--space-2)}
+.gk-login-dots button{width:24px;height:4px;padding:0;border:0;border-radius:var(--radius-full);background:rgba(255,255,255,.4);cursor:pointer;transition:background .2s,width .2s}
+.gk-login-dots button.is-on{width:40px;background:#fff}
+
+/* estado vazio de primeiro uso: quadrado do ícone, título, apoio e ação; a barra da tabela fica desativada */
+.gk-empty-first{display:flex;flex-direction:column;align-items:center;gap:var(--space-1);padding:var(--space-10) var(--space-6)}
+.gk-empty-first .gk-empty-ic{width:44px;height:44px;margin-bottom:var(--space-3);border-radius:var(--radius-lg);background:var(--primary-soft);color:var(--primary);display:grid;place-items:center}
+.gk-empty-first .gk-empty-ic .gk-ic{width:20px;height:20px;margin:0;color:inherit}
+.gk-empty-first b{margin:0;font-size:13px;line-height:20px}
+.gk-empty-first>span:not(.gk-empty-ic){max-width:320px;font-size:12px;line-height:16px;color:var(--muted)}
+.gk-empty-first .gk-btn{margin-top:var(--space-4)}
+.gk-table-wrap.is-vazio .gk-toolbar .gk-input-wrap,.gk-table-wrap.is-vazio .gk-toolbar .gk-pop-anchor{opacity:.5;pointer-events:none}
+
+/* primeiros passos (Início de quem acabou de contratar) */
+.gk-first{padding:var(--space-4) var(--space-6)}
+.gk-first-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-2)}
+.gk-first-h b{font-size:13px;line-height:20px;font-weight:600}
+.gk-first-i{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) 0;border-top:1px solid var(--line);color:inherit;text-decoration:none}
+.gk-first-i:first-of-type{border-top:0}
+.gk-first-n{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line-strong);flex:none;display:grid;place-items:center}
+.gk-first-i.is-done .gk-first-n{background:var(--ok);border-color:var(--ok)}
+.gk-first-t{flex:1;min-width:0;display:flex;flex-direction:column}
+.gk-first-t b{font-size:13px;line-height:20px;font-weight:600}
+.gk-first-t span{font-size:12px;line-height:16px;color:var(--muted)}
+.gk-first-i .gk-ic{color:var(--ph)}
+.gk-first-i:hover .gk-ic{color:var(--fg)}
+
+.gk-delta:empty{display:none}
+.gk-empty-first .gk-btn .gk-ic{display:inline-block;width:16px;height:16px;margin:0;color:inherit}

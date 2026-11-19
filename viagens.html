@@ -34,6 +34,7 @@
         <thead><tr><th>Viagem</th><th>Data</th><th>Rota</th><th>Motorista</th><th>Clientes</th><th>Ocorrências</th><th>Status</th><th class="gk-col-actions" style="width:80px">Ações</th></tr></thead>
         <tbody id="tbody"></tbody>
       </table>
+      <div id="vazio" hidden></div>
       <div class="gk-empty" id="empty" hidden><i data-lucide="search" class="gk-ic"></i><b>Nenhuma viagem encontrada</b>Tente ajustar os termos da busca ou remover os filtros.<div style="margin-top:var(--space-4)"><button class="gk-btn gk-btn-secondary" id="clearEmpty">Limpar filtros</button></div></div>
       <div class="gk-tfoot"><span id="cnt"></span><div class="gk-pager" id="pager"></div></div>
     </div>
@@ -49,6 +50,7 @@
   var PLACAS=['QRT-4A21','PXM-7C09','OGR-2C20','OLK-9B13','QSD-1H78','PYH-5D40'];
   var KM=[551,214,187,342,96,268,431,175,309,122,254,388], OC=[0,2,0,1,0,0,3,0,1,0,0,0], CL=[4,3,5,4,2,3,6,3,4,2,3,5];
   var V=[]; for(var i=0;i<12;i++){ var d=12-Math.floor(i/2); V.push({id:1048-i,data:(d<10?'0':'')+d+'/11/2026',rota:ROTAS[i%6],mot:MOT[i%4],placa:PLACAS[(i*5)%6],cli:CL[i],km:KM[i],oc:OC[i],st:i===0?'Em andamento':'Concluída'}); }
+  if(window.GAO_VAZIO) V.length=0;
   var state={q:'',rota:[],mot:[],st:[],page:1}, PAGE=10;
   var tbody=document.getElementById('tbody'), empty=document.getElementById('empty');
   function ini(n){ return n.split(' ').map(function(x){ return x[0]; }).slice(0,2).join(''); }
@@ -66,7 +68,8 @@
     var total=list.length, pages=Math.max(1,Math.ceil(total/PAGE)); if(state.page>pages) state.page=pages;
     var start=(state.page-1)*PAGE, shown=list.slice(start,start+PAGE);
     tbody.innerHTML=shown.map(row).join('');
-    empty.hidden=total>0; tbody.closest('table').hidden=total===0;
+    var zero=V.length===0; empty.hidden=zero||total>0; tbody.closest('table').hidden=total===0;
+    GK.firstUse(zero,{icon:'route',title:'Nenhuma viagem ainda',text:'As viagens aparecem aqui quando um motorista inicia uma rota.'});
     document.getElementById('cnt').textContent=total===0?'Nenhuma viagem encontrada':('Mostrando '+(start+1)+'–'+Math.min(start+PAGE,total)+' de '+total);
     var pg=document.getElementById('pager'); pg.innerHTML='';
     function mk(label,page,on,dis,aria){ var b=document.createElement('button'); b.type='button'; b.className='gk-btn gk-btn-ghost gk-btn-sm'+(on?' is-active':''); b.innerHTML=label; if(aria) b.setAttribute('aria-label',aria); b.disabled=dis; if(!dis&&!on) b.addEventListener('click',function(){ state.page=page; apply(); }); pg.appendChild(b); }

@@ -45,9 +45,10 @@
       <div id="hForm">
         <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="headphones" class="gk-ic"></i></span><h2 class="gk-h2" id="hT">Pedir ajuda</h2></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovH" aria-label="Fechar"><i data-lucide="x" class="gk-ic"></i></button></div>
         <div class="gk-modal-body" style="border-top:1px solid var(--line)"><div class="gk-form">
-          <div class="gk-field"><label class="gk-label">Sobre o que você quer falar?<span class="gk-req">*</span></label><div class="gk-radios is-col" id="hTopics"></div></div>
+          <div class="gk-field"><label class="gk-label" for="hTopic">Sobre o que você quer falar?<span class="gk-req">*</span></label><select class="gk-select" id="hTopic"></select></div>
           <div class="gk-field" id="hExtraF" hidden><label class="gk-label" id="hExtraL"></label><select class="gk-select" id="hExtra"></select></div>
           <div class="gk-field"><label class="gk-label">Mensagem<span class="gk-req">*</span></label><textarea class="gk-textarea" id="hMsg" style="height:112px;padding:var(--space-3);resize:none" placeholder="Conte com poucas palavras o que você precisa"></textarea></div>
+          <div class="gk-field"><label class="gk-label">Imagem</label><div class="gk-inline"><input type="file" id="hFile" accept="image/*" multiple hidden><button class="gk-btn gk-btn-secondary gk-btn-sm" type="button" id="hFileBtn"><i data-lucide="paperclip" class="gk-ic"></i>Anexar imagem</button><span class="gk-caption">Até 3 imagens</span></div><div class="gk-attach" id="hFiles"></div></div>
         </div></div>
         <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovH">Cancelar</button><button class="gk-btn gk-btn-primary" id="hOk" disabled><i data-lucide="send" class="gk-ic"></i>Enviar pedido</button></div>
       </div>
@@ -119,16 +120,21 @@
 
   /* pedir ajuda */
   var sel=null;
-  $('hTopics').innerHTML=TOPICS.map(function(t){ return '<label class="gk-radio"><input type="radio" name="hT" value="'+t.k+'">'+t.t+'</label>'; }).join('');
+  $('hTopic').innerHTML='<option value="">Selecione</option>'+TOPICS.map(function(t){ return '<option value="'+t.k+'">'+t.t+'</option>'; }).join('');
+  var files=[];
+  function lista(){ $('hFiles').innerHTML=files.map(function(f,i){ return '<div class="gk-attach-i"><img src="'+f.u+'" alt=""><span>'+f.n+'</span><button type="button" class="gk-btn gk-btn-ghost gk-btn-icon gk-btn-sm" data-rm="'+i+'" aria-label="Remover"><i data-lucide="x" class="gk-ic"></i></button></div>'; }).join(''); $('hFileBtn').disabled=files.length>=3; GK.icons(); }
+  $('hFileBtn').addEventListener('click',function(){ $('hFile').click(); });
+  $('hFile').addEventListener('change',function(){ Array.prototype.slice.call($('hFile').files).forEach(function(f){ if(files.length<3) files.push({n:f.name,u:URL.createObjectURL(f)}); }); $('hFile').value=''; lista(); });
+  $('hFiles').addEventListener('click',function(e){ var b=e.target.closest('[data-rm]'); if(!b) return; files.splice(+b.getAttribute('data-rm'),1); lista(); });
   function chk(){ $('hOk').disabled=!(sel&&$('hMsg').value.trim().length>=10); }
   function setTopic(k){
     sel=TOPICS.filter(function(t){ return t.k===k; })[0]||null;
-    document.querySelectorAll('#hTopics input').forEach(function(i){ i.checked=sel&&i.value===sel.k; });
+    $('hTopic').value=sel?sel.k:'';
     var x=sel&&sel.x; $('hExtraF').hidden=!x; if(x){ $('hExtraL').textContent=x.l; $('hExtra').innerHTML='<option value="">Selecione</option>'+x.o.map(function(o){ return '<option>'+o+'</option>'; }).join(''); }
     chk();
   }
-  function abrir(k){ $('hForm').hidden=false; $('hDone').hidden=true; $('hMsg').value=''; setTopic(k||null); GK.open('ovH'); GK.icons(); }
-  $('hTopics').addEventListener('change',function(e){ setTopic(e.target.value); });
+  function abrir(k){ $('hForm').hidden=false; $('hDone').hidden=true; $('hMsg').value=''; files=[]; lista(); setTopic(k||null); GK.open('ovH'); GK.icons(); }
+  $('hTopic').addEventListener('change',function(e){ setTopic(e.target.value); });
   $('hMsg').addEventListener('input',chk);
   $('btnAjuda').addEventListener('click',function(){ abrir(); });
   $('hOk').addEventListener('click',function(){

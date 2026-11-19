@@ -29,6 +29,7 @@
         <thead><tr><th>Rota</th><th>Clientes</th><th>Motoristas</th><th class="gk-col-actions" style="width:112px">Ações</th></tr></thead>
         <tbody id="tbody"></tbody>
       </table>
+      <div id="vazio" hidden></div>
       <div class="gk-empty" id="empty" hidden><i data-lucide="search" class="gk-ic"></i><b>Nenhuma rota encontrada</b>Tente ajustar os termos da busca ou remover os filtros.<div style="margin-top:var(--space-4)"><button class="gk-btn gk-btn-secondary" id="clearEmpty">Limpar filtros</button></div></div>
       <div class="gk-tfoot"><span id="cnt">Mostrando 1–6 de 6</span><div class="gk-pager" id="pager"></div></div>
     </div>
@@ -51,6 +52,7 @@
     {nome:'Rota Leste',cli:['hospitaldia','central'],mot:['joao','pedro']},
     {nome:'Rota Oeste',cli:['hemu'],mot:['marcos']}
   ];
+  if(window.GAO_VAZIO) ROT.length=0;
   function nomes(ids,MAP){ if(!ids.length) return '<span class="gk-caption">—</span>'; return '<span class="gk-medium">'+MAP[ids[0]]+'</span>'+(ids.length>1?' <span class="gk-strong" style="color:var(--muted)">+'+(ids.length-1)+'</span>':''); }
   var state={q:'',cli:[],mot:[],page:1}, PAGE=10, cur=null;
   var tbody=document.getElementById('tbody'), empty=document.getElementById('empty');
@@ -64,7 +66,8 @@
     var total=list.length, pages=Math.max(1,Math.ceil(total/PAGE)); if(state.page>pages) state.page=pages;
     var start=(state.page-1)*PAGE, shown=list.slice(start,start+PAGE);
     tbody.innerHTML=shown.map(function(o){ return row(o.r,o.i); }).join('');
-    empty.hidden=total>0; tbody.closest('table').hidden=total===0;
+    var zero=ROT.length===0; empty.hidden=zero||total>0; tbody.closest('table').hidden=total===0;
+    GK.firstUse(zero,{icon:'route',title:'Nenhuma rota ainda',text:'Crie a primeira rota e escolha o motorista dela.',btn:{label:'Cadastrar rota'}});
     document.getElementById('cnt').textContent = total===0?'Nenhuma rota encontrada':('Mostrando '+(start+1)+'–'+Math.min(start+PAGE,total)+' de '+total);
     var pg=document.getElementById('pager'); pg.innerHTML='';
     function mk(label,page,on,dis,aria){ var b=document.createElement('button'); b.type='button'; b.className='gk-btn gk-btn-ghost gk-btn-sm'+(on?' is-active':''); b.innerHTML=label; if(aria) b.setAttribute('aria-label',aria); b.disabled=dis; if(!dis&&!on) b.addEventListener('click',function(){ state.page=page; apply(); }); pg.appendChild(b); }
