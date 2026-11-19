@@ -88,7 +88,7 @@
   function brl(v){ return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
   function row(m,i){
     return '<tr class="gk-row-link" data-i="'+i+'"><td><div class="gk-cell-main"><span><span class="gk-strong">'+m.infr+'</span><span class="gk-sub" style="display:block">AIT '+m.ait+'</span></span></div></td>'
-      +'<td class="gk-strong">'+m.placa+'</td><td>'+m.data+' · '+m.hora+'</td>'
+      +'<td class="gk-strong">'+m.placa+'</td><td>'+m.data+GK.sep+m.hora+'</td>'
       +'<td><div class="gk-cell-main"><span class="gk-avatar">'+ini(m.mot)+'</span><span>'+m.mot+'</span></div></td>'
       +'<td><a class="gk-link" href="viagem.html?v='+m.via+'">#'+m.via+'</a></td><td class="gk-strong">'+brl(m.valor)+'</td>'
       +'<td class="gk-col-actions"><span class="gk-acts"><button class="gk-act" data-ver aria-label="Ver multa" title="Ver"><i data-lucide="eye" class="gk-ic"></i></button></span></td></tr>';
@@ -125,11 +125,11 @@
   function timeline(t,hora){
     var A=6,B=20, ini=pct(t.de), fim=pct(t.ate), pin=pct(hora);
     var l=(ini-A)/(B-A)*100, w=(fim-ini)/(B-A)*100, p=(pin-A)/(B-A)*100;
-    return '<div class="gk-tl"><div class="gk-tl-bar"><div class="gk-tl-seg" style="left:'+l+'%;width:'+w+'%"></div><div class="gk-tl-pin" style="left:'+p+'%"><span>Multa · '+hora+'</span></div></div><div class="gk-tl-ax"><span>Em rota das '+t.de+' às '+t.ate+'</span><span>06h – 20h</span></div></div>';
+    return '<div class="gk-tl"><div class="gk-tl-bar"><div class="gk-tl-seg" style="left:'+l+'%;width:'+w+'%"></div><div class="gk-tl-pin" style="left:'+p+'%"><span>Multa'+GK.sep+hora+'</span></div></div><div class="gk-tl-ax"><span>Em rota das '+t.de+' às '+t.ate+'</span><span>06h – 20h</span></div></div>';
   }
   function tripHTML(id,best){
     var t=TRIPS[id];
-    return '<div class="gk-trip'+(best?'':' is-sm')+'" data-id="'+id+'"><div class="gk-trip-h"><span class="gk-avatar">'+ini(t.mot)+'</span><div class="gk-trip-b"><b>'+t.mot+'</b><span>Viagem #'+id+' · '+t.rota+' · '+t.placa+(best?'':' · '+t.de+'–'+t.ate)+'</span></div><button type="button" class="gk-btn gk-btn-sm '+(best?'gk-btn-primary':'gk-btn-secondary')+'" data-best="'+(best?1:0)+'" data-des="'+id+'">Designar</button></div>'+(best?timeline(t,cur.hora):'')+'</div>';
+    return '<div class="gk-trip'+(best?'':' is-sm')+'" data-id="'+id+'"><div class="gk-trip-h"><span class="gk-avatar">'+ini(t.mot)+'</span><div class="gk-trip-b"><b>'+t.mot+'</b><span>Viagem #'+id+GK.sep+t.rota+GK.sep+t.placa+(best?'':GK.sep+t.de+'–'+t.ate)+'</span></div><button type="button" class="gk-btn gk-btn-sm '+(best?'gk-btn-primary':'gk-btn-secondary')+'" data-best="'+(best?1:0)+'" data-des="'+id+'">Designar</button></div>'+(best?timeline(t,cur.hora):'')+'</div>';
   }
   function marcar(){
     document.querySelectorAll('#mRes [data-des]').forEach(function(b){
@@ -142,7 +142,7 @@
   }
   function resultado(){
     var outras=Object.keys(TRIPS).filter(function(id){ return +id!==BEST; });
-    $('mRes').innerHTML='<div class="gk-ctx"><i data-lucide="file-text" class="gk-ic"></i><b>'+cur.placa+'</b>·<span>'+cur.data+' às '+cur.hora+'</span>·<span>'+brl(cur.valor)+'</span></div>'
+    $('mRes').innerHTML='<div class="gk-ctx"><i data-lucide="file-text" class="gk-ic"></i><b>'+cur.placa+'</b>'+GK.sep+'<span>'+cur.data+' às '+cur.hora+'</span>'+GK.sep+'<span>'+brl(cur.valor)+'</span></div>'
       +'<div class="gk-sec-t">Viagem mais provável</div>'+tripHTML(BEST,true)
       +'<div class="gk-sec-t">Outras viagens do dia</div><div class="gk-trip-list">'+outras.map(function(id){ return tripHTML(+id,false); }).join('')+'</div>';
     $('mAn').hidden=true; $('mRes').hidden=false; GK.icons(); marcar();
@@ -167,8 +167,8 @@
     timers.forEach(clearTimeout); if(anim){ anim.destroy(); anim=null; } cur=m;
     $('mTitle').textContent='Multa '+m.ait; $('mAn').hidden=true; $('mOk').hidden=true; $('mCancel').textContent='Fechar';
     var t=TRIPS[m.via];
-    $('mRes').innerHTML='<dl class="gk-mfacts"><div class="is-wide"><dt>Infração</dt><dd>'+m.infr+'</dd></div><div><dt>Veículo</dt><dd>'+m.placa+'</dd></div><div><dt>Data e hora</dt><dd>'+m.data+' · '+m.hora+'</dd></div><div class="is-wide"><dt>Local</dt><dd>'+m.loc+'</dd></div><div><dt>AIT</dt><dd>'+m.ait+'</dd></div><div><dt>Valor</dt><dd>'+brl(m.valor)+'</dd></div></dl>'
-      +'<div class="gk-sec-t">Viagem e motorista</div><div class="gk-trip"><div class="gk-trip-h"><span class="gk-avatar">'+ini(m.mot)+'</span><div class="gk-trip-b"><b>'+m.mot+'</b><span>Viagem #'+m.via+(t?' · '+t.rota:'')+'</span></div><a class="gk-btn gk-btn-secondary gk-btn-sm" href="viagem.html?v='+m.via+'">Ver viagem</a></div></div>';
+    $('mRes').innerHTML='<dl class="gk-mfacts"><div class="is-wide"><dt>Infração</dt><dd>'+m.infr+'</dd></div><div><dt>Veículo</dt><dd>'+m.placa+'</dd></div><div><dt>Data e hora</dt><dd>'+m.data+GK.sep+m.hora+'</dd></div><div class="is-wide"><dt>Local</dt><dd>'+m.loc+'</dd></div><div><dt>AIT</dt><dd>'+m.ait+'</dd></div><div><dt>Valor</dt><dd>'+brl(m.valor)+'</dd></div></dl>'
+      +'<div class="gk-sec-t">Viagem e motorista</div><div class="gk-trip"><div class="gk-trip-h"><span class="gk-avatar">'+ini(m.mot)+'</span><div class="gk-trip-b"><b>'+m.mot+'</b><span>Viagem #'+m.via+(t?GK.sep+t.rota:'')+'</span></div><a class="gk-btn gk-btn-secondary gk-btn-sm" href="viagem.html?v='+m.via+'">Ver viagem</a></div></div>';
     $('mRes').hidden=false; abrirModal();
   }
   $('mRes').addEventListener('click',function(e){ var b=e.target.closest('[data-des]'); if(!b) return; des=+b.getAttribute('data-des'); cur.via=des; cur.mot=TRIPS[des].mot; marcar(); });

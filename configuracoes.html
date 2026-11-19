@@ -14,16 +14,9 @@
   <main class="gpage">
     <div class="gk-page-head"><div><h1 class="gk-h1">Configurações</h1></div></div>
 
-    <div class="gk-settings">
-      <nav class="gk-sidetabs">
-        <button class="gk-sidetab is-active" data-t="plano"><i data-lucide="credit-card" class="gk-ic"></i>Plano</button>
-        <button class="gk-sidetab" data-t="bot"><i data-lucide="bot" class="gk-ic"></i>Assistente WhatsApp</button>
-        <button class="gk-sidetab" data-t="empresa"><i data-lucide="building-2" class="gk-ic"></i>Dados da empresa</button>
-      </nav>
-      <div class="gk-settings-panel">
-        <section data-p="plano">
-          <h2 class="gk-h2">Plano</h2>
-          <div class="gk-caption" style="margin-bottom:var(--space-5)">O que está contratado pela sua empresa.</div>
+    <div class="gk-table-wrap">
+      <div class="gk-tabs" id="cfgTabs"><button class="gk-tab is-active" data-t="plano">Plano</button><button class="gk-tab" data-t="bot">Assistente WhatsApp</button><button class="gk-tab" data-t="empresa">Dados da empresa</button></div>
+      <section class="gk-tabpanel" data-p="plano">
           <div class="gk-hero" style="margin-bottom:var(--space-5)">
             <div class="gk-hero-l">Seu plano</div>
             <div class="gk-hero-t">CRM GAO + Logística</div>
@@ -39,17 +32,13 @@
             <a class="gk-btn gk-btn-secondary" href="https://wa.me/556230000000" target="_blank" rel="noopener"><i data-lucide="message-circle" class="gk-ic"></i>Falar com a GAO</a>
           </div>
         </section>
-        <section data-p="bot" hidden>
-          <h2 class="gk-h2">Assistente WhatsApp</h2>
-          <div class="gk-caption" style="margin-bottom:var(--space-6)">O número que envia os avisos automáticos aos clientes durante as viagens.</div>
+      <section class="gk-tabpanel" data-p="bot" hidden>
           <div class="gk-status-row">
             <div><div class="gk-inline" style="gap:var(--space-2)"><h3 class="gk-h3" id="wNum"></h3><span id="wBadge"></span></div><div class="gk-caption" id="wDesc"></div></div>
             <button class="gk-btn gk-btn-secondary" id="wBtn" type="button"></button>
           </div>
         </section>
-        <section data-p="empresa" hidden>
-          <h2 class="gk-h2">Dados da empresa</h2>
-          <div class="gk-caption" style="margin-bottom:var(--space-6)">Dados cadastrados pela GAO.</div>
+      <section class="gk-tabpanel" data-p="empresa" hidden>
           <div class="gk-fgroup"><h3 class="gk-h3">Empresa</h3><div class="gk-fgrid"><div class="gk-fact"><div class="gk-fact-l">Nome</div><div class="gk-fact-v"><span class="gk-strong">GAO Lavanderia Hospitalar</span></div></div><div class="gk-fact"><div class="gk-fact-l">CNPJ</div><div class="gk-fact-v">12.345.678/0001-90</div></div><div class="gk-fact"><div class="gk-fact-l">Categoria</div><div class="gk-fact-v">Lavanderia hospitalar</div></div><div class="gk-fact"><div class="gk-fact-l">Telefone</div><div class="gk-fact-v">(62) 3000-0000</div></div></div></div>
           <div class="gk-fgroup"><h3 class="gk-h3">Endereço</h3><div class="gk-fgrid"><div class="gk-fact"><div class="gk-fact-l">CEP</div><div class="gk-fact-v">74110-010</div></div><div class="gk-fact"><div class="gk-fact-l">Logradouro</div><div class="gk-fact-v">Av. T-4, 1200</div></div><div class="gk-fact"><div class="gk-fact-l">Bairro</div><div class="gk-fact-v">Setor Bueno</div></div><div class="gk-fact"><div class="gk-fact-l">Cidade</div><div class="gk-fact-v">Goiânia, GO</div></div></div></div>
           <div class="gk-fgroup"><h3 class="gk-h3">Responsável</h3><div class="gk-fgrid"><div class="gk-fact"><div class="gk-fact-l">Nome</div><div class="gk-fact-v">Marina Alves</div></div><div class="gk-fact"><div class="gk-fact-l">Cargo</div><div class="gk-fact-v">Gestora</div></div><div class="gk-fact"><div class="gk-fact-l">WhatsApp</div><div class="gk-fact-v">(62) 99456-7800</div></div><div class="gk-fact"><div class="gk-fact-l">E-mail</div><div class="gk-fact-v">marina@gaolavanderia.com.br</div></div></div></div>
@@ -58,7 +47,6 @@
             <a class="gk-btn gk-btn-secondary" href="https://wa.me/556230000000" target="_blank" rel="noopener"><i data-lucide="message-circle" class="gk-ic"></i>Falar com a GAO</a>
           </div>
         </section>
-      </div>
     </div>
   </main>
 
@@ -90,8 +78,8 @@
   $('wBtn').addEventListener('click',function(){ GK.open(on?'ovWppOff':'ovWpp'); });
   $('wOk').addEventListener('click',function(){ on=true; GK.close('ovWpp'); GK.toast('WhatsApp conectado'); pintar(); });
   $('wOffOk').addEventListener('click',function(){ on=false; GK.close('ovWppOff'); GK.toast('WhatsApp desconectado'); pintar(); });
-  document.querySelectorAll('.gk-sidetab').forEach(function(t){ t.addEventListener('click',function(){
-    document.querySelectorAll('.gk-sidetab').forEach(function(x){ x.classList.toggle('is-active',x===t); });
+  document.querySelectorAll('#cfgTabs .gk-tab').forEach(function(t){ t.addEventListener('click',function(){
+    document.querySelectorAll('#cfgTabs .gk-tab').forEach(function(x){ x.classList.toggle('is-active',x===t); });
     document.querySelectorAll('[data-p]').forEach(function(p){ p.hidden=p.getAttribute('data-p')!==t.getAttribute('data-t'); }); }); });
   pintar(); GK.popovers(); GK.icons();
 })();

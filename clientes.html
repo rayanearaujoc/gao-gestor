@@ -93,6 +93,7 @@
     location.href='cliente.html?c='+i;
   });
   apply();
+  if(location.hash==='#pendentes'){ var pb=document.getElementById('pendBtn'); if(pb&&!pb.closest('[hidden]')) pb.click(); }
 })();
 </script>
 </body>

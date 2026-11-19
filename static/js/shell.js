@@ -34,7 +34,9 @@
     ]}
   ];
   var NAV_BOTTOM = [];
-  var USER = {name:'Marina Alves', short:'Olá, Marina', role:'Gestora', initials:'MA'};
+  var USER = {name:'Marina Alves', short:'Olá, Marina', role:'Gestora', initials:'MA', photo:''};
+  try{ var _pf=JSON.parse(localStorage.getItem('gao_profile')||'null'); if(_pf&&_pf.name){ USER.name=_pf.name; USER.photo=_pf.photo||'';
+    var _p=_pf.name.trim().split(/\s+/); USER.initials=((_p[0]||'')[0]+(_p.length>1?_p[_p.length-1][0]:'')).toUpperCase(); USER.short='Olá, '+_p[0]; } }catch(e){}
 
   /* ---- ícones estruturais inline (independem do lucide) ---- */
   var CHV_SEC   = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
@@ -125,7 +127,7 @@
       + '<div class="gao-pop-dv"></div>'
       + '<a class="gao-pop-item" href="login.html"><span class="pii"><i data-lucide="log-out"></i></span> Sair</a>'
       + '</div>'
-      + '<button class="gao-pc" id="gaoPc" data-gao-user aria-haspopup="true"><span class="gao-avatar">'+USER.initials+'</span>'
+      + '<button class="gao-pc" id="gaoPc" data-gao-user aria-haspopup="true"><span class="gao-avatar">'+(USER.photo?'<img src="'+USER.photo+'" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">':USER.initials)+'</span>'
       + '<span class="gao-pt"><b>'+USER.name+'</b><small>'+USER.role+'</small></span>'
       + '<span class="gao-pc-cx" id="gaoPcCx">'+CHV_UP+'</span></button>'
       + '</div>';

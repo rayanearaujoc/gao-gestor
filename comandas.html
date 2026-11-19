@@ -225,7 +225,7 @@
       h='<ol class="gk-flows">'+FLOW.map(function(s,n){ var c=n<i?'is-done':(n===i?(n<FLOW.length-1?'is-now':'is-done'):'is-todo'); return '<li class="gk-flow '+c+'"><span class="gk-flow-ic">'+(c==='is-done'?'<i data-lucide="check" class="gk-ic"></i>':'')+'</span><div class="gk-flow-b"><div><b>'+s[0]+'</b>'+(n<=i?'<span>'+RESP[n]+'</span>':'')+'</div>'+(n<=i?'<em>'+hh(m,n)+'</em>':'')+'</div></li>'; }).join('')+'</ol>';
     } else {
       var L=[['Embarque',i>=6,m.g+' gaiolas com roupa · 2 fotos'],['Deslocamento',i>=6,'Cliente avisado por WhatsApp'],['Entrega',i>=7,'Recebido no cliente · assinatura e 2 fotos'],['Coleta',i>=7,'Gaiolas recolhidas · 2 fotos'],['Descarrega',i>=7,'Conferência na lavanderia']];
-      h='<ol class="gk-flows">'+L.map(function(s){ var c=s[1]?'is-done':'is-todo'; return '<li class="gk-flow '+c+'"><span class="gk-flow-ic">'+(s[1]?'<i data-lucide="check" class="gk-ic"></i>':'')+'</span><div class="gk-flow-b"><div><b>'+s[0]+'</b>'+(s[1]?'<span>'+s[2]+'</span>':'')+'</div></div></li>'; }).join('')+'</ol>';
+      h='<ol class="gk-flows">'+L.map(function(s){ var c=s[1]?'is-done':'is-todo'; return '<li class="gk-flow '+c+'"><span class="gk-flow-ic">'+(s[1]?'<i data-lucide="check" class="gk-ic"></i>':'')+'</span><div class="gk-flow-b"><div><b>'+s[0]+'</b>'+(s[1]?'<span>'+GK.sp(s[2])+'</span>':'')+'</div></div></li>'; }).join('')+'</ol>';
     }
     $('cP').innerHTML=h; GK.icons();
     var sg=$('iSeg'); if(sg) sg.addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return; sg.querySelectorAll('button').forEach(function(x){ x.classList.toggle('is-active',x===b); }); $('iG').hidden=b.getAttribute('data-v')!=='g'; $('iP').hidden=b.getAttribute('data-v')!=='p'; });
@@ -247,7 +247,7 @@
   var curE=null, curX=null;
   $('xOk').addEventListener('click',function(){ [M,EXTRA,SEMB].forEach(function(a){ var i=a.indexOf(curX); if(i>=0) a.splice(i,1); }); GK.close('ovX'); GK.toast('Comanda excluída'); apply(); });
   function etiquetas(m,novo){
-    curE=m; $('eT').textContent='Gerar etiquetas'; $('eS').innerHTML='<b style="color:var(--fg);font-weight:600">'+(novo?'Comanda criada':'Comanda')+' · #'+m.id+'</b><span style="display:block">'+m.g+(m.g>1?' etiquetas':' etiqueta')+', uma por gaiola.</span>';
+    curE=m; $('eT').textContent='Gerar etiquetas'; $('eS').innerHTML='<b style="color:var(--fg);font-weight:600">'+(novo?'Comanda criada':'Comanda')+GK.sep+'#'+m.id+'</b><span style="display:block">'+m.g+(m.g>1?' etiquetas':' etiqueta')+', uma por gaiola.</span>';
     var h=''; for(var n=1;n<=m.g;n++) h+=tagHTML(m,n);
     $('eG').innerHTML=h; $('printArea').innerHTML=h; GK.open('ovE'); GK.icons();
   }

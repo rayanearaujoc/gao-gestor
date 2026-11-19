@@ -77,6 +77,14 @@
     </div>
   </div>
 
+  <!-- viagens paradas (lista) -->
+  <div class="gk-overlay" id="ovLV"><div class="gk-scrim" data-close="ovLV"></div>
+    <div class="gk-modal is-form" role="dialog" aria-labelledby="lvT">
+      <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="clock" class="gk-ic"></i></span><h2 class="gk-h2" id="lvT">Viagens paradas</h2></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovLV" aria-label="Fechar"><i data-lucide="x" class="gk-ic"></i></button></div>
+      <div class="gk-modal-body" style="border-top:1px solid var(--line)"><div id="lvList"></div></div>
+    </div>
+  </div>
+
   <!-- avisar motorista -->
   <div class="gk-overlay" id="ovV"><div class="gk-scrim" data-close="ovV"></div>
     <div class="gk-modal is-form" role="dialog" aria-labelledby="vT">
@@ -102,9 +110,10 @@
   var FOLG=['Paulo César','Anderson Souza','Bruno Castro'];
   // rotas de hoje: m = motoristas do dia (c = carregou, e = entregou, hoje = designado só hoje)
   var R=[
-    {nome:'Rota Hospitalar',cli:8,lib:1,tot:6,col:2,par:[5,8],st:'Em andamento',m:[{n:'Ronaldo Araújo',c:3,e:2},{n:'Gustavo Lima',c:2,e:1}]},
-    {nome:'Rota Centro',cli:5,lib:0,tot:4,col:1,par:[3,5],st:'Em andamento',m:[{n:'Carlos Henrique',c:2,e:1},{n:'Rodrigo Alves',c:2,e:1}],parada:'2h10'},
     {nome:'Rota Norte',cli:6,lib:2,tot:5,col:1,par:[0,6],st:'Carregando',m:[{n:'Felipe Moraes',c:3,e:0}]},
+    {nome:'Rota Hospitalar',cli:8,lib:1,tot:6,col:2,par:[5,8],st:'Em andamento',m:[{n:'Ronaldo Araújo',c:3,e:2,cl:[0]},{n:'Gustavo Lima',c:2,e:1,cl:[0]}]},
+    {nome:'Rota Centro',cli:5,lib:0,tot:4,col:1,par:[3,5],st:'Em andamento',m:[{n:'Carlos Henrique',c:2,e:1,cl:[0]},{n:'Rodrigo Alves',c:2,e:1,cl:[],pmin:130}]},
+    {nome:'Rota Jardins',cli:4,lib:0,tot:3,col:1,par:[1,4],st:'Em andamento',m:[{n:'Bruno Castro',c:3,e:1,cl:[0],pmin:45}]},
     {nome:'Rota Sul',cli:4,lib:0,tot:3,col:0,par:[4,4],st:'Concluída',m:[{n:'Mariana Lopes',c:3,e:3}]},
     {nome:'Rota Oeste',cli:3,lib:3,tot:3,col:1,par:[0,3],st:'Aguardando início',m:[{n:'Paulo César',c:0,e:0,hoje:true}]},
     {nome:'Rota Leste',cli:4,lib:3,tot:3,col:0,par:[0,4],st:'Aguardando início',m:[{n:'Anderson Souza',c:0,e:0}]}
@@ -131,16 +140,20 @@
       +'<td class="gk-col-actions"><span class="gk-acts"><button class="gk-act" data-act="ver" type="button" aria-label="Ver rota" title="Ver rota"><i data-lucide="eye" class="gk-ic"></i></button>'
       +(r.st==='Concluída'?'<span class="gk-act" style="visibility:hidden"></span>':'<button class="gk-act" data-act="des" type="button" aria-label="Designar motorista" title="Designar motorista"><i data-lucide="user-plus" class="gk-ic"></i></button>')+'</span></td></tr>';
   }
+  function fmtP(min){ return min>=60?Math.floor(min/60)+'h'+('0'+min%60).slice(-2):min+' min'; }
+  function paradas(){ var o=[]; R.forEach(function(r){ r.m.forEach(function(m){ if(m.pmin) o.push({r:r,m:m}); }); }); return o; }
   function avisos(){
     var a=[];
     if(PEND.length){ var rs=[]; PEND.forEach(function(x){ if(rs.indexOf(x.rota)<0) rs.push(x.rota); }); a.push({id:'pend',ic:'clipboard-list',k:'Comandas sem carregar',v:PEND.length+(PEND.length>1?' comandas':' comanda'),t:rs.join(' e ')+' · liberadas há mais de 24 horas, ninguém carregou',btn:'Ver e designar'}); }
-    R.forEach(function(r){ if(r.parada) a.push({id:'viagem',ic:'clock',k:'Viagem parada',v:r.nome+' · há '+r.parada,t:r.nome+' · '+r.m[1].n+', sem confirmar parada',btn:'Avisar motorista',rota:r}); });
+    var P=paradas();
+    if(P.length===1) a.push({id:'viagem',ic:'clock',k:'Viagem parada',v:P[0].r.nome+' · há '+fmtP(P[0].m.pmin),t:'',btn:'Avisar motorista'});
+    else if(P.length>1) a.push({id:'viagens',ic:'clock',k:'Viagens paradas',v:P.length+' viagens',t:'',btn:'Ver e avisar'});
     return a;
   }
   function renderAvisos(){
     var a=avisos(); $('acSec').hidden=!a.length;
-    $('alerts').innerHTML=a.map(function(x){ return '<button type="button" class="gk-attn-c" data-al="'+x.id+'"><span class="gk-attn-k"><i data-lucide="'+x.ic+'" class="gk-ic"></i>'+x.k+'</span><span class="gk-attn-v">'+x.v+'</span><span class="gk-attn-a">'+x.btn+'<i data-lucide="arrow-right" class="gk-ic"></i></span></button>'; }).join('');
-    $('alerts').querySelectorAll('[data-al]').forEach(function(b){ b.addEventListener('click',function(){ if(b.getAttribute('data-al')==='pend') abrirPend(); else abrirViagem(); }); });
+    $('alerts').innerHTML=a.map(function(x){ return '<button type="button" class="gk-attn-c" data-al="'+x.id+'"><span class="gk-attn-k"><i data-lucide="'+x.ic+'" class="gk-ic"></i>'+x.k+'</span><span class="gk-attn-v">'+GK.sp(x.v)+'</span><span class="gk-attn-a">'+x.btn+'<i data-lucide="arrow-right" class="gk-ic"></i></span></button>'; }).join('');
+    $('alerts').querySelectorAll('[data-al]').forEach(function(b){ b.addEventListener('click',function(){ var al=b.getAttribute('data-al'); if(al==='pend') abrirPend(); else if(al==='viagens') abrirLista(); else abrirViagem(paradas()[0].r,paradas()[0].m); }); });
   }
   function apply(){
     var q=state.q;
@@ -175,6 +188,7 @@
     'Rota Hospitalar':[['Hospital Amparo','Setor Bueno'],['Hospital Dia','Setor Leste Universitário'],['Hospital Santa Genoveva','Setor Oeste'],['Maternidade Nascer','Setor Marista'],['Hospital Ortopédico','Setor Bueno'],['Hospital do Coração','Setor Sul'],['Clínica Vida Plena','Setor Central'],['Hospital Oncológico','Setor Universitário']],
     'Rota Centro':[['Santa Casa','Setor Central'],['Clínica Central','Setor Central'],['Hospital São Salvador','Setor Oeste'],['Laboratório Vida','Setor Central'],['Clínica Dermato','Setor Marista']],
     'Rota Norte':[['Laboratório Central','Setor Central'],['Hospital Norte','Jardim Guanabara'],['Clínica Bem Estar','Vila Nova'],['Hospital Infantil','Setor Norte Ferroviário'],['UPA Norte','Jardim Guanabara'],['Clínica Renal','Setor Central']],
+    'Rota Jardins':[['Clínica Jardim Goiás','Jardim Goiás'],['Hospital Jardim América','Jardim América'],['Laboratório Alphaville','Alphaville'],['Clínica Flamboyant','Jardim Goiás']],
     'Rota Sul':[['Clínica São Lucas','Setor Bueno'],['Hospital Sul','Jardim América'],['Clínica Ortopédica','Setor Bueno'],['Pronto Socorro Sul','Jardim América']],
     'Rota Oeste':[['HEMU','Setor Oeste'],['Hospital Oeste','Setor Oeste'],['Clínica Oeste','Setor Oeste']],
     'Rota Leste':[['Hospital Dia','Setor Leste Universitário'],['Laboratório Leste','Setor Leste Universitário'],['Clínica Leste','Setor Leste Universitário'],['Hospital Leste','Setor Leste Universitário']]
@@ -193,7 +207,7 @@
       if(idx===0&&mi===0&&k===1) out.push({t:t0+10+k*6+3,k:'oc',a:'Registrou um problema',l:'Etiqueta ilegível · 1 gaiola'});
     }
     if(r.st==='Carregando'){ out.push({t:NOW,k:'now',a:'Carregando',l:'Conferindo as gaiolas de '+cli(m.c)[0],x:'carregamento'}); return out; }
-    var sai=t0+10+m.c*6+8, pm=r.parada&&mi===1?(+r.parada.split('h')[0]*60+ +r.parada.split('h')[1]):0, ult=pm?NOW-pm:sai+35+(m.e-1)*55;
+    var sai=t0+10+m.c*6+8, pm=m.pmin||0, ult=pm?NOW-pm:sai+35+(m.e-1)*55;
     out.push({t:sai,k:'sai',a:'Iniciou as entregas',l:'Rota calculada · '+m.c+(m.c>1?' paradas':' parada')});
     for(k=0;k<m.e;k++) out.push({t:ult-(m.e-1-k)*55,k:'ent',a:'Confirmou a entrega',l:'Comanda #'+id(k)+' · '+cli(k)[0],x:'Recebido por '+RECEB[(k+idx)%4]+' · '+SETOR[(k+mi)%4]});
     if(r.st==='Concluída'){
@@ -202,7 +216,7 @@
       out.push({t:ult+107,k:'sai',a:'Finalizou a viagem',l:'38 km rodados',end:1}); return out;
     }
     var prox=m.e<m.c?cli(m.e)[0]:'a coleta';
-    if(pm) out.push({t:NOW,k:'now',stop:1,a:'Parado',l:'Perto de '+cli(m.e-1)[0],x:'Sem confirmar parada há '+r.parada.replace('h',' h ')});
+    if(pm) out.push({t:NOW,k:'now',stop:1,a:'Parado',l:'Perto de '+cli(m.e-1)[0],x:'Sem confirmar parada há '+fmtP(pm).replace('h',' h ')});
     else out.push({t:NOW,k:'now',a:'Em trânsito',l:'Indo para '+prox,x:'Em trânsito para '+prox});
     return out;
   }
@@ -220,7 +234,11 @@
     var S=STOPS[r.nome], DOTS=T.filter(function(e){ return e.k==='car'||e.k==='ent'||e.k==='col'||e.k==='now'||e.end; });
     o.fimE=DOTS.filter(function(e){ return e.end; })[0]; o.nowE=DOTS.filter(function(e){ return e.now; })[0];
     var done=DOTS.filter(function(e){ return !e.now&&!e.end; }), pend=[];
-    if(!o.fimE) for(var q=m.e;q<m.c;q++) pend.push({mi:mi,k:'pend',a:'Próxima parada',l:S[(mi*3+q)%S.length][0],ids:[]});
+    var ridx=R.indexOf(r), pcli=function(k){ return S[(mi*3+k)%S.length][0]; };
+    if(!o.fimE){
+      for(var q=m.e;q<m.c;q++) pend.push({mi:mi,k:'pend',a:'Entregar',l:pcli(q),x:'Comanda #'+(42300+ridx*10+mi*5+q)+' · '+((q*3+ridx)%4+3)+' gaiolas',ids:[g.n++]});
+      (m.cl||[]).forEach(function(q){ if(q<m.e) pend.push({mi:mi,k:'pend',a:'Coletar',l:pcli(q),x:'Entregue · coleta marcada',ids:[g.n++]}); });
+    }
     var seq=o.seq=done.concat(pend), n=seq.length+(o.fimE?1:0), P=o.P;
     seq.forEach(function(e,i){ P.push(i===0?[70,178-mi*22]:[70+470*i/Math.max(n,2),Math.max(40,Math.min(206,118+(mi%2?36:-36)+38*Math.sin(i*1.9+R.indexOf(r)*.7+mi*3.1)))]); });
     o.lastD=done.length-1; o.cp=null;
@@ -233,7 +251,7 @@
   function curve(Q){ if(Q.length<2) return ''; var d='M'+Q[0][0]+' '+Q[0][1]; for(var i=0;i<Q.length-1;i++){ var p0=Q[i-1]||Q[i],p1=Q[i],p2=Q[i+1],p3=Q[i+2]||p2; d+=' C'+(p1[0]+(p2[0]-p0[0])/6).toFixed(1)+' '+(p1[1]+(p2[1]-p0[1])/6).toFixed(1)+' '+(p2[0]-(p3[0]-p1[0])/6).toFixed(1)+' '+(p2[1]-(p3[1]-p1[1])/6).toFixed(1)+' '+p2[0].toFixed(1)+' '+p2[1].toFixed(1); } return d; }
   function pintar(){
     var r=cur.r, g={n:0}, D=r.m.map(function(x,i){ return build(r,i,g); }), multi=r.m.length>1, ativos=D.filter(function(o){ return o.E.length; });
-    $('rAv').hidden=!r.parada;
+    $('rAv').hidden=!r.m.some(function(x){ return x.pmin; });
     var h='';
     if(!ativos.length){ $('rB').innerHTML='<div class="gk-tl-empty">Ainda não começou. Quando o motorista iniciar a viagem no app, os registros aparecem aqui.</div>'; return wireTL(); }
     /* mapa esquemático: a posição de cada parada é simulada (no app real vem do GPS) */
@@ -255,7 +273,9 @@
       +'<div class="gk-mp-s"><span>Tempo de viagem</span><b>'+tmTxt+'</b></div><div class="gk-mp-s is-r"><span>Entregas</span><b>'+ents+' de '+cars+'</b></div>'+dots+'</div>';
     h+='<div class="gk-tl-lg">'+(multi?D.map(function(o,i){ return '<span><i class="is-ln" style="background:'+COR[i%4]+'"></i><b>'+first(o.m.n)+'</b>'+(o.E.length?'':' · não iniciou')+'</span>'; }).join(''):'')+'<span><i style="background:var(--read)"></i>Carregamento</span><span><i style="background:var(--ok)"></i>Entrega</span><span><i class="is-ring"></i>Coleta</span><span><i class="is-pend"></i>Próxima parada</span></div>';
     var L=[]; ativos.forEach(function(o){ L=L.concat(o.E); }); L.sort(function(a,b){ return a.t-b.t||a.i-b.i; });
-    h+='<div class="gk-tl-list">'+L.reverse().map(function(e){ return '<div class="gk-tl-i is-'+e.k+(e.stop?' is-stop':'')+'" data-i="'+e.i+'"><time>'+hm(e.t)+'</time><i></i><div><b>'+(multi?'<em style="--dc:'+cs(e.mi)+'">'+first(r.m[e.mi].n)+'</em> · ':'')+e.a+'</b><br><span>'+e.l+(e.x&&!e.stop&&e.k!=='now'?' · '+e.x:'')+'</span></div></div>'; }).join('')+'</div>';
+    var PN=[]; ativos.forEach(function(o){ PN=PN.concat(o.seq.filter(function(e){ return e.k==='pend'; })); });
+    var pendH=PN.map(function(e){ return '<div class="gk-tl-i is-pend" data-i="'+e.ids[0]+'"><time>—</time><i></i><div><b>'+(multi?'<em style="--dc:'+cs(e.mi)+'">'+first(r.m[e.mi].n)+'</em>'+GK.sep:'')+e.a+'</b><br><span>'+GK.sp(e.l)+GK.sep+e.x+'</span></div></div>'; }).join('');
+    h+='<div class="gk-tl-list">'+pendH+L.reverse().map(function(e){ return '<div class="gk-tl-i is-'+e.k+(e.stop?' is-stop':'')+'" data-i="'+e.i+'"><time>'+hm(e.t)+'</time><i></i><div><b>'+(multi?'<em style="--dc:'+cs(e.mi)+'">'+first(r.m[e.mi].n)+'</em>'+GK.sep:'')+e.a+'</b><br><span>'+GK.sp(e.l)+(e.x&&!e.stop&&e.k!=='now'?GK.sep+GK.sp(e.x):'')+'</span></div></div>'; }).join('')+'</div>';
     $('rB').innerHTML=h; wireTL();
   }
   function wireTL(){
@@ -276,7 +296,7 @@
     else pintar();
     GK.open('ovR'); GK.icons();
   }
-  $('rAv').addEventListener('click',function(){ GK.close('ovR'); abrirViagem(); });
+  $('rAv').addEventListener('click',function(){ var m=cur.r.m.filter(function(x){ return x.pmin; })[0]; GK.close('ovR'); abrirViagem(cur.r,m); });
   $('tbody').addEventListener('click',function(e){
     var tr=e.target.closest('tr'); if(!tr) return; var r=R[+tr.getAttribute('data-i')], a=e.target.closest('[data-act]'), k=a?a.getAttribute('data-act'):'ver';
     if(k==='des') abrirDes(r.nome); else ver(r);
@@ -287,8 +307,8 @@
   function abrirPend(){
     var rs=[]; PEND.forEach(function(x){ if(rs.indexOf(x.rota)<0) rs.push(x.rota); }); selP={}; PEND.forEach(function(x){ selP[x.id]=true; });
     $('pList').innerHTML=rs.map(function(r){ var L=PEND.filter(function(x){ return x.rota===r; });
-      return '<div class="gk-sec-t" style="margin:var(--space-4) 0 var(--space-2)">'+r+' · '+L.length+(L.length>1?' comandas':' comanda')+'</div><div class="gk-list">'+L.map(function(x){
-        return '<label class="gk-list-i" style="cursor:pointer"><div style="display:flex;align-items:center;gap:var(--space-3)"><span class="gk-check"><input type="checkbox" checked data-p="'+x.id+'"></span><div><strong class="gk-strong">#'+x.id+'</strong> · '+x.cli+'</div></div><div>'+x.g+' gaiolas · há '+x.h+'</div></label>'; }).join('')+'</div>'; }).join('');
+      return '<div class="gk-sec-t" style="margin:var(--space-4) 0 var(--space-2)">'+r+GK.sep+L.length+(L.length>1?' comandas':' comanda')+'</div><div class="gk-list">'+L.map(function(x){
+        return '<label class="gk-list-i" style="cursor:pointer"><div style="display:flex;align-items:center;gap:var(--space-3)"><span class="gk-check"><input type="checkbox" checked data-p="'+x.id+'"></span><div><strong class="gk-strong">#'+x.id+'</strong>'+GK.sep+x.cli+'</div></div><div>'+x.g+' gaiolas'+GK.sep+'há '+x.h+'</div></label>'; }).join('')+'</div>'; }).join('');
     $('pMotBox').innerHTML=GK.ssHTML('ssP','Selecione o motorista','Buscar motorista',FOLG.concat(ATIVOS.filter(function(n){ return FOLG.indexOf(n)<0; })));
     ssP=GK.searchSelect($('pMotBox').firstChild,function(){ pBtn(); }); pBtn(); GK.open('ovP'); GK.icons();
   }
@@ -297,18 +317,26 @@
   $('pOk').addEventListener('click',function(){ PEND=PEND.filter(function(x){ return !selP[x.id]; }); GK.close('ovP'); apply(); });
 
   /* avisar motorista (viagem parada) */
-  function msgV(r){ var m=r.m[1], p=first(m.n); return 'Olá, '+p+'! Aqui é da logística da GAO. Notamos que sua viagem da '+r.nome+' está sem confirmação de parada há '+r.parada+'. Está tudo bem? Se houve algum imprevisto, responda por aqui para a gente te ajudar.'; }
-  var rV=null, tC=null;
-  function abrirViagem(){
-    rV=R.filter(function(r){ return r.parada; })[0]; var m=rV.m[1];
-    $('vAva').innerHTML='<span class="gk-strong" style="font-size:15px">'+(m.n.split(' ')[0][0]+m.n.split(' ')[1][0])+'</span>'; $('vPara').textContent=m.n; $('vWpp').textContent=TEL[m.n]||'';
-    $('vMsg').textContent=msgV(rV); GK.open('ovV'); GK.icons();
+  function msgV(r,m){ var p=first(m.n); return 'Olá, '+p+'! Aqui é da logística da GAO. Notamos que sua viagem da '+r.nome+' está sem confirmação de parada há '+fmtP(m.pmin).replace('h',' h ')+'. Está tudo bem? Se houve algum imprevisto, responda por aqui para a gente te ajudar.'; }
+  var rV=null, mV=null, tC=null;
+  function abrirViagem(r,m){
+    rV=r; mV=m;
+    $('vAva').innerHTML='<span class="gk-strong" style="font-size:15px">'+ini(m.n)+'</span>'; $('vPara').textContent=m.n; $('vWpp').textContent=TEL[m.n]||'';
+    $('vMsg').textContent=msgV(r,m); GK.open('ovV'); GK.icons();
   }
+  /* várias viagens paradas: lista com um aviso por motorista */
+  function abrirLista(){
+    $('lvList').innerHTML='<div class="gk-list">'+paradas().map(function(x,i){ return '<div class="gk-list-i"><div style="display:flex;align-items:center;gap:var(--space-3)"><span class="gk-avatar">'+ini(x.m.n)+'</span><div><strong class="gk-strong">'+x.m.n+'</strong><div class="gk-caption">'+x.r.nome+GK.sep+'sem confirmar parada há '+fmtP(x.m.pmin).replace('h',' h ')+'</div></div></div><button type="button" class="gk-btn gk-btn-secondary gk-btn-sm" data-lv="'+i+'"><i data-lucide="send" class="gk-ic"></i>Avisar</button></div>'; }).join('')+'</div>';
+    GK.open('ovLV'); GK.icons();
+  }
+  $('lvList').addEventListener('click',function(e){ var b=e.target.closest('[data-lv]'); if(!b) return; var x=paradas()[+b.getAttribute('data-lv')]; GK.close('ovLV'); abrirViagem(x.r,x.m); });
   function copiar(txt,ok){ function fb(){ var t=document.createElement('textarea'); t.value=txt; t.style.cssText='position:fixed;opacity:0'; document.body.appendChild(t); t.select(); try{ document.execCommand('copy'); }catch(e){} t.remove(); ok(); } if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(ok,fb); else fb(); }
-  $('vCopy').addEventListener('click',function(){ var b=this; copiar(msgV(rV),function(){ b.classList.add('is-done'); b.innerHTML='<i data-lucide="check" class="gk-ic"></i>Copiado'; GK.icons(); clearTimeout(tC); tC=setTimeout(function(){ b.classList.remove('is-done'); b.innerHTML='<i data-lucide="copy" class="gk-ic"></i>Copiar'; GK.icons(); },1800); }); });
-  $('vOk').addEventListener('click',function(){ var d=(TEL[rV.m[1].n]||'').replace(/\D/g,''); window.open('https://wa.me/55'+d+'?text='+encodeURIComponent(msgV(rV)),'_blank','noopener'); GK.close('ovV'); });
+  $('vCopy').addEventListener('click',function(){ var b=this; copiar(msgV(rV,mV),function(){ b.classList.add('is-done'); b.innerHTML='<i data-lucide="check" class="gk-ic"></i>Copiado'; GK.icons(); clearTimeout(tC); tC=setTimeout(function(){ b.classList.remove('is-done'); b.innerHTML='<i data-lucide="copy" class="gk-ic"></i>Copiar'; GK.icons(); },1800); }); });
+  $('vOk').addEventListener('click',function(){ var d=(TEL[mV.n]||'').replace(/\D/g,''); window.open('https://wa.me/55'+d+'?text='+encodeURIComponent(msgV(rV,mV)),'_blank','noopener'); GK.close('ovV'); });
   var dh=new Date(2026,10,17).toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'}); $('hoje').textContent=dh.charAt(0).toUpperCase()+dh.slice(1);
   GK.popovers(); apply();
+  /* vindo da Início: abre direto o que resolve a pendência */
+  setTimeout(function(){ if(location.hash==='#sem-carregar') abrirPend(); else if(location.hash==='#paradas'){ var P=paradas(); if(P.length>1) abrirLista(); else if(P.length) abrirViagem(P[0].r,P[0].m); } },250);
   (function(){
     var h={}, tot=R.reduce(function(a,r){ return a+r.tot; },0), e=0, tr=0, co=0, ac=R.reduce(function(a,r){ return a+r.col; },0);
     R.forEach(function(r,ri){ r.m.forEach(function(m,mi){ tr+=m.c-m.e; evts(r,mi).forEach(function(x){ if(x.k==='col'||x.k==='ent'){ if(x.k==='col') co++; else e++; var k0=Math.floor(x.t/60); h[k0]=(h[k0]||0)+1; } }); }); });

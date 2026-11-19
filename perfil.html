@@ -8,20 +8,101 @@
 <script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
 <link rel="stylesheet" href="static/css/app.css">
 <link rel="stylesheet" href="static/css/gestor.css">
+<link rel="stylesheet" href="static/css/kit.css">
 </head>
 <body data-page="perfil" data-crumb="Meu perfil" data-crumb-icon="circle-user-round">
   <main class="gpage">
-    <div class="gpage-head">
-      <h1>Meu perfil</h1>
-      <p>Dados da conta</p>
-    </div>
-    <div class="gph-soon">
-      <div class="gph-ic"><i data-lucide="circle-user-round"></i></div>
-      <b>Tela em construção</b>
-      Vamos montar o conteúdo desta página em seguida, no mesmo padrão do app.
+    <div class="gk-page-head"><div><h1 class="gk-h1">Meu perfil</h1></div></div>
+
+    <div class="gk-table-wrap">
+      <div class="gk-tabs" id="pfTabs"><button class="gk-tab is-active" data-t="dados">Dados do perfil</button><button class="gk-tab" data-t="seg">Segurança</button></div>
+      <section class="gk-tabpanel" data-p="dados">
+        <form class="gk-form" id="pfForm" novalidate style="max-width:560px">
+          <div class="gk-photo"><div class="gk-photo-slot has-photo" id="pfFoto"></div>
+            <div class="gk-photo-actions"><div class="gk-btns"><button class="gk-btn gk-btn-secondary gk-btn-sm" type="button" id="pfFotoAdd"><i data-lucide="upload" class="gk-ic"></i>Trocar foto</button><button class="gk-btn gk-btn-ghost gk-btn-sm" type="button" id="pfFotoRm" hidden>Remover</button></div><span class="gk-caption">JPG ou PNG, até 5 MB.</span></div>
+            <input type="file" id="pfFotoInput" accept="image/*" hidden></div>
+          <div class="gk-field-row">
+            <div class="gk-field"><label class="gk-label" for="pfNome">Nome<span class="gk-req">*</span></label><input class="gk-input" id="pfNome" value="Marina Alves" autocomplete="name"><span class="gk-error" hidden>Preencha o nome.</span></div>
+            <div class="gk-field"><label class="gk-label" for="pfCargo">Cargo</label><input class="gk-input" id="pfCargo" value="Gestora" disabled></div>
+          </div>
+          <div class="gk-field-row">
+            <div class="gk-field"><label class="gk-label" for="pfTel">WhatsApp</label><input class="gk-input" id="pfTel" type="tel" inputmode="tel" value="(62) 99456-7800"></div>
+            <div class="gk-field"><label class="gk-label" for="pfMail">E-mail<span class="gk-req">*</span></label><input class="gk-input" id="pfMail" type="email" value="marina@gaolavanderia.com.br" autocapitalize="none"><span class="gk-error" hidden>Digite um e-mail válido.</span></div>
+          </div>
+        </form>
+        <div style="display:flex;justify-content:flex-end;margin-top:var(--space-6);padding-top:var(--space-5);border-top:1px solid var(--line)"><button class="gk-btn gk-btn-primary" id="pfSave" type="button">Salvar alterações</button></div>
+      </section>
+      <section class="gk-tabpanel" data-p="seg" hidden>
+        <div class="gk-status-row">
+          <div><h3 class="gk-h3">Senha</h3><div class="gk-caption">Última alteração há 3 meses.</div></div>
+          <button class="gk-btn gk-btn-secondary" id="pwBtn" type="button"><i data-lucide="lock" class="gk-ic"></i>Trocar senha</button>
+        </div>
+      </section>
     </div>
   </main>
+
+  <div class="gk-overlay" id="ovPw"><div class="gk-scrim" data-close="ovPw"></div>
+    <div class="gk-modal is-form" role="dialog" aria-labelledby="pwTitle">
+      <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="lock" class="gk-ic"></i></span><h2 class="gk-h2" id="pwTitle">Trocar senha</h2></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovPw" aria-label="Fechar"><i data-lucide="x" class="gk-ic"></i></button></div>
+      <div class="gk-modal-body" style="border-top:1px solid var(--line)"><form class="gk-form" id="pwForm" novalidate>
+        <div class="gk-field"><label class="gk-label" for="pwAtual">Senha atual<span class="gk-req">*</span></label><div class="gk-input-wrap"><input class="gk-input has-eye" id="pwAtual" type="password" autocomplete="current-password" style="padding-left:var(--space-3)"><button class="gk-eye" type="button" data-eye="pwAtual" aria-label="Mostrar senha"><i data-lucide="eye" class="gk-ic"></i></button></div><span class="gk-error" hidden>Digite a senha atual.</span></div>
+        <div class="gk-field"><label class="gk-label" for="pwNova">Nova senha<span class="gk-req">*</span></label><div class="gk-input-wrap"><input class="gk-input has-eye" id="pwNova" type="password" autocomplete="new-password" style="padding-left:var(--space-3)"><button class="gk-eye" type="button" data-eye="pwNova" aria-label="Mostrar senha"><i data-lucide="eye" class="gk-ic"></i></button></div><span class="gk-error" hidden>A senha não atende aos requisitos.</span>
+          <ul class="gk-pwrules" id="pwRules"><li data-r="len">Pelo menos 8 caracteres</li><li data-r="upper">Uma letra maiúscula</li><li data-r="lower">Uma letra minúscula</li><li data-r="num">Um número</li></ul></div>
+        <div class="gk-field"><label class="gk-label" for="pwConf">Confirmar nova senha<span class="gk-req">*</span></label><div class="gk-input-wrap"><input class="gk-input has-eye" id="pwConf" type="password" autocomplete="new-password" style="padding-left:var(--space-3)"><button class="gk-eye" type="button" data-eye="pwConf" aria-label="Mostrar senha"><i data-lucide="eye" class="gk-ic"></i></button></div><span class="gk-error" hidden>As senhas não são iguais.</span></div>
+      </form></div>
+      <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovPw">Cancelar</button><button class="gk-btn gk-btn-primary" id="pwOk">Salvar senha</button></div>
+    </div>
+  </div>
+
 <script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
 <script src="static/js/shell.js"></script>
+<script src="static/js/kit-ui.js"></script>
+<script src="static/js/kit-icons.js"></script>
+<script>
+(function(){
+  var $=function(id){ return document.getElementById(id); };
+  var nova=$('pwNova'), rules=$('pwRules');
+  function rs(v){ return {len:v.length>=8, upper:/[A-Z]/.test(v), lower:/[a-z]/.test(v), num:/[0-9]/.test(v)}; }
+  function err(inp,bad){ var f=inp.closest('.gk-field'); f.classList.toggle('is-error',bad); f.querySelector('.gk-error').hidden=!bad; }
+  document.querySelectorAll('[data-eye]').forEach(function(b){ b.addEventListener('click',function(){
+    var i=$(b.getAttribute('data-eye')), show=i.type==='password'; i.type=show?'text':'password';
+    b.innerHTML='<i data-lucide="'+(show?'eye-off':'eye')+'" class="gk-ic"></i>'; GK.icons(); }); });
+  var KEY='gao_profile', foto=$('pfFoto'), fIn=$('pfFotoInput'), src='';
+  function ini(n){ var q=n.trim().split(/\s+/); return ((q[0]||'')[0]||'')+(q.length>1?q[q.length-1][0]:''); }
+  function setFoto(u){ src=u||''; foto.innerHTML=src?'<img src="'+src+'" alt="">':'<span style="font-size:20px;font-weight:600;color:var(--primary-ink)">'+ini($('pfNome').value).toUpperCase()+'</span>';
+    foto.style.background=src?'':'var(--primary-soft)'; $('pfFotoRm').hidden=!src; $('pfFotoAdd').lastChild.nodeValue=src?'Trocar foto':'Enviar foto'; }
+  try{ var sv=JSON.parse(localStorage.getItem(KEY)||'null'); if(sv){ $('pfNome').value=sv.name||''; $('pfTel').value=sv.tel||''; $('pfMail').value=sv.mail||''; src=sv.photo||''; } }catch(e){}
+  setFoto(src);
+  $('pfNome').addEventListener('input',function(){ if(!src) setFoto(''); });
+  $('pfFotoAdd').addEventListener('click',function(){ fIn.click(); }); foto.addEventListener('click',function(){ fIn.click(); });
+  $('pfFotoRm').addEventListener('click',function(){ fIn.value=''; setFoto(''); });
+  fIn.addEventListener('change',function(){ var f=fIn.files[0]; if(!f) return;
+    if(f.size>5*1024*1024){ GK.toast('A foto passa de 5 MB'); return; }
+    var r=new FileReader(); r.onload=function(){ setFoto(r.result); }; r.readAsDataURL(f); });
+  $('pfSave').addEventListener('click',function(){
+    var n=!$('pfNome').value.trim(), m=!/^\S+@\S+\.\S+$/.test($('pfMail').value.trim());
+    err($('pfNome'),n); err($('pfMail'),m); if(n||m) return;
+    try{ localStorage.setItem(KEY,JSON.stringify({name:$('pfNome').value.trim(),tel:$('pfTel').value.trim(),mail:$('pfMail').value.trim(),photo:src})); }catch(e){}
+    GK.toast('Perfil atualizado'); });
+  document.querySelectorAll('#pfTabs .gk-tab').forEach(function(t){ t.addEventListener('click',function(){
+    document.querySelectorAll('#pfTabs .gk-tab').forEach(function(x){ x.classList.toggle('is-active',x===t); });
+    document.querySelectorAll('[data-p]').forEach(function(q){ q.hidden=q.getAttribute('data-p')!==t.getAttribute('data-t'); }); }); });
+  nova.addEventListener('focus',function(){ rules.classList.add('is-open'); });
+  nova.addEventListener('blur',function(){ if(!nova.value) rules.classList.remove('is-open'); });
+  nova.addEventListener('input',function(){ var r=rs(nova.value); Object.keys(r).forEach(function(k){ rules.querySelector('[data-r="'+k+'"]').classList.toggle('ok',r[k]); }); });
+  $('pwBtn').addEventListener('click',function(){
+    $('pwForm').reset(); rules.classList.remove('is-open'); rules.querySelectorAll('li').forEach(function(l){ l.classList.remove('ok'); });
+    document.querySelectorAll('#pwForm .gk-field').forEach(function(f){ f.classList.remove('is-error'); f.querySelector('.gk-error').hidden=true; });
+    GK.open('ovPw'); setTimeout(function(){ $('pwAtual').focus(); },50); });
+  $('pwOk').addEventListener('click',function(){
+    var r=rs(nova.value), okNova=r.len&&r.upper&&r.lower&&r.num;
+    var a=!$('pwAtual').value, n=!okNova, c=$('pwConf').value!==nova.value||!$('pwConf').value;
+    err($('pwAtual'),a); err(nova,n); err($('pwConf'),c);
+    if(a||n||c) return;
+    GK.close('ovPw'); GK.toast('Senha alterada');
+  });
+  GK.popovers(); GK.icons();
+})();
+</script>
 </body>
 </html>
