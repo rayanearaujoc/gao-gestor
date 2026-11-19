@@ -280,6 +280,14 @@
     document.body.insertBefore(scrim, document.body.firstChild);
     document.body.insertBefore(side, document.body.firstChild);
 
+    // rodapé do sistema (todas as páginas): direitos e versão à esquerda, suporte à direita
+    if(!document.querySelector('.gk-foot')){
+      var ft=document.createElement('footer'); ft.className='gk-foot';
+      ft.innerHTML='<span>© '+new Date().getFullYear()+' GAO Logística. Todos os direitos reservados.</span><span class="gk-foot-r"><a href="suporte.html">Suporte</a><span>Versão 1.0</span></span>';
+      var mm=document.querySelector('main'); if(mm&&mm.parentNode) mm.parentNode.insertBefore(ft,mm.nextSibling); else document.body.appendChild(ft);
+      document.body.classList.add('has-gk-foot');
+    }
+
     // stepper automático: páginas do fluxo declaram data-flow-step no <body>
     var fstep = document.body.getAttribute('data-flow-step');
     if(fstep){
@@ -302,7 +310,20 @@
     var tg=document.getElementById('gaoTg');
     function setTgIcon(){ if(!tg) return; var c=document.body.classList.contains('gao-col'); tg.innerHTML=c?TG_EXP:TG_COL; tg.setAttribute('aria-label', c?'Expandir menu':'Recolher menu'); }
     setTgIcon();
-    if(tg) tg.addEventListener('click', function(){ var c=document.body.classList.toggle('gao-col'); save('gao_side_collapsed', c); setTgIcon(); if(pop) pop.classList.remove('show'); });
+    function toggleSide(){ var c=document.body.classList.toggle('gao-col'); save('gao_side_collapsed', c); setTgIcon(); syncBurger(); if(pop) pop.classList.remove('show'); }
+    if(tg) tg.addEventListener('click', toggleSide);
+
+    // hambúrguer no começo do cabeçalho da página (à esquerda do voltar nas subpáginas)
+    var BURGER='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h11M4 17h6"/></svg>';
+    var burgers=[];
+    function syncBurger(){ var c=document.body.classList.contains('gao-col'); burgers.forEach(function(b){ var t=c?'Expandir menu':'Recolher menu'; b.setAttribute('aria-label',t); b.setAttribute('data-tip',t); }); }
+    document.querySelectorAll('.gk-page-head,.gk-subhead').forEach(function(h){
+      if(h.querySelector('.gk-menu-btn')) return;
+      var b=document.createElement('button'); b.type='button'; b.className='gk-menu-btn'; b.innerHTML=BURGER;
+      b.addEventListener('click', toggleSide);
+      h.insertBefore(b, h.firstChild); burgers.push(b);
+    });
+    syncBurger();
 
     // seções colapsáveis (persistidas)
     side.querySelectorAll('.gao-sh').forEach(function(btn){

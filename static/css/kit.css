@@ -212,7 +212,7 @@ svg.lucide,.gk-ic{width:var(--icon-md);height:var(--icon-md);stroke-width:1.75;f
 .gk-page{padding:var(--space-6);max-width:1200px}
 .gk-page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-4);margin-bottom:var(--space-5)}
 .gk-page-head .gk-h1{margin-bottom:2px}
-.gk-page-head>div:first-child:has(.gk-h1-n){flex:1;min-width:0}
+.gk-page-head>div:has(.gk-h1-n){flex:1;min-width:0}
 .gk-page-head .gk-h1:has(.gk-h1-n){display:flex;align-items:center;justify-content:space-between}
 .gk-h1-n{margin-left:var(--space-2);color:var(--muted);font-size:13px;line-height:20px;font-weight:500}
 .gk-page-head .gk-actions{display:flex;gap:var(--space-2);flex:none}
@@ -1031,3 +1031,32 @@ button.gk-drv-c:hover{border-color:var(--line-strong)}
 .gk-mp .gk-tl-d.is-av.is-now::before{inset:-6px;opacity:.12}
 .gk-tl-i b em{color:var(--di,var(--dc))}
 .gk-tl-i b em{color:inherit}
+
+/* rodapé do sistema */
+body.has-gk-foot{display:flex;flex-direction:column;min-height:100vh}
+body.has-gk-foot>main{width:100%;flex:0 0 auto}
+.gk-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap;padding:var(--space-4) 32px var(--space-4) 24px;border-top:1px solid var(--line);font-size:12px;line-height:16px;color:var(--muted)}
+.gk-foot-r{display:inline-flex;align-items:center;gap:var(--space-5)}
+.gk-foot a{color:var(--muted);text-decoration:none}
+.gk-foot a:hover{color:var(--fg)}
+@media (max-width:720px){.gk-foot{padding:var(--space-4)}}
+
+/* botão de menu (hambúrguer) no começo do cabeçalho; recolhe/expande a sidebar */
+.gk-menu-btn{display:none;flex:none;align-items:center;justify-content:center;width:32px;height:32px;padding:0;border:0;border-radius:var(--radius-md);background:none;color:var(--muted);cursor:pointer}
+.gk-menu-btn:hover{background:var(--row);color:var(--fg)}
+@media(min-width:900px){
+  .gk-menu-btn{display:inline-flex}
+  .gk-page-head>.gk-menu-btn{margin:-2px -8px 0 -8px}
+  .gk-page-head>.gk-menu-btn+div{margin-right:auto}
+  .gk-subhead>.gk-menu-btn{margin-left:-8px}
+  .gao-tg{display:none!important}
+}
+
+/* painel lateral: sem rodapé vazio; linha do tempo com fio ligando as bolinhas */
+.gk-drawer-foot:not(:has(>:not([hidden]))){display:none}
+.gk-drawer .gk-tl-i{position:relative}
+.gk-drawer .gk-tl-i>i{position:relative;z-index:1}
+.gk-drawer .gk-tl-i::before{content:"";position:absolute;left:71px;top:0;bottom:0;width:1px;background:var(--line-strong,var(--line))}
+.gk-drawer .gk-tl-i:first-child::before{top:17px}
+.gk-drawer .gk-tl-i:last-child::before{bottom:auto;height:17px}
+.gk-drawer .gk-tl-i:only-child::before{display:none}
