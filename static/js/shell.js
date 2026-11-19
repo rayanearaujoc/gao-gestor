@@ -28,7 +28,8 @@
     {name:'Histórico', items:[
       {label:'Viagens', icon:'map', href:'viagens.html', key:'viagens'},
       {label:'Comprovantes', icon:'file-check-2', href:'comprovantes.html', key:'comprovantes'},
-      {label:'Multas', icon:'triangle-alert', href:'multas.html', key:'multas'}
+      {label:'Multas', icon:'triangle-alert', href:'multas.html', key:'multas'},
+      {label:'Mensagens', icon:'message-circle', href:'mensagens.html', key:'mensagens'}
     ]},
     {name:'Configurações', items:[
       {label:'Geral', icon:'settings', href:'configuracoes.html', key:'configuracoes'},
