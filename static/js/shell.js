@@ -15,8 +15,7 @@
   try{ if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark') document.documentElement.setAttribute('data-theme','dark'); }catch(e){}
   var NAV_TOP = [
     {label:'Início', icon:'layout-grid', href:'index.html', key:'home'},
-    {label:'Operação', icon:'activity', href:'operacao.html', key:'operacao'},
-    {label:'Comandas', icon:'clipboard-list', href:'comandas.html', key:'comandas'}
+    {label:'Operação', icon:'activity', href:'operacao.html', key:'operacao'}
   ];
   var SECTIONS = [
     {name:'Cadastros', items:[
@@ -26,6 +25,7 @@
       {label:'Veículos', icon:'truck', href:'veiculos.html', key:'veiculos'}
     ]},
     {name:'Histórico', items:[
+      {label:'Comandas', icon:'clipboard-list', href:'comandas.html', key:'comandas'},
       {label:'Viagens', icon:'map', href:'viagens.html', key:'viagens'},
       {label:'Comprovantes', icon:'file-check-2', href:'comprovantes.html', key:'comprovantes'},
       {label:'Multas', icon:'triangle-alert', href:'multas.html', key:'multas'},
