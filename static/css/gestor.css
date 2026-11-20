@@ -499,12 +499,6 @@ button.gao-pop-item{width:100%;background:none;border:0;cursor:pointer;text-alig
 /* ===== scrollbar fininha azul (sempre) ===== */
 *{scrollbar-width:none}
 *::-webkit-scrollbar{width:0;height:0;display:none}
-/* menu lateral: barrinha azul clara fininha, avisa que tem mais itens */
-nav.gao-navwrap{scrollbar-width:auto}
-@-moz-document url-prefix(){nav.gao-navwrap{scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--primary) 20%,transparent) transparent}}
-nav.gao-navwrap::-webkit-scrollbar{display:block;width:3px;height:auto}
-nav.gao-navwrap::-webkit-scrollbar-track{background:transparent}
-nav.gao-navwrap::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--primary) 20%,transparent);border-radius:999px}
 
 /* label "Rota:" fixa dentro do select, com peso/cor proprios */
 .gct-rota svg,.gsel-ic{position:absolute;left:30px;top:50%;transform:translateY(-50%);width:13px !important;height:13px !important;color:var(--muted);pointer-events:none;z-index:1}
