@@ -1211,3 +1211,35 @@ body.gk-login-page{padding:0;background:var(--card)}
   .gk-login-box{padding-top:var(--space-6)}
   .gk-login-foot{margin-top:auto}
 }
+
+/* ===== Responsivo (mobile/tablet): o desktop não muda ===== */
+@media (max-width:899px){
+  .gk-stats,.gk-stats.is-3,.gk-stats.is-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .gk-stat{padding:var(--space-4)}
+  .gk-stat-h{gap:8px;font-size:13px}
+  .gk-stat .gk-stat-v{margin-top:var(--space-2);font-size:18px;line-height:24px;display:flex;align-items:center;flex-wrap:wrap;gap:4px 6px}
+}
+@media (max-width:640px){
+  a.gk-hero.is-row{flex-direction:column;align-items:stretch;gap:var(--space-4);padding:var(--space-5)}
+  a.gk-hero.is-row .gk-btn{justify-content:center;width:100%}
+  .gk-hero-t{font-size:20px;line-height:26px}
+}
+@media (max-width:899px){
+  .gk-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+  .gk-table th,.gk-table td{padding-left:var(--space-4);padding-right:var(--space-4)}
+  .gk-table th:first-child,.gk-table td:first-child{padding-left:var(--space-4);position:sticky;left:0;z-index:1}
+  .gk-table td:first-child{background:var(--card)}
+  .gk-table thead th:first-child{z-index:2;background:color-mix(in srgb,var(--read) 76%,#000)}
+  [data-theme="dark"] .gk-table thead th:first-child{background:var(--row)}
+  .gk-toolbar{padding:var(--space-3) var(--space-4)}
+  .gk-toolbar .gk-search{width:100%}
+}
+/* barra de filtros: quebra em linhas (o botão principal não some mais) */
+@media (max-width:899px){
+  .gk-toolbar{flex-wrap:wrap!important;overflow:visible!important}
+  .gk-toolbar .gk-input-wrap{flex:1 1 100%!important;max-width:none!important}
+}
+@media (max-width:640px){
+  .gk-toolbar .gk-spacer{display:none}
+  .gk-toolbar .gk-btn-primary{order:-1;flex:1 1 100%;justify-content:center;min-height:46px}
+}
