@@ -95,7 +95,7 @@
   $('fLogin').addEventListener('submit',function(e){ e.preventDefault();
     var u=!$('lgUser').value.trim(), p=!$('lgPass').value; err($('lgUser'),u); err($('lgPass'),p,'Digite sua senha.'); if(u||p) return;
     if($('lgPass').value==='errada'){ err($('lgPass'),true,'Usuário ou senha incorretos.'); return; }
-    var b=$('lgOk'); b.disabled=true; b.textContent='Entrando…'; setTimeout(function(){ location.href='index.html'; },700); });
+    var b=$('lgOk'); b.disabled=true; b.textContent='Entrando…'; setTimeout(function(){ location.href='inicio.html'; },700); });
   $('fEsq').addEventListener('submit',function(e){ e.preventDefault();
     var m=$('esMail').value.trim(); if(!/^\S+@\S+\.\S+$/.test(m)){ err($('esMail'),true); return; }
     $('envTxt').textContent='Se existir uma conta para '+m+', enviamos um link para criar uma nova senha.'; ver('vEnv'); });
@@ -111,5 +111,6 @@
   GK.icons(); if(location.hash==='#nova') ver('vNova');
 })();
 </script>
+<a class="trocar-proto" href="index.html" style="position:fixed;top:14px;left:16px;z-index:50;font-size:12px;font-weight:600;color:var(--muted);text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 10px">Trocar protótipo</a>
 </body>
 </html>

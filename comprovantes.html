@@ -71,7 +71,7 @@
   function row(c){
     return '<tr class="gk-row-link" data-id="'+c.id+'"><td><label class="gk-check"><input type="checkbox" data-sel="'+c.id+'"'+(sel[c.id]?' checked':'')+' aria-label="Selecionar"></label></td><td>'+c.data+'</td><td class="gk-strong">'+c.cli+'</td><td>'+c.quem+'</td><td>'+c.tipo+'</td>'
       +'<td><a class="gk-linkbtn" href="viagem.html?v='+c.viagem+'">Viagem #'+c.viagem+'</a></td>'
-      +'<td class="gk-col-actions"><span class="gk-acts"><a class="gk-act" href="comprovante.html?c='+c.id+'" aria-label="Ver comprovante" title="Ver"><i data-lucide="eye" class="gk-ic"></i></a></span></td></tr>';
+      +'<td class="gk-col-actions"><span class="gk-acts"><a class="gk-act" href="comprovante.html?c='+c.id+'&t='+encodeURIComponent(c.tipo)+'" aria-label="Ver comprovante" title="Ver"><i data-lucide="eye" class="gk-ic"></i></a></span></td></tr>';
   }
   function apply(){
     var list=COMP.filter(function(c){ return (!state.q||(c.cli+' '+c.quem+' '+c.viagem).toLowerCase().indexOf(state.q)>=0)&&(!state.cli.length||state.cli.indexOf(c.cli)>=0)&&(!state.tipo.length||state.tipo.indexOf(c.tipo)>=0)&&fP.test(c.data); });
@@ -104,7 +104,7 @@
   var fP=GK.periodFilter({btn:'fPer',pop:'popPer',onChange:function(){ state.page=1; apply(); }});
   document.getElementById('clearAll').addEventListener('click',function(){ fCli.reset(); fTipo.reset(); fP.reset(); });
   document.getElementById('clearEmpty').addEventListener('click',function(){ document.getElementById('q').value=''; state.q=''; fCli.reset(); fTipo.reset(); fP.reset(); });
-  tbody.addEventListener('click',function(e){ if(e.target.closest('a,.gk-check')) return; var tr=e.target.closest('tr'); if(tr) location.href='comprovante.html?c='+tr.getAttribute('data-id'); });
+  tbody.addEventListener('click',function(e){ if(e.target.closest('a,.gk-check')) return; var tr=e.target.closest('tr'); if(tr) var cc=COMP.filter(function(x){return String(x.id)===tr.getAttribute('data-id');})[0]; location.href='comprovante.html?c='+tr.getAttribute('data-id')+(cc?'&t='+encodeURIComponent(cc.tipo):''); });
   tbody.addEventListener('change',function(e){ var id=e.target.getAttribute('data-sel'); if(id!==null){ sel[id]=e.target.checked; contagem(); } });
   document.getElementById('selAll').addEventListener('change',function(){ var on=this.checked; shown.forEach(function(c){ sel[c.id]=on; }); apply(); });
   function mensagem(ch){ return 'Olá! Segue o histórico de comprovantes de entrega e coleta da GAO Lavanderia Hospitalar'+(ch.length?':':'.')+'\n\n'+ch.map(function(c){ return c.data+' · '+c.tipo+'\nhttps://'+c.link; }).join('\n\n'); }

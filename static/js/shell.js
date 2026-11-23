@@ -14,7 +14,7 @@
   // aplica o tema salvo o quanto antes (evita a maior parte do flash)
   try{ if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark') document.documentElement.setAttribute('data-theme','dark'); }catch(e){}
   var NAV_TOP = [
-    {label:'Início', icon:'layout-grid', href:'index.html', key:'home'},
+    {label:'Início', icon:'layout-grid', href:'inicio.html', key:'home'},
     {label:'Operação', icon:'activity', href:'operacao.html', key:'operacao'}
   ];
   var SECTIONS = [
@@ -107,7 +107,7 @@
     var closedSet = load('gao_side_closed') || [];
     var h = '<button class="gao-tg" id="gaoTg" type="button" aria-label="Recolher menu"></button>';
     h += '<div class="gao-top">'
-      + '<a class="gao-brand" href="index.html"><img class="gao-logo-full" src="static/img/logo.svg" alt="GAO"><img class="gao-logo-mark" src="static/img/flor.svg" alt="GAO"></a>'
+      + '<a class="gao-brand" href="inicio.html"><img class="gao-logo-full" src="static/img/logo.svg" alt="GAO"><img class="gao-logo-mark" src="static/img/flor.svg" alt="GAO"></a>'
       + '<button class="gao-x" id="gaoX" type="button" aria-label="Fechar menu">'+IC_X+'</button>'
       + '</div>';
     h += '<nav class="gao-navwrap" id="gaoNav">';

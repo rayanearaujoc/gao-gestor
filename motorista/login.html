@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Entrar</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+<link rel="stylesheet" href="static/css/app.css">
+<link rel="stylesheet" href="../static/css/kit.css">
+<link rel="stylesheet" href="static/css/gk-app.css">
+<!-- Marca da empresa que contratou (vem do endereço de acesso). Troque aqui para outra empresa:
+     nome, logo, símbolo, fotos do painel e cor. O rodapé é sempre da GAO Sistemas. -->
+<script>window.GAO_TENANT=window.GAO_TENANT||{nome:'GAO Logística',logo:'../static/img/logo.svg',simbolo:'../static/img/flor.svg',fotos:[{src:'../static/img/login-1.jpg',pos:'60% center'},{src:'../static/img/login-2.jpg',pos:'38% center'}]};</script>
+</head>
+<body class="gk-login-page">
+<div class="gk-login">
+  <aside class="gk-login-side">
+    <span class="gk-login-mark"><img id="lgSim" alt=""></span>
+  </aside>
+
+  <main class="gk-login-main">
+    <div class="gk-login-box">
+      <img class="gk-login-logo" id="lgLogo" alt="">
+
+      <section id="vLogin">
+        <h1 class="gk-h1">Entrar</h1>
+        <form class="gk-form" id="fLogin" novalidate>
+          <div class="gk-field"><label class="gk-label" for="lgUser">Usuário ou e-mail</label><input class="gk-input" id="lgUser" autocomplete="username" placeholder="Seu usuário"><span class="gk-error" hidden>Digite seu usuário ou e-mail.</span></div>
+          <div class="gk-field"><label class="gk-label" for="lgPass">Senha</label><div class="gk-input-wrap"><input class="gk-input has-eye" id="lgPass" type="password" autocomplete="current-password" placeholder="Sua senha" style="padding-left:var(--space-3)"><button class="gk-eye" type="button" data-eye="lgPass" aria-label="Mostrar senha"><i data-lucide="eye" class="gk-ic"></i></button></div><span class="gk-error" hidden>Digite sua senha.</span></div>
+          <button class="gk-login-link" type="button" id="lgForgot">Esqueceu a senha?</button>
+          <div class="gk-login-note" id="lgForgotNote" hidden>Solicite uma nova senha ao responsável da sua operação.</div>
+          <button class="gk-btn gk-btn-primary" id="lgOk" type="submit">Entrar</button>
+        </form>
+      </section>
+
+
+
+    </div>
+    <footer class="gk-login-foot">© <span id="ano"></span> GAO Sistemas. Todos os direitos reservados.</footer>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
+<script src="../static/js/kit-ui.js"></script>
+<script src="../static/js/kit-icons.js"></script>
+<script>
+(function(){
+  var $=function(id){ return document.getElementById(id); }, T=window.GAO_TENANT;
+  document.title='Entrar · '+T.nome; $('ano').textContent=new Date().getFullYear();
+  $('lgLogo').src=T.logo; $('lgLogo').alt=T.nome; $('lgSim').src=T.simbolo;
+  if(T.cor){ document.documentElement.style.setProperty('--primary',T.cor); } if(T.corEscura){ document.documentElement.style.setProperty('--read',T.corEscura); }
+  /* fotos do painel (se a empresa não tiver, fica o painel azul) */
+  if(T.fotos&&T.fotos.length){ var sd=document.querySelector('.gk-login-side'), im=[]; sd.classList.add('has-photo');
+    T.fotos.forEach(function(f){ var i=document.createElement('img'); i.className='gk-login-photo'; i.alt=''; i.src=f.src; i.style.objectPosition=f.pos||'center'; sd.insertBefore(i,sd.firstChild); im.push(i); });
+    var k=0, tm, dots=document.createElement('div'); dots.className='gk-login-dots';
+    function ir(n){ im[k].classList.remove('is-on'); dots.children[k].classList.remove('is-on'); k=n; im[k].classList.add('is-on'); dots.children[k].classList.add('is-on'); }
+    function ini(){ clearInterval(tm); tm=setInterval(function(){ ir((k+1)%im.length); },6000); }
+    if(im.length>1){ im.forEach(function(_,n){ var b=document.createElement('button'); b.type='button'; b.setAttribute('aria-label','Foto '+(n+1)); b.addEventListener('click',function(){ ir(n); ini(); }); dots.appendChild(b); }); sd.appendChild(dots); }
+    im[0].classList.add('is-on'); if(im.length>1){ dots.children[0].classList.add('is-on'); ini(); } }
+  function err(inp,bad,msg){ var f=inp.closest('.gk-field'); f.classList.toggle('is-error',bad); var e=f.querySelector('.gk-error'); if(msg) e.textContent=msg; e.hidden=!bad; }
+  document.querySelectorAll('.gk-input').forEach(function(i){ i.addEventListener('input',function(){ err(i,false); }); });
+  $('lgForgot').addEventListener('click',function(){ $('lgForgotNote').hidden=false; });
+  document.querySelectorAll('[data-eye]').forEach(function(b){ b.addEventListener('click',function(){
+    var i=$(b.getAttribute('data-eye')), show=i.type==='password'; i.type=show?'text':'password';
+    b.innerHTML='<i data-lucide="'+(show?'eye-off':'eye')+'" class="gk-ic"></i>'; GK.icons(); }); });
+  /* entrar (exemplo: qualquer usuário; a senha "errada" mostra o erro) */
+  $('fLogin').addEventListener('submit',function(e){ e.preventDefault();
+    var u=!$('lgUser').value.trim(), p=!$('lgPass').value; err($('lgUser'),u); err($('lgPass'),p,'Digite sua senha.'); if(u||p) return;
+    if($('lgPass').value==='errada'){ err($('lgPass'),true,'Usuário ou senha incorretos.'); return; }
+    var b=$('lgOk'); b.disabled=true; b.textContent='Entrando…'; setTimeout(function(){ location.href='index.html'; },700); });
+  GK.icons();
+})();
+</script>
+<a class="trocar-proto" href="../index.html" style="position:fixed;top:14px;left:16px;z-index:50;font-size:12px;font-weight:600;color:var(--muted);text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 10px">Trocar protótipo</a>
+</body>
+</html>

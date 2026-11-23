@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GAO Gestor · Viagem</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+<link rel="stylesheet" href="static/css/app.css">
+<link rel="stylesheet" href="static/css/gestor.css">
+<link rel="stylesheet" href="static/css/kit.css">
+</head>
+<body data-page="viagens">
+  <main class="gpage">
+    <div class="gk-subhead">
+      <nav class="gk-crumbs"><a href="viagens.html">Viagens</a><i data-lucide="chevron-right" class="gk-ic"></i><span class="is-current" id="crumb"></span></nav>
+    </div>
+    <a class="gk-btn gk-btn-secondary gk-back" href="viagens.html"><i data-lucide="arrow-left" class="gk-ic"></i>Voltar</a>
+    <div class="gk-stack" style="gap:var(--space-5)">
+      <div class="gk-card"><div class="gk-card-body">
+        <div class="gk-pstrip">
+          <div style="min-width:0"><h2 class="gk-h2" id="vT"></h2><div class="gk-hdr-meta" style="margin-top:6px" id="vMeta"></div></div>
+          <span class="gk-badge gk-badge-ok gk-badge-plain" style="margin-left:auto">Concluída</span>
+        </div>
+      </div></div>
+      <div class="gk-stats is-3" id="vStats"></div>
+      <section class="gk-card"><div class="gk-card-body">
+        <h2 class="gk-h2" style="margin:0 0 var(--space-4)">Dados da viagem</h2>
+        <dl class="gk-kv" id="vDados"></dl>
+      </div></section>
+      <section class="gk-card" id="secEnt"></section>
+      <section class="gk-card" id="secCol"></section>
+      <section class="gk-card"><div class="gk-card-body">
+        <h2 class="gk-h2" style="margin:0 0 var(--space-4)">Veículo</h2>
+        <dl class="gk-kv" id="vVeic"></dl>
+        <div class="gk-sec-t" style="margin:var(--space-6) 0 var(--space-3)">Fotos do check-in</div>
+        <div id="vFotos" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:var(--space-4)"></div>
+        <div class="gk-sec-t" style="margin:var(--space-6) 0 var(--space-3)">Painel</div>
+        <div id="vPainel" style="max-width:260px"></div>
+      </div></section>
+    </div>
+  </main>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
+<script src="static/js/shell.js"></script>
+<script src="static/js/kit-ui.js"></script>
+<script src="static/js/kit-icons.js"></script>
+<script>
+(function(){
+  /* mesmos dados de Viagens (protótipo) */
+  var ROTAS=['Rota Hospitalar','Rota Oeste','Rota Centro','Rota Sul','Rota Norte','Rota Leste'], MOT=['Ronaldo Araújo','Bruno Castro','Diego Martins','Paulo Ribeiro'];
+  var PLACAS=['QRT-4A21','PXM-7C09','OGR-2C20','OLK-9B13','QSD-1H78','PYH-5D40'], MODELOS=['Iveco Daily','Mercedes Sprinter','Renault Master','Fiat Ducato','Iveco Daily','Mercedes Sprinter'];
+  var KM=[551,214,187,342,96,268,431,175,309,122,254,388], OC=[0,2,0,1,0,0,3,0,1,0,0,0], CL=[4,3,5,4,2,3,6,3,4,2,3,5];
+  var CLI=['Hospital Amparo','Santa Casa','Laboratório Central','Clínica São Lucas','Hospital Dia','HEMU','Clínica Vida Plena','Hotel Le Jardin','Hospital Santa Marta','Clínica Bem Estar'];
+  var SETOR=['Recepção','Rouparia','Almoxarifado','Enfermagem','Governança'];
+  var id=+(new URLSearchParams(location.search).get('v')||1047), i=1048-id; if(i<0||i>11) i=1;
+  var d=12-Math.floor(i/2), data=(d<10?'0':'')+d+'/11/2026', rota=ROTAS[i%6], mot=MOT[i%4], placa=PLACAS[(i*5)%6], modelo=MODELOS[(i*5)%6], km=KM[i], oc=OC[i], ncl=CL[i];
+  if(i===0){ location.replace('viagens.html'); return; }  // em andamento: o painel lateral abre na lista de Viagens
+  var $=function(x){ return document.getElementById(x); };
+  var nf=function(n){ return n.toLocaleString('pt-BR'); };
+  function ini(n){ return n.split(' ').map(function(x){ return x[0]; }).slice(0,2).join(''); }
+  function hm(min){ return ('0'+Math.floor(min/60)).slice(-2)+':'+('0'+min%60).slice(-2); }
+  var OCS=[{t:'Leitura da gaiola na entrega',m:'Etiqueta ilegível',n:'1 gaiola afetada'},{t:'Confirmação de entrega',m:'Recusada pelo cliente',n:'2 gaiolas não entregues'},{t:'Leitura da gaiola no carregamento',m:'QR Code não funciona',n:'1 gaiola afetada'}];
+  var ents=[],cols=[],t=6*60+40,gai=0,ocLeft=oc;
+  for(var k=0;k<ncl;k++){
+    var q=3+((k*3+i)%5); gai+=q; t+=40+((k*7+i)%20);
+    var e={n:CLI[(k+i)%CLI.length],q:q,setor:SETOR[(k+i)%SETOR.length],h:hm(t),oc:[],c:(i*3+k)%12,failed:(oc>=3&&k===2)};
+    if(ocLeft>0&&!e.failed){ e.oc.push(OCS[(oc-ocLeft)%3]); ocLeft--; }
+    ents.push(e);
+  }
+  var tc=t+30; ents.forEach(function(e,k){ if(k%2===0&&!e.failed){ tc+=25; cols.push({n:e.n,q:Math.max(1,e.q-2),setor:SETOR[(k+i+2)%SETOR.length],h:hm(tc),oc:[],c:e.c}); } });
+  var fim=tc+45, ini0='06:00', cons=(4.6+(i%5)/10).toFixed(1).replace('.',',');
+  document.title='GAO Gestor · Viagem #'+id; $('crumb').textContent='Viagem #'+id; $('vT').textContent='Viagem #'+id;
+  $('vMeta').innerHTML='<span>'+data+'</span><span class="gk-sep"></span><span>'+rota+'</span><span class="gk-sep"></span><span style="display:inline-flex;align-items:center;gap:6px">'+GK.mot(mot,'width:20px;height:20px;font-size:9px;line-height:1')+''+mot+'</span>';
+  function stat(ic,k,v,l){ return '<div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="'+ic+'" class="gk-ic"></i></span>'+k+'</div><div class="gk-stat-v">'+v+'</div><div class="gk-stat-l">'+l+'</div></div>'; }
+  $('vStats').innerHTML=stat('building-2','Clientes',ncl,'Paradas na viagem')+stat('package','Gaiolas',gai,'Entregues na viagem')+stat('route','Quilômetros',nf(km)+' km','Rodados na viagem');
+  $('vDados').innerHTML=[['Início da viagem',data+' às '+ini0],['Fim da viagem',data+' às '+hm(fim)],['Motorista',mot],['Veículo',placa+', '+modelo],['Rota',rota],['Consumo médio',cons+' km/l']].map(function(r){ return '<dt>'+r[0]+'</dt><dd>'+r[1]+'</dd>'; }).join('');
+  function occ(o){ return '<div style="display:flex;gap:var(--space-2);align-items:flex-start;margin-top:var(--space-2);font-size:12px;line-height:18px;color:var(--warn-ink)"><i data-lucide="triangle-alert" class="gk-ic" style="margin-top:1px"></i><span><b class="gk-medium">'+o.t+'</b><br>'+o.m+GK.sep+o.n+'</span></div>'; }
+  /* o cliente que tem entrega e coleta na mesma parada abre o comprovante combinado */
+  function tipoComp(e,kind){
+    var naEnt=ents.some(function(x){ return x.n===e.n&&!x.failed; }), naCol=cols.some(function(x){ return x.n===e.n; });
+    return naEnt&&naCol?'Entrega e coleta':(kind==='col'?'Coleta':'Entrega');
+  }
+  function row(e,kind,first){
+    var verb=kind==='col'?'coletadas':'entregues', who=kind==='col'?'Entregue por ':'Recebido em ', tipo=kind==='col'?'Coleta':'Entrega';
+    var det=e.failed
+      ? '<span>Cliente ausente</span>'+GK.sep+'<span>'+e.h+'</span>'
+      : '<span>'+e.q+(e.q>1?' gaiolas ':' gaiola ')+verb+'</span>'+GK.sep+'<span>'+who+e.setor+'</span>'+GK.sep+'<span>'+e.h+'</span>';
+    return '<div style="padding:var(--space-4) var(--space-6);'+(first?'':'border-top:1px solid var(--line);')+'display:flex;align-items:flex-start;gap:var(--space-4)">'
+      +'<span class="gk-avatar" style="width:36px;height:36px;font-size:12px">'+ini(e.n)+'</span>'
+      +'<div style="flex:1;min-width:0"><div style="font-size:14px;line-height:20px;font-weight:600">'+e.n+'</div><div style="display:flex;flex-wrap:wrap;align-items:center;font-size:12px;line-height:18px;color:var(--muted);margin-top:2px">'+det+'</div>'+(e.failed?'<div style="font-size:12px;line-height:18px;font-weight:600;color:var(--warn-ink);margin-top:2px">'+tipo+' não realizada</div>':'')+e.oc.map(occ).join('')+'</div>'
+      +(e.failed?'':'<a class="gk-btn gk-btn-ghost gk-btn-sm" style="color:var(--primary)" href="comprovante.html?c='+e.c+'&t='+encodeURIComponent(tipoComp(e,kind))+'">Ver comprovante<i data-lucide="chevron-right" class="gk-ic"></i></a>')
+      +'</div>';
+  }
+  function sec(el,title,arr,kind){
+    $(el).innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;padding:var(--space-4) var(--space-6)"><h2 class="gk-h2" style="margin:0">'+title+'</h2><span class="gk-caption">'+arr.length+(arr.length>1?' clientes':' cliente')+'</span></div>'
+      +'<div style="border-top:1px solid var(--line)">'+arr.map(function(e,k){ return row(e,kind,k===0); }).join('')+'</div>';
+  }
+  sec('secEnt','Entregas',ents,'ent'); sec('secCol','Coletas',cols,'col');
+  $('vVeic').innerHTML=[['Quilômetros rodados',nf(km)+' km'],['Higienização','Terminal (completa)'],['Itens higienizados','<span style="display:inline-flex;gap:var(--space-2);flex-wrap:wrap">'+['Teto','Parede','Chão','Cabine'].map(function(x){ return '<span class="gk-badge gk-badge-plain">'+x+'</span>'; }).join('')+'</span>'],['Avaria','Nenhuma registrada']].map(function(r){ return '<dt>'+r[0]+'</dt><dd>'+r[1]+'</dd>'; }).join('');
+  function foto(f,l){ return '<figure style="margin:0"><img src="static/img/viagem/'+f+'.webp" alt="'+l+'" loading="lazy" style="display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radius-md);border:1px solid var(--line)"><figcaption class="gk-caption" style="margin-top:var(--space-2)">'+l+'</figcaption></figure>'; }
+  $('vFotos').innerHTML=foto('frente','Frente')+foto('lado-direito','Lado direito')+foto('lado-esquerdo','Lado esquerdo')+foto('traseira','Traseira');
+  $('vPainel').innerHTML=foto('painel','Painel de consumo');
+  GK.icons();
+})();
+</script>
+</body>
+</html>

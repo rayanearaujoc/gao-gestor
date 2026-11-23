@@ -13,9 +13,9 @@
 <body data-page="clientes">
   <main class="gpage">
     <div class="gk-subhead">
-      <a class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" href="clientes.html" aria-label="Voltar"><i data-lucide="chevron-left" class="gk-ic"></i></a>
       <nav class="gk-crumbs"><a href="clientes.html">Clientes</a><i data-lucide="chevron-right" class="gk-ic"></i><span class="is-current" id="bcNome"></span></nav>
     </div>
+    <a class="gk-btn gk-btn-secondary gk-back" href="clientes.html"><i data-lucide="arrow-left" class="gk-ic"></i>Voltar</a>
 
     <div class="gk-stack" style="gap:var(--space-5)">
       <div class="gk-card">
@@ -63,7 +63,7 @@
             <span class="gk-caption" id="selCount" hidden></span>
             <button class="gk-btn gk-btn-primary" id="btnEnviar" disabled><i data-lucide="send" class="gk-ic"></i>Enviar</button>
           </div>
-          <table class="gk-table is-compact">
+          <table class="gk-table is-compact is-light">
             <thead><tr><th style="width:48px"><label class="gk-check"><input type="checkbox" id="selAll" aria-label="Selecionar todos"></label></th><th>Data</th><th>Recebido por</th><th>Tipo</th><th class="gk-col-actions" style="width:96px">Ações</th></tr></thead>
             <tbody id="tbody"></tbody>
           </table>

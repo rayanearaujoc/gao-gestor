@@ -13,9 +13,9 @@
 <body data-page="motoristas">
   <main class="gpage">
     <div class="gk-subhead">
-      <a class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" href="motoristas.html" aria-label="Voltar"><i data-lucide="chevron-left" class="gk-ic"></i></a>
       <nav class="gk-crumbs"><a href="motoristas.html">Motoristas</a><i data-lucide="chevron-right" class="gk-ic"></i><span class="is-current">Ronaldo Araújo</span></nav>
     </div>
+    <a class="gk-btn gk-btn-secondary gk-back" href="motoristas.html"><i data-lucide="arrow-left" class="gk-ic"></i>Voltar</a>
 
     <div class="gk-stack" style="gap:var(--space-5)">
       <!-- Cabeçalho do perfil -->
@@ -63,7 +63,7 @@
             <span class="gk-spacer"></span>
             <button class="gk-btn gk-btn-ghost" id="trClear" hidden>Limpar</button>
           </div>
-          <table class="gk-table is-compact">
+          <table class="gk-table is-compact is-light">
             <thead><tr><th>Data</th><th>Rota</th><th>Clientes atendidos</th><th>Km rodados</th><th>Consumo</th><th>Status</th><th class="gk-col-actions">Ações</th></tr></thead>
             <tbody id="trBody">
               <tr data-km="551" data-kml="5.4" data-status="concluida" data-rota="hospitalar" data-c="lucas,santa,central"><td>12/11/2026</td><td class="gk-strong">Rota Hospitalar</td><td>Hosp. São Lucas <span class="gk-strong" style="color:var(--muted)">+2</span></td><td>551 km</td><td>5,4 km/l</td><td><span class="gk-badge gk-badge-ok gk-badge-plain">Concluída</span></td><td class="gk-col-actions"><span class="gk-acts"><button class="gk-act" aria-label="Ver rota" title="Ver rota"><i data-lucide="eye" class="gk-ic"></i></button></span></td></tr>
@@ -95,7 +95,7 @@
               <span class="gk-spacer"></span>
               <button class="gk-btn gk-btn-primary" id="btnOc"><i data-lucide="plus" class="gk-ic"></i>Registrar ocorrência</button>
             </div>
-            <table class="gk-table is-compact">
+            <table class="gk-table is-compact is-light">
               <thead><tr><th>Data</th><th>Tipo</th><th>Descrição</th><th>Viagem</th><th>Registrada por</th><th class="gk-col-actions">Ações</th></tr></thead>
               <tbody id="ocBody"></tbody>
             </table>
@@ -103,7 +103,7 @@
           </div>
 
           <div id="tpMultas" hidden>
-            <table class="gk-table is-compact">
+            <table class="gk-table is-compact is-light">
               <thead><tr><th>Infração</th><th>Veículo</th><th>Data e hora</th><th>Valor</th><th class="gk-col-actions">Ações</th></tr></thead>
               <tbody>
                 <tr><td class="gk-strong">Transitar em faixa exclusiva de ônibus<div class="gk-caption">AIT G012344650</div></td><td>QRT-4A21</td><td>12/11/2026<span class="gk-sep"></span>06:40</td><td>R$ 195,23</td><td class="gk-col-actions"><span class="gk-acts"><a class="gk-act" href="multas.html" aria-label="Ver em Multas" title="Ver em Multas"><i data-lucide="eye" class="gk-ic"></i></a></span></td></tr>

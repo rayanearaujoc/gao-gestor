@@ -3,134 +3,51 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>GAO Gestor · Início</title>
+<title>GAO Logística · Protótipo</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
-<script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
 <link rel="stylesheet" href="static/css/app.css">
 <link rel="stylesheet" href="static/css/gestor.css">
 <link rel="stylesheet" href="static/css/kit.css">
+<style>
+body{min-height:100vh;display:flex;flex-direction:column;background:var(--bg);padding:0!important;margin:0}
+.pick{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--space-8) var(--space-6)}
+.pick>img{height:36px;display:block;margin-bottom:var(--space-5)}
+.pick h1{font-size:20px;font-weight:600;text-align:center;margin:0 0 32px}
+.grid{display:grid;align-items:stretch;grid-template-columns:1fr 1fr;gap:var(--space-6);width:100%;max-width:1000px}
+.opt{display:flex;flex-direction:column;overflow:hidden;color:var(--fg);text-decoration:none;transition:transform .15s,border-color .15s}
+.opt:hover{transform:translateY(-3px);border-color:var(--primary)}
+.prev{height:300px;background:var(--row);border-bottom:1px solid var(--line);position:relative;overflow:hidden;display:flex;justify-content:center;align-items:flex-end}
+/* janela de navegador (gestor) */
+.win{width:86%;height:86%;background:var(--card);border:1px solid var(--line-strong);border-bottom:0;border-radius:10px 10px 0 0;overflow:hidden;display:flex;flex-direction:column}
+.win i{display:flex;gap:5px;padding:8px 10px;border-bottom:1px solid var(--line);flex:none}
+.win i b{width:7px;height:7px;border-radius:50%;background:var(--line-strong)}
+.win img{width:100%;display:block;object-fit:cover;object-position:top left}
+/* celular (motorista) */
+.phone{width:170px;height:92%;background:var(--card);border:1px solid var(--line-strong);border-bottom:0;border-radius:24px 24px 0 0;overflow:hidden;padding:6px 6px 0}
+.phone img{width:100%;display:block;border-radius:18px 18px 0 0}
+.txt{padding:var(--space-5) var(--space-6);min-height:92px;display:flex;align-items:flex-start;gap:var(--space-4)}
+.txt b{display:block;font-size:15px;font-weight:600}
+.txt span.d{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+.go{margin-left:auto;margin-top:2px;flex:none;font-size:13px;font-weight:600;color:var(--primary);display:inline-flex;align-items:center;gap:4px}
+.foot{padding:var(--space-5);text-align:center;font-size:12px;color:var(--muted)}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.prev{height:220px}.phone{width:130px}}
+</style>
 </head>
-<body data-page="home">
-  <main class="gpage">
-    <div class="gk-page-head" style="align-items:center"><div><h1 class="gk-h1">Início</h1></div>
-      <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="fPer" data-pop="popPer" type="button"><i data-lucide="calendar" class="gk-ic"></i><span id="perTxt">Últimos 7 dias</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button>
-        <div class="gk-pop gk-menu is-right" id="popPer"><div id="perList"><button class="gk-menu-item" type="button" data-d="7">Últimos 7 dias</button><button class="gk-menu-item" type="button" data-d="14">Últimos 14 dias</button><button class="gk-menu-item" type="button" data-d="30">Últimos 30 dias</button><button class="gk-menu-item" type="button" data-d="90">Últimos 90 dias</button><button class="gk-menu-item" type="button" data-d="mes">Mês atual</button><button class="gk-menu-item" type="button" data-d="ant">Mês anterior</button><button class="gk-menu-item" type="button" id="perCus">Personalizado</button></div>
-          <div id="perBox" hidden style="padding:var(--space-2);width:240px"><div class="gk-field" style="margin-bottom:var(--space-2)"><label class="gk-label" for="perDe">De</label><input class="gk-input" id="perDe" type="date"></div><div class="gk-field" style="margin-bottom:var(--space-3)"><label class="gk-label" for="perAte">Até</label><input class="gk-input" id="perAte" type="date"></div><div style="display:flex;justify-content:space-between;align-items:center"><button type="button" id="perVolta" style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Voltar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" id="perOk">Aplicar</button></div></div></div></div>
-    </div>
-
-    <a class="gk-hero is-row" href="operacao.html" style="margin-bottom:var(--space-5)">
-      <div>
-        <div class="gk-hero-l"><i class="gk-hero-live"></i>Operação de hoje</div>
-        <div class="gk-hero-t" id="hT"></div>
-        <div class="gk-hero-meta" id="hM"></div>
-      </div>
-      <span class="gk-btn gk-btn-secondary">Abrir operação<i data-lucide="arrow-right" class="gk-ic"></i></span>
+<body>
+<main class="pick">
+  <img src="static/img/logo.svg" alt="GAO Logística">
+  <h1>Qual protótipo você quer ver?</h1>
+  <div class="grid">
+    <a class="gk-card opt" href="login.html">
+      <div class="prev"><div class="win"><i><b></b><b></b><b></b></i><img src="static/img/mock-gestor.webp" alt=""></div></div>
+      <div class="txt"><div><b>Plataforma do gestor</b><span class="d">Operação, cadastros, viagens e comprovantes. Melhor no computador.</span></div><span class="go">Abrir<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
     </a>
-
-    <section class="gk-stats" style="margin-bottom:var(--space-5)">
-      <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="circle-check" class="gk-ic"></i></span>Taxa de entrega</div><div class="gk-stat-v"><span id="kT"></span><span class="gk-delta" id="kTd"></span></div><div class="gk-stat-l">das comandas foram entregues</div></div>
-      <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="package" class="gk-ic"></i></span>Entregas e coletas</div><div class="gk-stat-v"><span id="kV"></span><span class="gk-delta" id="kVd"></span></div><div class="gk-stat-l">comandas no período</div></div>
-      <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="fuel" class="gk-ic"></i></span>Consumo médio</div><div class="gk-stat-v"><span id="kK"></span> <small style="font-size:13px;font-weight:500;color:var(--muted)">km/l</small><span class="gk-delta" id="kKd"></span></div><div class="gk-stat-l">média da frota</div></div>
-      <a class="gk-card gk-stat is-link" href="multas.html" style="text-decoration:none;color:inherit"><span class="gk-stat-arrow"><i data-lucide="arrow-up-right" class="gk-ic"></i></span><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="triangle-alert" class="gk-ic"></i></span>Multas</div><div class="gk-stat-v" id="kM"></div><div class="gk-stat-l" id="kMl"></div></a>
-    </section>
-
-    <section class="gk-charts">
-      <div class="gk-card gk-chart"><div class="gk-chart-h"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="circle-check" class="gk-ic"></i></span>Taxa de entrega</div><span class="gk-chart-m" id="c1m"></span></div><div id="c1"></div></div>
-      <div class="gk-card gk-chart"><div class="gk-chart-h"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="package" class="gk-ic"></i></span>Situação das entregas</div><span class="gk-chart-m" id="c2m"></span></div><div id="c2"></div></div>
-    </section>
-    <section class="gk-charts">
-      <div class="gk-card gk-chart"><div class="gk-chart-h"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="truck" class="gk-ic"></i></span>Entregas e coletas</div><span class="gk-chart-m" id="c3m"></span></div><div id="c3"></div><div class="gk-tl-lg" style="margin:var(--space-3) 0 0"><span><i class="is-sq" style="background:var(--primary)"></i><span id="lgNow"></span></span><span><i class="is-sq" style="background:var(--line-strong)"></i><span id="lgPrev"></span></span></div></div>
-      <div class="gk-card gk-chart"><div class="gk-chart-h"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="fuel" class="gk-ic"></i></span>Consumo médio da frota</div><span class="gk-chart-m" id="c4m"></span></div><div id="c4"></div></div>
-    </section>
-  </main>
-<script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
-<script src="static/js/shell.js"></script>
-<script src="static/js/kit-ui.js"></script>
-<script src="static/js/kit-icons.js"></script>
-<script>
-(function(){
-  var $=function(id){ return document.getElementById(id); }, pt=function(n,d){ return n.toFixed(d==null?1:d).replace('.',','); };
-  var HOJE={ent:9,entTot:18,col:1,colTot:7,rotas:4,rotasTot:7};
-  var VZ=!!window.GAO_VAZIO;
-  $('hT').textContent=VZ?'Nenhuma entrega hoje':HOJE.ent+' de '+HOJE.entTot+' entregas feitas';
-  $('hM').innerHTML=VZ?'Nenhuma rota saiu ainda':GK.sp(HOJE.rotas+' rotas na rua · '+HOJE.col+' de '+HOJE.colTot+' coletas feitas · '+HOJE.rotasTot+' rotas hoje');
-
-  /* dados de exemplo: 200 dias fechados até ontem (hoje fica só na faixa azul) */
-  var N=200, W=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'], WL=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'], MES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
-  var base=[7,19,20,19,18,20,9], fixo=[16,19,20,8,7,18,19, 18,21,19,9,6,20], V=[], ENT=[], LIB=[], RATE=[], K=[], MV=[], MC=[], VALS=[195.23,130.16,293.47];
-  for(var i=0;i<N;i++){
-    var d=new Date(2026,10,16-(N-1-i)), w=d.getDay();
-    V.push(i>=N-13?fixo[i-(N-13)]:Math.max(3,base[w]+((i*37)%5)-2));
-    ENT.push(Math.round(V[i]*.85));
-    RATE.push(Math.min(99,Math.max(91,95.2+2.2*Math.sin(i/2.3)+1.2*Math.cos(i/1.1)+(i>N-8?.6:0))));
-    LIB.push(Math.round(ENT[i]/(RATE[i]/100)));
-    K.push(Math.round((4.95+0.18*Math.sin(i/3.1)+0.12*Math.cos(i/1.7))*10)/10);
-    MC.push(i%4===1?1:0); MV.push(i%4===1?VALS[i%3]:0);
-  }
-  [4.9,5.1,5.0,5.2,5.1,4.8].forEach(function(v,k){ K[N-6+k]=v; }); K[N-7]=5.0;
-  function dt(i){ var d=new Date(2026,10,16-(N-1-i)); return WL[d.getDay()]+', '+d.getDate()+' de '+MES[d.getMonth()]; }
-  function sum(A,a,b){ var s=0; for(var i=a;i<b;i++) s+=A[i]; return s; }
-  function agg(a,b){ var e=sum(ENT,a,b), l=sum(LIB,a,b); var wr=0; for(var q=a;q<b;q++) wr+=RATE[q]*ENT[q]; return {e:e,l:l,v:sum(V,a,b),rate:wr/e,k:sum(K,a,b)/(b-a),mc:sum(MC,a,b),mv:sum(MV,a,b)}; }
-  function delta(el,dv,txt,inv){ dv=Math.round(dv*10)/10; if(dv===0) txt=txt.replace(/^[+−]/,''); el.textContent=txt; el.className='gk-delta'+(dv===0?'':((dv>0)!==!!inv?' is-up':' is-down')); }
-  function lbl(j,n){ var st=n<=31?5:(n<=62?10:15); return n<=7?W[new Date(2026,10,16-(N-1-j)).getDay()]:((N-1-j)%st===0?String(new Date(2026,10,16-(N-1-j)).getDate()):''); }
-  function desenha(a,b){
-    if(VZ){
-      ['kT','kV','kK'].forEach(function(i){ $(i).textContent='—'; }); $('kM').textContent='R$ 0,00'; $('kMl').textContent='nenhuma multa';
-      ['kTd','kVd','kKd'].forEach(function(i){ $(i).textContent=''; $(i).className='gk-delta'; });
-      ['c1','c2','c3','c4'].forEach(function(i){ $(i).innerHTML=GK.emptyHTML({icon:'chart-column',title:'Sem dados ainda',text:'Aparece depois da primeira entrega.'}); });
-      ['c1m','c2m','c3m','c4m'].forEach(function(i){ $(i).textContent=''; }); var lg=document.querySelector('.gk-tl-lg'); if(lg) lg.hidden=true; GK.icons(); return;
-    }
-    var n=b-a, P=agg(a,b), Q=agg(a-n,a), ant=n===7?'vs semana anterior':'vs período anterior', sg=function(x){ return x>0?'+':(x<0?'−':''); };
-    $('kT').textContent=pt(P.rate)+'%'; delta($('kTd'),P.rate-Q.rate,sg(P.rate-Q.rate)+pt(Math.abs(P.rate-Q.rate))+' pt');
-    $('kV').textContent=P.v.toLocaleString('pt-BR'); var pv=Math.round((P.v-Q.v)/Q.v*100); delta($('kVd'),pv,sg(pv)+Math.abs(pv)+'%');
-    $('kK').textContent=pt(P.k); delta($('kKd'),P.k-Q.k,sg(P.k-Q.k)+pt(Math.abs(P.k-Q.k)));
-    $('kM').textContent='R$ '+P.mv.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); $('kMl').textContent=P.mc+(P.mc===1?' multa':' multas')+' no período';
-    /* taxa de entrega */
-    var it=[]; for(var j=a;j<b;j++) it.push({l:lbl(j,n),v:Math.round(RATE[j]*10)/10,t:dt(j),e:ENT[j]+' comandas entregues'});
-    GK.areaChart($('c1'),{items:it,unit:'%',one:'%',min:90,max:100,dec:0}); $('c1m').textContent='Média '+pt(P.rate)+'%';
-    /* situação das entregas */
-    var ne=P.l-P.e;
-    GK.donut($('c2'),{unit:'comandas',one:'comanda',centro:{v:P.l,l:'liberadas'},parts:[{n:'Entregues',v:P.e,c:'var(--ok)'},{n:'Não entregues',v:ne,c:'var(--bad)'}]}); $('c2m').textContent=P.l+' comandas';
-    /* entregas e coletas (barra cinza = mesmo dia do período anterior) */
-    var bi=[]; for(j=a;j<b;j++){ var p=V[j-n], df=V[j]-p; bi.push({l:lbl(j,n),v:V[j],p:p,t:dt(j),e:df===0?'Igual ao período anterior':(df>0?'+'+df:'−'+(-df))+' que no período anterior'}); }
-    GK.barChart($('c3'),{items:bi,unit:'comandas',one:'comanda'}); $('c3m').textContent=sg(pv)+Math.abs(pv)+'% '+ant;
-    $('lgNow').textContent=n===7?'Esta semana':'Período selecionado'; $('lgPrev').textContent=n===7?'Semana anterior':'Período anterior';
-    /* consumo */
-    var ar=[]; for(j=a;j<b;j++) ar.push({l:lbl(j,n),v:K[j],t:dt(j)});
-    GK.areaChart($('c4'),{items:ar,unit:'km/l',one:'km/l',min:4.5,max:5.5,dec:1}); $('c4m').textContent='Média '+pt(P.k)+' km/l';
-  }
-  var MC3=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-  function idx(d){ return Math.round((d-new Date(2026,10,16))/864e5)+N-1; }
-  function iso(i){ var d=new Date(2026,10,16-(N-1-i)); return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); }
-  function curto(i){ var d=new Date(2026,10,16-(N-1-i)); return d.getDate()+' '+MC3[d.getMonth()]; }
-  function aplica(a,b,txt){ $('perTxt').textContent=txt; $('popPer').classList.remove('is-open'); $('perBox').hidden=true; $('perList').hidden=false; desenha(a,b); }
-  aplica(N-7,N,'Últimos 7 dias');
-  $('popPer').querySelectorAll('[data-d]').forEach(function(bt){ bt.addEventListener('click',function(){
-    var k=bt.getAttribute('data-d'), a, b=N;
-    if(k==='mes'){ a=idx(new Date(2026,10,1)); }
-    else if(k==='ant'){ a=idx(new Date(2026,9,1)); b=idx(new Date(2026,10,1)); }
-    else a=N-(+k);
-    aplica(a,b,bt.textContent); }); });
-  $('perCus').addEventListener('click',function(){ $('perList').hidden=true; $('perBox').hidden=false; $('perDe').value=iso(N-14); $('perAte').value=iso(N-1); $('perDe').min=iso(0); $('perDe').max=iso(N-1); $('perAte').min=iso(0); $('perAte').max=iso(N-1); });
-  $('perVolta').addEventListener('click',function(){ $('perBox').hidden=true; $('perList').hidden=false; });
-  $('perOk').addEventListener('click',function(){
-    var d1=$('perDe').value, d2=$('perAte').value; if(!d1||!d2) return GK.toast('Escolha as duas datas');
-    var a=idx(new Date(d1+'T00:00:00')), b=idx(new Date(d2+'T00:00:00'))+1;
-    if(b<=a) return GK.toast('A data final precisa ser depois da inicial');
-    if(a<0||b>N) return GK.toast('Sem dados nesse intervalo');
-    if(a-(b-a)<0) return GK.toast('Sem dados do período anterior para comparar');
-    aplica(a,b,curto(a)+' – '+curto(b-1)); });
-  if(VZ){ var PS=[['Adicione seus clientes','Importe do CRM GAO ou cadastre à mão','Traga os hospitais e clínicas que recebem as entregas. Pode importar do CRM GAO ou cadastrar um por um.','Adicionar clientes','clientes.html?novo=1'],['Cadastre os motoristas','Quem vai dirigir e usar o app','Cada motorista recebe um acesso para usar o app de entregas.','Cadastrar motoristas','motoristas.html?novo=1'],['Cadastre os veículos','Placa e modelo de cada um','Informe a placa e o modelo dos veículos da frota.','Cadastrar veículos','veiculos.html?novo=1'],['Crie as rotas','Junte motorista, veículo e clientes','Monte as rotas com motorista, veículo e a sequência de clientes.','Criar rotas','rotas.html?novo=1']];
-    var WAVE='<svg class="gk-wave" viewBox="-340 -400 680 800" aria-hidden="true"><g transform="translate(0 392.5)"><g class="gk-wave-r"><g transform="translate(0 -392.5)"><path d="M302.6 -40.5C272.4 -53.9 229.2 -35.9 198.6 7.4C178.6 35.9 172.7 76.4 146.3 80.6C136.2 82.2 130.8 76.1 127.9 67.3C124.9 52.4 125.6 29.4 131.1 -2.8C131.1 -2.8 191.1 -272.4 191.1 -272.4C195.9 -292.9 184.7 -312.9 157.8 -319.4C130.9 -325.9 110.6 -312.7 105.8 -292.1C105.8 -292.1 52.3 -47.7 52.3 -47.7C41.5 6.3 21.5 -3.5 26.3 -64.6C26.3 -64.6 26.3 -64.7 26.3 -64.7C26.3 -64.7 41.7 -351.2 41.7 -351.2C42.9 -373.4 25.9 -391.5 0.7 -392.5C-24.5 -393.4 -42.6 -378.3 -43.9 -356.2C-43.9 -356.2 -58.5 -62.7 -58.5 -62.7C-61.7 -3.4 -82.9 -25.8 -87.5 -68.7C-87.5 -68.7 -121.5 -306.1 -121.5 -306.1C-125.0 -328.5 -146.0 -344.0 -171.1 -340.0C-196.3 -335.9 -211.5 -315.1 -208.0 -292.7C-208.0 -292.7 -175.3 -75.7 -175.3 -75.7C-162.3 7.1 -179.3 30.1 -207.2 -59.9C-207.2 -59.9 -242.1 -191.8 -242.1 -191.8C-247.8 -212.9 -268.7 -226.1 -294.9 -218.7C-321.1 -211.3 -332.4 -190.3 -326.7 -169.1C-326.7 -169.1 -292.6 -45.1 -292.6 -45.1C-278.3 44.1 -278.3 79.3 -278.3 140.8C-278.3 202.2 -250.1 392.5 -33.9 392.5C182.2 392.5 226.7 172.9 228.7 159.0C228.7 159.0 231.4 126.6 254.0 96.3C286.2 53.2 308.8 27.2 322.4 11.7C329.4 3.8 336.1 -25.7 302.6 -40.5Z" fill="#acafff"/><path d="M139.2 80.4C132.7 77.7 127.1 70.8 126.5 55.9C85.0 61.6 29.0 73.2 -14.1 115.3C-70.0 170.0 -79.6 229.1 -79.1 268.7C-78.7 300.6 -61.3 315.7 -56.2 268.4C-49.8 208.7 -6.3 90.2 139.2 80.4Z" fill="#9295e1"/></g></g></g></svg>';
-    var nome='Marina'; try{ var pf=JSON.parse(localStorage.getItem('gao_profile')||'null'); if(pf&&pf.name) nome=pf.name.trim().split(/\s+/)[0]; }catch(e){}
-    var sc=document.createElement('section'); sc.className='gk-card gk-first'; sc.style.marginBottom='var(--space-5)';
-    sc.innerHTML='<div class="gk-first-h"><b>'+WAVE+'Olá, '+nome+'</b><p>Em '+PS.length+' passos a operação fica pronta para a primeira rota.</p><div class="gk-first-bar"><span>0 de '+PS.length+' passos</span><i style="--p:0%"></i></div></div><div class="gk-first-l">'+PS.map(function(p,k){ return '<div class="gk-first-i'+(k===0?' is-open':'')+'"><button class="gk-first-r" type="button"><span class="gk-first-n">'+(k+1)+'</span><span class="gk-first-t"><b>'+p[0]+'</b><span>'+p[1]+'</span></span><i data-lucide="chevron-right" class="gk-ic"></i></button><div class="gk-first-x"><p>'+p[2]+'</p><a class="gk-btn gk-btn-primary gk-btn-sm" href="'+p[4]+'">'+p[3]+'</a></div></div>'; }).join('')+'</div>';
-    sc.addEventListener('click',function(e){ var r=e.target.closest('.gk-first-r'); if(!r) return; var it=r.parentNode, was=it.classList.contains('is-open'); sc.querySelectorAll('.gk-first-i').forEach(function(x){ x.classList.remove('is-open'); }); if(!was) it.classList.add('is-open'); });
-    /* sem dados: só os primeiros passos; o resto aparece depois da primeira entrega */
-    var hero=document.querySelector('.gk-hero'); hero.parentNode.insertBefore(sc,hero);
-    ['.gk-hero','.gk-stats'].forEach(function(q){ document.querySelector(q).hidden=true; }); document.querySelectorAll('.gk-charts').forEach(function(e){ e.hidden=true; }); $('fPer').parentNode.hidden=true; }
-  GK.popovers(); GK.icons();
-})();
-</script>
+    <a class="gk-card opt" href="motorista/login.html">
+      <div class="prev"><div class="phone"><img src="static/img/mock-motorista.webp" alt=""></div></div>
+      <div class="txt"><div><b>App do motorista</b><span class="d">Rota, carregamento, entregas e coletas. Melhor no celular.</span></div><span class="go">Abrir<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div>
+    </a>
+  </div>
+</main>
+<footer class="foot">© 2026 GAO Sistemas. Todos os direitos reservados.</footer>
 </body>
 </html>

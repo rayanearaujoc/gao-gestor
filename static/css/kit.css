@@ -26,7 +26,7 @@ svg.lucide,.gk-ic{width:var(--icon-md);height:var(--icon-md);stroke-width:1.75;f
 
 /* ---------- Botão ---------- */
 .gk-btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);height:var(--ctl-md);padding:0 var(--space-4);
-  border:1px solid transparent;border-radius:var(--radius-md);font-weight:500;cursor:pointer;white-space:nowrap;text-decoration:none;
+  border:1px solid transparent;border-radius:var(--radius-md);font-weight:600;cursor:pointer;white-space:nowrap;text-decoration:none;
   background:var(--card);color:var(--fg);transition:background .12s,border-color .12s}
 .gk-btn:focus-visible{border-color:var(--line-strong)}
 .gk-btn:disabled,.gk-btn[aria-disabled=true]{opacity:.5;cursor:default;pointer-events:none}
@@ -38,7 +38,7 @@ svg.lucide,.gk-ic{width:var(--icon-md);height:var(--icon-md);stroke-width:1.75;f
 .gk-btn-ghost:hover{background:var(--row)}
 .gk-btn-danger{background:var(--bad);color:#fff;border-color:var(--bad)}
 .gk-btn-danger:hover{filter:brightness(.92)}
-.gk-btn-sm{height:var(--ctl-sm);padding:0 var(--space-3);font-size:12px;line-height:16px}
+.gk-btn-sm{height:34px;padding:0 var(--space-3);font-size:12px;line-height:16px}
 .gk-btn-lg{height:var(--ctl-lg);padding:0 var(--space-5)}
 .gk-btn-icon{width:var(--ctl-md);padding:0}
 .gk-btn-icon.gk-btn-sm{width:var(--ctl-sm)}
@@ -1242,4 +1242,42 @@ body.gk-login-page{padding:0;background:var(--card)}
 @media (max-width:640px){
   .gk-toolbar .gk-spacer{display:none}
   .gk-toolbar .gk-btn-primary{order:-1;flex:1 1 100%;justify-content:center;min-height:46px}
+}
+
+/* Voltar das páginas de detalhe: fica numa linha própria, abaixo do menu/breadcrumb */
+.gk-back{margin-bottom:var(--space-4);font-weight:600}
+
+/* Tabela leve: cabeçalho cinza claro. Usar quando a tabela está dentro de outra coisa (aba de configuração, card, modal).
+   A tabela principal da página (lista de Clientes, Motoristas, Viagens...) mantém o cabeçalho azul escuro. */
+.gk-table.is-light thead th{height:44px;background:var(--row);color:var(--muted);border-bottom:1px solid var(--line)}
+@media(max-width:899px){.gk-table.is-light thead th:first-child{background:var(--row)}}
+
+/* ===== Responsivo, parte 2: detalhes, abas, cabeçalhos de perfil, modais e botões no toque ===== */
+@media(max-width:899px){
+  .gk-tabs,.gk-table-wrap>.gk-tabs{overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap}
+  .gk-tabs::-webkit-scrollbar{display:none}
+  .gk-tab{flex:none;white-space:nowrap}
+  .gk-pstrip{flex-wrap:wrap;row-gap:var(--space-4)}
+  .gk-pstrip>.gk-vr{display:none}
+  .gk-pstrip>:first-child{flex:1 1 100%;min-width:0}
+  .gk-pstrip .gk-facts{flex-wrap:wrap;gap:var(--space-4) var(--space-6);flex:1 1 100%}
+  .gk-status-row{flex-wrap:wrap}
+}
+@media(max-width:640px){
+  .gk-stats>*:last-child:nth-child(odd){grid-column:1/-1}
+  .gk-hero-list{grid-template-columns:1fr}
+  .gk-status-row{flex-direction:column;align-items:stretch}
+  .gk-status-row .gk-btn{width:100%}
+  .gk-tabpanel{padding:var(--space-4)}
+  /* botões grandes para o toque */
+  .gk-btn{min-height:44px}
+  .gk-btn-sm{min-height:40px}
+  .gk-btn-icon{min-width:44px}
+  .gk-act{width:40px;height:40px}
+  .gk-input,.gk-select{height:44px;font-size:16px}
+  /* modais viram folha na base da tela */
+  .gk-overlay .gk-modal{left:0;right:0;top:auto;bottom:0;transform:none;width:100%!important;max-width:100%;max-height:92vh;border-radius:var(--radius-lg) var(--radius-lg) 0 0}
+  .gk-modal-foot{flex-direction:column-reverse;align-items:stretch}
+  .gk-modal-foot .gk-btn{width:100%}
+  .gk-fgrid{grid-template-columns:1fr}
 }

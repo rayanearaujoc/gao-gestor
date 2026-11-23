@@ -15,7 +15,7 @@
     <div class="gk-page-head"><div><h1 class="gk-h1">Configurações</h1></div></div>
 
     <div class="gk-table-wrap">
-      <div class="gk-tabs" id="cfgTabs"><button class="gk-tab is-active" data-t="plano">Plano</button><button class="gk-tab" data-t="bot">Assistente WhatsApp</button><button class="gk-tab" data-t="empresa">Dados da empresa</button></div>
+      <div class="gk-tabs" id="cfgTabs"><button class="gk-tab is-active" data-t="plano">Plano</button><button class="gk-tab" data-t="bot">Assistente WhatsApp</button><button class="gk-tab" data-t="saneantes">Saneantes</button><button class="gk-tab" data-t="empresa">Dados da empresa</button></div>
       <section class="gk-tabpanel" data-p="plano">
           <div class="gk-hero" style="margin-bottom:var(--space-5)">
             <div class="gk-hero-l">Seu plano</div>
@@ -38,6 +38,17 @@
             <button class="gk-btn gk-btn-secondary" id="wBtn" type="button"></button>
           </div>
         </section>
+      <section class="gk-tabpanel" data-p="saneantes" style="padding:0" hidden>
+        <div class="gk-toolbar" style="flex-wrap:nowrap">
+          <div style="min-width:0"><h3 class="gk-h3">Saneantes</h3><div class="gk-caption">O saneante em uso aparece no comprovante de higienização, com o número da Anvisa e a ficha em PDF.</div></div>
+          <span class="gk-spacer"></span>
+          <button class="gk-btn gk-btn-primary" id="sNovo" type="button"><i data-lucide="plus" class="gk-ic"></i>Novo saneante</button>
+        </div>
+        <table class="gk-table is-compact is-light">
+          <thead><tr><th>Saneante</th><th>Nº Anvisa</th><th>Ficha</th><th>Situação</th><th class="gk-col-actions" style="width:112px">Ações</th></tr></thead>
+          <tbody id="sBody"></tbody>
+        </table>
+      </section>
       <section class="gk-tabpanel" data-p="empresa" hidden>
           <div class="gk-fgroup"><h3 class="gk-h3">Empresa</h3><div class="gk-fgrid"><div class="gk-fact"><div class="gk-fact-l">Nome</div><div class="gk-fact-v"><span class="gk-strong">GAO Lavanderia Hospitalar</span></div></div><div class="gk-fact"><div class="gk-fact-l">CNPJ</div><div class="gk-fact-v">12.345.678/0001-90</div></div><div class="gk-fact"><div class="gk-fact-l">Categoria</div><div class="gk-fact-v">Lavanderia hospitalar</div></div><div class="gk-fact"><div class="gk-fact-l">Telefone</div><div class="gk-fact-v">(62) 3000-0000</div></div></div></div>
           <div class="gk-fgroup"><h3 class="gk-h3">Endereço</h3><div class="gk-fgrid"><div class="gk-fact"><div class="gk-fact-l">CEP</div><div class="gk-fact-v">74110-010</div></div><div class="gk-fact"><div class="gk-fact-l">Logradouro</div><div class="gk-fact-v">Av. T-4, 1200</div></div><div class="gk-fact"><div class="gk-fact-l">Bairro</div><div class="gk-fact-v">Setor Bueno</div></div><div class="gk-fact"><div class="gk-fact-l">Cidade</div><div class="gk-fact-v">Goiânia, GO</div></div></div></div>
@@ -62,6 +73,22 @@
   </div>
   <div class="gk-overlay" id="ovWppOff"><div class="gk-scrim" data-close="ovWppOff"></div><div class="gk-modal" role="dialog"><div class="gk-modal-body"><div class="gk-modal-icon is-warn"><i data-lucide="triangle-alert" class="gk-ic"></i></div><h2 class="gk-h2">Desconectar o WhatsApp?</h2><p>Os avisos automáticos aos clientes deixam de ser enviados até você conectar um número novamente.</p></div><div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovWppOff">Cancelar</button><button class="gk-btn gk-btn-danger" id="wOffOk">Desconectar</button></div></div></div>
 
+  <div class="gk-overlay" id="ovS"><div class="gk-scrim" data-close="ovS"></div>
+    <div class="gk-modal is-form" role="dialog" aria-labelledby="sT">
+      <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="spray-can" class="gk-ic"></i></span><h2 class="gk-h2" id="sT">Novo saneante</h2></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovS" aria-label="Fechar"><i data-lucide="x" class="gk-ic"></i></button></div>
+      <div class="gk-modal-body" style="border-top:1px solid var(--line)"><div class="gk-form">
+        <div class="gk-field"><label class="gk-label">Nome do saneante<span class="gk-req">*</span></label><input class="gk-input" id="sNome" placeholder="Ex.: Sanitizante Multiuso TermiClean"></div>
+        <div class="gk-field"><label class="gk-label">Nº de registro na Anvisa<span class="gk-req">*</span></label><input class="gk-input" id="sReg" placeholder="Ex.: 3.2154.0012"></div>
+        <div class="gk-field"><label class="gk-label">Ficha do saneante (PDF)</label>
+          <div class="gk-inline" style="gap:var(--space-3)"><button class="gk-btn gk-btn-secondary" id="sPick" type="button"><i data-lucide="paperclip" class="gk-ic"></i>Anexar PDF</button><span class="gk-caption" id="sArq">Nenhum arquivo</span></div>
+          <input type="file" id="sFile" accept="application/pdf" hidden>
+        </div>
+      </div></div>
+      <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovS">Cancelar</button><button class="gk-btn gk-btn-primary" id="sOk" disabled>Salvar</button></div>
+    </div>
+  </div>
+  <div class="gk-overlay" id="ovSDel"><div class="gk-scrim" data-close="ovSDel"></div><div class="gk-modal" role="dialog"><div class="gk-modal-body"><div class="gk-modal-icon is-warn"><i data-lucide="triangle-alert" class="gk-ic"></i></div><h2 class="gk-h2" id="sDelT">Excluir saneante?</h2><p id="sDelP"></p></div><div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovSDel">Cancelar</button><button class="gk-btn gk-btn-danger" id="sDelOk">Excluir</button></div></div></div>
+
 <script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
 <script src="static/js/shell.js"></script>
 <script src="static/js/kit-ui.js"></script>
@@ -82,6 +109,42 @@
     document.querySelectorAll('#cfgTabs .gk-tab').forEach(function(x){ x.classList.toggle('is-active',x===t); });
     document.querySelectorAll('[data-p]').forEach(function(p){ p.hidden=p.getAttribute('data-p')!==t.getAttribute('data-t'); }); }); });
   pintar(); GK.popovers(); GK.icons();
+  /* saneantes: o gestor cadastra e marca um "em uso"; o comprovante lê o que está em uso (localStorage do protótipo) */
+  var SK='gao_saneantes', SAN, edit=null, del=null, arq='';
+  var SEED=[{id:1,nome:'Sanitizante Multiuso TermiClean',reg:'3.2154.0012',pdf:'TermiClean-ficha.pdf',url:'/_blob/5d4d1e44465b4a53f13c5bb90d57fe63',uso:true},{id:2,nome:'Desinfetante Hospitalar QuatSan',reg:'3.1087.0045',pdf:'QuatSan-ficha.pdf',url:'/_blob/5d4d1e44465b4a53f13c5bb90d57fe63',uso:false},{id:3,nome:'Hipoclorito de Sódio 2,5%',reg:'3.0933.0208',pdf:'',url:'',uso:false}];
+  try{ SAN=JSON.parse(localStorage.getItem(SK)||'null'); }catch(e){}
+  if(!Array.isArray(SAN)||!SAN.length) SAN=SEED;
+  function salvar(){ try{ localStorage.setItem(SK,JSON.stringify(SAN)); }catch(e){} }
+  function pintaS(){
+    $('sBody').innerHTML=SAN.map(function(x){
+      return '<tr data-id="'+x.id+'"><td class="gk-strong">'+x.nome+'</td><td>'+x.reg+'</td>'
+        +'<td>'+(x.pdf?'<a class="gk-link" href="'+(x.url||'#')+'" target="_blank" rel="noopener">'+x.pdf+'</a>':'<span class="gk-caption">Sem ficha</span>')+'</td>'
+        +'<td>'+(x.uso?'<span class="gk-badge gk-badge-ok">Em uso</span>':'<button class="gk-btn gk-btn-ghost gk-btn-sm" style="color:var(--primary)" data-act="uso" type="button">Usar este</button>')+'</td>'
+        +'<td class="gk-col-actions"><span class="gk-acts"><button class="gk-act" data-act="ed" type="button" aria-label="Editar" title="Editar"><i data-lucide="pencil" class="gk-ic"></i></button><button class="gk-act is-danger" data-act="del" type="button" aria-label="Excluir" title="Excluir"><i data-lucide="trash-2" class="gk-ic"></i></button></span></td></tr>';
+    }).join(''); GK.icons();
+  }
+  function ok(){ $('sOk').disabled=!($('sNome').value.trim()&&$('sReg').value.trim()); }
+  function abrirS(x){ edit=x||null; arq=x?x.pdf:''; $('sT').textContent=x?'Editar saneante':'Novo saneante'; $('sNome').value=x?x.nome:''; $('sReg').value=x?x.reg:''; $('sArq').textContent=arq||'Nenhum arquivo'; $('sFile').value=''; ok(); GK.open('ovS'); }
+  $('sNovo').addEventListener('click',function(){ abrirS(); });
+  ['sNome','sReg'].forEach(function(i){ $(i).addEventListener('input',ok); });
+  $('sPick').addEventListener('click',function(){ $('sFile').click(); });
+  var urlNovo='';
+  $('sFile').addEventListener('change',function(){ var f=this.files[0]; if(!f) return; arq=f.name; urlNovo=''; try{ urlNovo=URL.createObjectURL(f); }catch(e){} $('sArq').textContent=arq; });
+  $('sOk').addEventListener('click',function(){
+    var nome=$('sNome').value.trim(), reg=$('sReg').value.trim();
+    if(edit){ edit.nome=nome; edit.reg=reg; if(arq!==edit.pdf){ edit.pdf=arq; edit.url=urlNovo; } }
+    else SAN.push({id:Date.now(),nome:nome,reg:reg,pdf:arq,url:urlNovo,uso:!SAN.length});
+    salvar(); pintaS(); GK.close('ovS'); GK.toast(edit?'Saneante atualizado':'Saneante cadastrado');
+  });
+  $('sBody').addEventListener('click',function(e){
+    var b=e.target.closest('[data-act]'); if(!b) return; var x=SAN.filter(function(y){ return String(y.id)===b.closest('tr').getAttribute('data-id'); })[0], a=b.getAttribute('data-act');
+    if(a==='ed') abrirS(x);
+    else if(a==='uso'){ SAN.forEach(function(y){ y.uso=(y===x); }); salvar(); pintaS(); GK.toast('"'+x.nome+'" agora é o saneante em uso'); }
+    else { del=x; $('sDelP').textContent=x.uso?'Este é o saneante em uso. Depois de excluir, marque outro para que apareça nos comprovantes.':'O saneante '+x.nome+' será removido da lista.'; GK.open('ovSDel'); }
+  });
+  $('sDelOk').addEventListener('click',function(){ SAN=SAN.filter(function(y){ return y!==del; }); salvar(); pintaS(); GK.close('ovSDel'); GK.toast('Saneante excluído'); });
+  pintaS();
+
 })();
 </script>
 </body>

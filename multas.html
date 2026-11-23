@@ -91,7 +91,7 @@
   function row(m,i){
     return '<tr class="gk-row-link" data-i="'+i+'"><td><div class="gk-cell-main"><span><span class="gk-strong">'+m.infr+'</span><span class="gk-sub" style="display:block">AIT '+m.ait+'</span></span></div></td>'
       +'<td class="gk-strong">'+m.placa+'</td><td>'+m.data+GK.sep+m.hora+'</td>'
-      +'<td><div class="gk-cell-main"><span class="gk-avatar">'+ini(m.mot)+'</span><span>'+m.mot+'</span></div></td>'
+      +'<td><div class="gk-cell-main">'+GK.mot(m.mot)+'<span>'+m.mot+'</span></div></td>'
       +'<td><a class="gk-link" href="viagem.html?v='+m.via+'">#'+m.via+'</a></td><td class="gk-strong">'+brl(m.valor)+'</td>'
       +'<td class="gk-col-actions"><span class="gk-acts"><button class="gk-act" data-ver aria-label="Ver multa" title="Ver"><i data-lucide="eye" class="gk-ic"></i></button></span></td></tr>';
   }
@@ -132,7 +132,7 @@
   }
   function tripHTML(id,best){
     var t=TRIPS[id];
-    return '<div class="gk-trip'+(best?'':' is-sm')+'" data-id="'+id+'"><div class="gk-trip-h"><span class="gk-avatar">'+ini(t.mot)+'</span><div class="gk-trip-b"><b>'+t.mot+'</b><span>Viagem #'+id+GK.sep+t.rota+GK.sep+t.placa+(best?'':GK.sep+t.de+'–'+t.ate)+'</span></div><button type="button" class="gk-btn gk-btn-sm '+(best?'gk-btn-primary':'gk-btn-secondary')+'" data-best="'+(best?1:0)+'" data-des="'+id+'">Designar</button></div>'+(best?timeline(t,cur.hora):'')+'</div>';
+    return '<div class="gk-trip'+(best?'':' is-sm')+'" data-id="'+id+'"><div class="gk-trip-h">'+GK.mot(t.mot)+'<div class="gk-trip-b"><b>'+t.mot+'</b><span>Viagem #'+id+GK.sep+t.rota+GK.sep+t.placa+(best?'':GK.sep+t.de+'–'+t.ate)+'</span></div><button type="button" class="gk-btn gk-btn-sm '+(best?'gk-btn-primary':'gk-btn-secondary')+'" data-best="'+(best?1:0)+'" data-des="'+id+'">Designar</button></div>'+(best?timeline(t,cur.hora):'')+'</div>';
   }
   function marcar(){
     document.querySelectorAll('#mRes [data-des]').forEach(function(b){
@@ -171,7 +171,7 @@
     $('mTitle').textContent='Multa '+m.ait; $('mAn').hidden=true; $('mOk').hidden=true; $('mCancel').textContent='Fechar';
     var t=TRIPS[m.via];
     $('mRes').innerHTML='<dl class="gk-mfacts"><div class="is-wide"><dt>Infração</dt><dd>'+m.infr+'</dd></div><div><dt>Veículo</dt><dd>'+m.placa+'</dd></div><div><dt>Data e hora</dt><dd>'+m.data+GK.sep+m.hora+'</dd></div><div class="is-wide"><dt>Local</dt><dd>'+m.loc+'</dd></div><div><dt>AIT</dt><dd>'+m.ait+'</dd></div><div><dt>Valor</dt><dd>'+brl(m.valor)+'</dd></div></dl>'
-      +'<div class="gk-sec-t">Viagem e motorista</div><div class="gk-trip"><div class="gk-trip-h"><span class="gk-avatar">'+ini(m.mot)+'</span><div class="gk-trip-b"><b>'+m.mot+'</b><span>Viagem #'+m.via+(t?GK.sep+t.rota:'')+'</span></div><a class="gk-btn gk-btn-secondary gk-btn-sm" href="viagem.html?v='+m.via+'">Ver viagem</a></div></div>';
+      +'<div class="gk-sec-t">Viagem e motorista</div><div class="gk-trip"><div class="gk-trip-h">'+GK.mot(m.mot)+'<div class="gk-trip-b"><b>'+m.mot+'</b><span>Viagem #'+m.via+(t?GK.sep+t.rota:'')+'</span></div><a class="gk-btn gk-btn-secondary gk-btn-sm" href="viagem.html?v='+m.via+'">Ver viagem</a></div></div>';
     $('mRes').hidden=false; abrirModal();
   }
   $('mRes').addEventListener('click',function(e){ var b=e.target.closest('[data-des]'); if(!b) return; des=+b.getAttribute('data-des'); cur.via=des; cur.mot=TRIPS[des].mot; marcar(); });

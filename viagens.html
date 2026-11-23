@@ -40,10 +40,19 @@
     </div>
   </main>
 
+  <div class="gk-overlay" id="ovR"><div class="gk-scrim" data-close="ovR"></div>
+    <aside class="gk-drawer is-lg" role="dialog" aria-labelledby="rT">
+      <div class="gk-drawer-head"><h2 class="gk-h2" id="rT"></h2><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovR" aria-label="Fechar"><i data-lucide="x" class="gk-ic"></i></button></div>
+      <div class="gk-drawer-body" id="rB"></div>
+      <div class="gk-drawer-foot"><button class="gk-btn gk-btn-primary" id="rAv" hidden></button></div>
+    </aside>
+  </div>
+
 <script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
 <script src="static/js/shell.js"></script>
 <script src="static/js/kit-ui.js"></script>
 <script src="static/js/kit-icons.js"></script>
+<script src="static/js/rota-panel.js"></script>
 <script>
 (function(){
   var ROTAS=['Rota Hospitalar','Rota Oeste','Rota Centro','Rota Sul','Rota Norte','Rota Leste'], MOT=['Ronaldo Araújo','Bruno Castro','Diego Martins','Paulo Ribeiro'];
@@ -54,12 +63,20 @@
   var state={q:'',rota:[],mot:[],st:[],page:1}, PAGE=10;
   var tbody=document.getElementById('tbody'), empty=document.getElementById('empty');
   function ini(n){ return n.split(' ').map(function(x){ return x[0]; }).slice(0,2).join(''); }
+  /* em andamento abre o painel lateral da rota (o mesmo da Operação); concluída abre a página da viagem */
+  var RP=window.RotaPanel, RR=RP.dados(), P=RP.criar(RR);
+  function abrir(v){
+    if(v.st!=='Em andamento'){ location.href='viagem.html?v='+v.id; return; }
+    var i=RR.map(function(r){ return r.nome; }).indexOf(v.rota); if(i<0) return;
+    var r=RR[i]; RR[i]=Object.assign({},r,{m:r.m.filter(function(x){ return x.n===v.mot; })});
+    P.ver(RR[i]); document.getElementById('rAv').hidden=true; RR[i]=r;
+  }
   function row(v){
     return '<tr class="gk-row-link" data-id="'+v.id+'"><td class="gk-strong">#'+v.id+'</td><td>'+v.data+'</td><td class="gk-strong">'+v.rota+'</td>'
-      +'<td><div class="gk-cell-main"><span class="gk-avatar">'+ini(v.mot)+'</span><span>'+v.mot+'</span></div></td><td>'+v.cli+'</td>'
+      +'<td><div class="gk-cell-main">'+GK.mot(v.mot)+'<span>'+v.mot+'</span></div></td><td>'+v.cli+'</td>'
       +'<td>'+(v.oc?'<span class="gk-strong" style="color:var(--warn-ink)">'+v.oc+'</span>':'<span class="gk-caption">—</span>')+'</td>'
       +'<td>'+(v.st==='Em andamento'?'<span class="gk-badge gk-badge-info gk-badge-plain">Em andamento</span>':'<span class="gk-badge gk-badge-ok gk-badge-plain">Concluída</span>')+'</td>'
-      +'<td class="gk-col-actions"><span class="gk-acts"><a class="gk-act" href="viagem.html?v='+v.id+'" aria-label="Ver viagem" title="Ver"><i data-lucide="eye" class="gk-ic"></i></a></span></td></tr>';
+      +'<td class="gk-col-actions"><span class="gk-acts"><button type="button" class="gk-act" aria-label="Ver viagem" title="Ver"><i data-lucide="eye" class="gk-ic"></i></button></span></td></tr>';
   }
   function apply(){
     var list=V.filter(function(v){ return (!state.q||String(v.id).indexOf(state.q.replace('#',''))>=0)&&(!state.rota.length||state.rota.indexOf(v.rota)>=0)&&(!state.mot.length||state.mot.indexOf(v.mot)>=0)&&(!state.st.length||state.st.indexOf(v.st)>=0)&&fP.test(v.data); });
@@ -87,7 +104,7 @@
   function limpar(){ fR.reset(); fM.reset(); fS.reset(); fP.reset(); }
   document.getElementById('clearAll').addEventListener('click',limpar);
   document.getElementById('clearEmpty').addEventListener('click',function(){ document.getElementById('q').value=''; state.q=''; limpar(); });
-  tbody.addEventListener('click',function(e){ if(e.target.closest('a')) return; var tr=e.target.closest('tr'); if(tr) location.href='viagem.html?v='+tr.getAttribute('data-id'); });
+  tbody.addEventListener('click',function(e){ var tr=e.target.closest('tr'); if(tr) abrir(V.filter(function(x){ return String(x.id)===tr.getAttribute('data-id'); })[0]); });
   GK.popovers(); apply();
 })();
 </script>

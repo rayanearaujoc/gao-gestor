@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>GAO · Carregar gaiolas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+<link rel="stylesheet" href="../static/css/kit.css">
+<link rel="stylesheet" href="static/css/app.css">
+<link rel="stylesheet" href="static/css/carregar.css">
+<link rel="stylesheet" href="static/css/gk-app.css">
+</head>
+<body class="p-carregar" data-page="home" data-flow-step="carregamento">
+
+<div class="app">
+  <div class="nav">
+    <button class="back" id="backBtn" aria-label="Voltar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div><h1>Carregue todas as gaiolas</h1><p>Leia o QR Code e carregue</p></div>
+  </div>
+  <div class="content">
+    <div class="info">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M20 14v.01M14 20h.01M17 20h.01M20 17v4"/></svg>
+      <div><h2>Como conferir</h2><p>Leia o QR Code de cada etiqueta nas gaiolas e confirme o carregamento. Se algum não puder ser lido, relate o problema.</p></div>
+    </div>
+    <div id="orders"></div>
+  </div>
+</div>
+
+<div class="footer">
+  <button class="go-btn" id="goBtn" disabled><span id="goLbl">Calcular rota</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+</div>
+
+<div class="sheet-wrap" id="sheetWrap">
+  <div class="sheet">
+    <div class="sheet-top">
+      <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M20 14v.01M14 20h.01M17 20h.01M20 17v4"/></svg></div>
+      <button class="sheet-x" id="closeScan" aria-label="Fechar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+    <h2>Ler o QR Code da gaiola</h2>
+    <p class="sub" id="sheetSub">—</p>
+    <div class="sheet-prog"><span class="count" id="sheetCount">0 de 4 lidas</span><div class="bar" id="sheetBar"><i></i></div></div>
+    <div class="cam" id="cam">
+      <video id="camVideo" playsinline muted></video>
+      <div class="reticle"><span></span><span></span><span></span><span></span></div>
+      <div class="laser"></div><div class="hint" id="camHint">Aponte para o QR Code</div>
+      <div class="feedback" id="feedback"><div class="fb-ring"></div><div class="fb-title"></div><div class="fb-sub"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sheet-wrap" id="reportWrap">
+  <div class="sheet">
+    <div class="sheet-top">
+      <div class="ico bad"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg></div>
+      <button class="sheet-x" id="closeReport" aria-label="Fechar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div id="reportForm">
+      <h2>Reportar um problema</h2>
+      <p class="sub">Problema com uma gaiola ou com a comanda</p>
+      <p class="f-label">O que aconteceu? <span class="req">*</span></p>
+      <select class="sel-field" id="reportSelect">
+        <option value="">Selecione o motivo</option>
+        <option value="codigo">QR Code não funciona</option>
+        <option value="ilegivel">Etiqueta ilegível</option>
+        <option value="faltando">Etiqueta faltando</option>
+        <option value="nao-pronta">Gaiola não ficou pronta</option>
+        <option value="nao-veio">Gaiola não veio na remessa</option>
+        <option value="comanda">A comanda não confere / não existe</option>
+        <option value="outro">Outro</option>
+      </select>
+      <p class="report-note" id="reportNote" hidden></p>
+      <div id="reportQtyBlock" hidden>
+        <p class="f-label">Quantas gaiolas afetadas?</p>
+        <div class="stepper"><button id="rpMinus" aria-label="Menos">−</button><b id="rpVal">0</b><button id="rpPlus" aria-label="Mais">+</button></div>
+      </div>
+      <textarea class="f-area" id="reportOther" placeholder="Em poucas palavras, descreva o problema" hidden></textarea>
+      <button class="cta" id="reportBtn" disabled>Registrar problema</button>
+    </div>
+    <div id="reportSuccess" hidden>
+      <div class="success"><div class="ring"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <h3>Problema de leitura registrado</h3><p>Vamos comunicar os gestores sobre o problema.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="sheet-wrap" id="confirmWrap">
+  <div class="sheet">
+    <div class="sheet-top">
+      <div class="ico"><span class="ic-truck" style="display:inline-flex"></span></div>
+      <button class="sheet-x" id="closeConfirm" aria-label="Fechar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div id="confirmForm">
+      <h2>Confirmar carregamento</h2>
+      <p class="sub" id="confirmSub">—</p>
+      <p class="f-label">Quantidade carregada</p>
+      <div class="stepper"><button id="stepMinus" aria-label="Menos">−</button><b id="qtyVal">4</b><button id="stepPlus" aria-label="Mais">+</button></div>
+      <div id="reasonBlock" hidden>
+        <p class="f-label" id="reasonLabel">Por que 1 gaiola não foi carregada? <span class="req">*</span></p>
+        <select class="sel-field" id="confirmSelect">
+          <option value="">Selecione o motivo</option>
+          <option value="nao-localizada">Não localizada</option>
+          <option value="nao-coube">Não coube no veículo</option>
+          <option value="outro">Outro</option>
+        </select>
+        <textarea class="f-area" id="confirmOther" placeholder="Em poucas palavras, descreva o que aconteceu" hidden></textarea>
+        <p class="note-info" id="coubeNote" hidden><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg> <span id="coubeNoteTxt"></span></p>
+      </div>
+      <div class="photo-row">
+        <p class="f-label" style="margin-top:0">Foto do carregamento <span class="req-tag">(obrigatória)</span></p>
+        <input type="file" accept="image/*" multiple id="photoInput" hidden>
+        <div class="photo-grid" id="photoGrid"></div>
+        <button type="button" class="photo-big" id="photoBig">
+          <span class="ph-ic"><i data-lucide="camera"></i></span>
+          <span class="pt">Tirar ou adicionar foto</span><span class="ps">adicione uma foto como comprovante</span>
+        </button>
+        <button type="button" class="photo-add" id="photoMore" hidden><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> Adicionar outra foto</button>
+      </div>
+      <button class="cta" id="confirmBtn">Confirmar <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></button>
+    </div>
+    <div id="confirmSuccess" hidden>
+      <div class="success"><div class="ring"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <h3>Carregamento confirmado</h3><p id="succLine">—</p></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.5/umd/zxing-browser.min.js"></script>
+<script src="static/js/shell.js"></script>
+<script>
+  const CHK13='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+  const X13='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+  const CUBE='<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg>';
+  const CHEV='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+  const BARCODE='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5v14M7 5v14M11 5v14M15 5v14M19 5v14" stroke-linecap="round"/></svg>';
+  const CHKW='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+  const DASH='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 12h14"/></svg>';
+  const NOTE_READ='A gaiola deve ser carregada normalmente. Isto só registra que o código não pôde ser lido.';
+  const NOTE_OUT='De acordo com o problema selecionado, o sistema entende que essa gaiola não pode ser carregada. A ação fica registrada como problema e, automaticamente, essa gaiola sai do carregamento.';
+  const NOTE_COMANDA='A comanda inteira vai para análise do gestor e sai deste carregamento. Nenhuma gaiola dela precisa ser carregada.';
+  const REMOVAL_REASONS=['nao-pronta','nao-veio'];
+
+  const DATA_DEMO=[
+    {name:"Materno Infantil", id:"#0987", n:7},
+    {name:"Hospital Albert Einstein", id:"#7643", n:4},
+  ];
+  const data=(function(){
+    try{ var ex=window.GAO&&GAO.load&&GAO.load('gao_active_extra');
+      if(ex&&ex.clientes&&ex.clientes.length) return ex.clientes.map(function(c,i){ return {name:c.cliente, id:c.comanda?('#'+c.comanda):('#'+(1000+i)), n:c.gaiolas}; });
+    }catch(e){}
+    return DATA_DEMO;
+  })();
+  let orders=[], activeIdx=0, busy=false;
+  const ordersEl=document.getElementById('orders');
+  const goBtn=document.getElementById('goBtn');
+  const pend=o=>o.cages.filter(c=>c.status==='pendente');
+  const loadable=o=>o.cages.filter(c=>c.status!=='removida');   // gaiolas que ficam na comanda
+  const resolved=o=>pend(o).length===0;
+
+  const CARGO_KEY='gao_cargo';
+  function saveCargo(){ if(window.GAO&&GAO.save) GAO.save(CARGO_KEY, orders.map(o=>({name:o.name,cages:o.cages.map(c=>({status:c.status})),confirmed:o.confirmed,loadedQty:o.loadedQty,reason:o.reason,reasonText:o.reasonText,reported:o.reported,reportReason:o.reportReason}))); }
+  function build(){
+    orders=data.map((o,i)=>({...o, listOpen:i===0, confirmed:false, loadedQty:null, reason:null, reasonText:'', photos:[], _col:false, reported:false, reportReason:null,
+      cages:Array.from({length:o.n},()=>({status:'pendente'}))}));
+    const saved=(window.GAO&&GAO.load)?GAO.load(CARGO_KEY):null;
+    if(saved&&saved.length===orders.length){
+      orders.forEach((o,i)=>{ const s=saved[i]; if(!s)return;
+        if(s.cages&&s.cages.length===o.cages.length){ o.cages.forEach((c,j)=>{ if(s.cages[j]&&s.cages[j].status) c.status=s.cages[j].status; }); }
+        o.confirmed=!!s.confirmed; o.loadedQty=(s.loadedQty!=null?s.loadedQty:null); o.reason=s.reason||null; o.reasonText=s.reasonText||'';
+        o.reported=!!s.reported; o.reportReason=s.reportReason||null;
+        o.listOpen=o.cages.some(c=>c.status==='pendente');
+      });
+    }
+    activeIdx=0;
+    ordersEl.innerHTML=orders.map((o,i)=>orderHTML(o,i)).join('');
+    orders.forEach((o,i)=>{
+      ordersEl.querySelector(`[data-listhead="${i}"]`).addEventListener('click',()=>{o.listOpen=!o.listOpen;syncAll();});
+      ordersEl.querySelector(`[data-scan="${i}"]`).addEventListener('click',()=>openScan(i));
+      ordersEl.querySelector(`[data-report="${i}"]`).addEventListener('click',()=>openReport(i));
+      ordersEl.querySelector(`[data-confirmopen="${i}"]`).addEventListener('click',()=>openConfirm(i));
+      ordersEl.querySelector(`[data-revise="${i}"]`).addEventListener('click',()=>openConfirm(i));
+      ordersEl.querySelector(`[data-undo="${i}"]`).addEventListener('click',()=>{o.reported=false;o.reportReason=null;o._col=false;syncAll();});
+    });
+    syncAll();
+  }
+  function orderHTML(o,i){
+    const rows=o.cages.map((c,j)=>`<div class="cage" data-cage="${i}-${j}"><span class="cname">Gaiola <b>${String(j+1).padStart(2,'0')}</b></span><span class="cstatus" data-cst="${i}-${j}"></span></div>`).join('');
+    return `
+    <div class="order" data-order="${i}">
+      <div class="order-head">
+        <div class="badge">${GAO.cliAvatar(o.name)}</div>
+        <div class="t"><h3>${o.name}</h3><div><span class="chip" data-chip="${i}"></span></div></div>
+        <span class="order-id">${o.id}</span>
+      </div>
+      <div class="order-pad">
+        <div class="list-head" data-listhead="${i}"><span class="lh-l" data-lhl="${i}">Gaiolas a serem lidas</span><span class="lh-chev">${CHEV}</span></div>
+        <div class="cages-wrap"><div class="cages-inner"><div class="cages">${rows}</div></div></div>
+        <button class="btn read" data-scan="${i}">Ler QR Code ${BARCODE}</button>
+        <button class="link-report" data-report="${i}">Reportar um problema</button>
+        <button class="btn primary" data-confirmopen="${i}" hidden>Confirmar carregamento ${CHKW}</button>
+        <button class="btn-revise" data-revise="${i}" hidden>Revisar carregamento</button>
+        <div class="reported-note" data-reported="${i}" hidden><span class="rn-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg> Comanda não confere/existe</span><button class="undo-report" data-undo="${i}">Desfazer</button></div>
+      </div>
+    </div>`;
+  }
+  function syncAll(){
+    orders.forEach((o,i)=>{
+      const el=ordersEl.querySelector(`[data-order="${i}"]`);
+      const repEl=el.querySelector(`[data-reported="${i}"]`);
+      const lh=el.querySelector('.list-head'), cw=el.querySelector('.cages-wrap');
+      if(o.reported){
+        el.classList.remove('list-open','done'); el.classList.add('reported');
+        const chipR=el.querySelector(`[data-chip="${i}"]`); chipR.className='chip analise'; chipR.innerHTML='Em análise';
+        ['data-scan','data-report','data-confirmopen','data-revise'].forEach(a=>{const b=el.querySelector(`[${a}="${i}"]`); if(b)b.hidden=true;});
+        if(lh)lh.style.display='none'; if(cw)cw.style.display='none'; if(repEl)repEl.hidden=false;
+        return;
+      }
+      el.classList.remove('reported');
+      if(lh)lh.style.display=''; if(cw)cw.style.display=''; if(repEl)repEl.hidden=true;
+      const done=resolved(o), conf=o.confirmed;
+      if(done && !o._col){o.listOpen=false;o._col=true;}
+      el.classList.toggle('list-open',o.listOpen);
+      el.classList.toggle('done',conf);
+      el.querySelector(`[data-lhl="${i}"]`).textContent=done?'Gaiolas lidas':'Gaiolas a serem lidas';
+      const chip=el.querySelector(`[data-chip="${i}"]`);
+      chip.className='chip '+(conf?'load':'pend');
+      chip.innerHTML=conf?`${CHKW} Carregado`:'Pendente';
+      el.querySelector(`[data-scan="${i}"]`).hidden=done;
+      el.querySelector(`[data-report="${i}"]`).hidden=done;
+      el.querySelector(`[data-confirmopen="${i}"]`).hidden=!(done&&!conf);
+      el.querySelector(`[data-revise="${i}"]`).hidden=!conf;
+      o.cages.forEach((c,j)=>{
+        const st=el.querySelector(`[data-cst="${i}-${j}"]`), cg=el.querySelector(`[data-cage="${i}-${j}"]`);
+        cg.classList.remove('is-read','is-problema','is-removida');
+        if(c.status==='lida'){st.className='cstatus read';st.innerHTML=CHK13;cg.classList.add('is-read');}
+        else if(c.status==='problema'){st.className='cstatus problema';st.innerHTML=X13;cg.classList.add('is-problema');}
+        else if(c.status==='removida'){st.className='cstatus removida';st.innerHTML=DASH;cg.classList.add('is-removida');}
+        else{st.className='cstatus';st.innerHTML='';}
+      });
+    });
+    /* basta 1 cliente carregado para seguir; a rota é calculada só com os carregados */
+    const nConf=orders.filter(o=>o.confirmed).length, nTot=orders.filter(o=>!o.reported).length;
+    const ready=nConf>=1;
+    goBtn.disabled=!ready; goBtn.classList.toggle('ready',ready);
+    document.getElementById('goLbl').textContent = 'Calcular rota';
+    saveCargo();
+  }
+
+  const sheetWrap=document.getElementById('sheetWrap'),sheetSub=document.getElementById('sheetSub'),sheetCount=document.getElementById('sheetCount'),sheetBar=document.getElementById('sheetBar'),feedback=document.getElementById('feedback'),camVideo=document.getElementById('camVideo'),camHint=document.getElementById('camHint');
+  let camStop=null;
+  function onScanCode(text){
+    if(busy) return;
+    if(text==='GAO-GAIOLA-OK'){ readNext(); }
+    else if(text==='GAO-GAIOLA-OUTRA'){ var other=orders.find(function(x,ix){return ix!==activeIdx;})||orders[0]; showFeedback('wrong',{id:other.id,name:other.name}); }
+    else { showFeedback('invalid'); }
+  }
+  function startScan(){ stopScan(); if(window.GAO&&GAO.startCamera){ camStop=GAO.startCamera(camVideo,{onCode:onScanCode,onError:function(){ if(camHint)camHint.textContent='Câmera indisponível neste navegador'; }}); } }
+  function stopScan(){ if(camStop){ camStop(); camStop=null; } }
+  let fbTimer=null;
+  const FB_ICON={
+    ok:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+    wrong:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>',
+    invalid:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>',
+    fail:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>',
+    dup:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 13l4.5 4.5L17 7"/><path d="M11 14.5L13 16.5 22 7"/></svg>',
+  };
+  function showFeedback(state,d={}){
+    clearTimeout(fbTimer); let title='',sub='';
+    if(state==='ok'){title=`Gaiola ${d.num} lida`;}
+    else if(state==='wrong'){title='Gaiola de outra comanda';sub=`${d.id}, ${d.name}`;}
+    else if(state==='invalid'){title='Código não reconhecido';sub='Não pertence a nenhuma comanda';}
+    else if(state==='fail'){title='Não foi possível ler';sub='Aproxime a etiqueta e tente de novo';}
+    else if(state==='dup'){title='Gaiola já lida';sub='Passe para a próxima etiqueta';}
+    feedback.querySelector('.fb-ring').innerHTML=FB_ICON[state];
+    feedback.querySelector('.fb-title').textContent=title;
+    feedback.querySelector('.fb-sub').textContent=sub;
+    feedback.className='feedback show '+state;
+    const vib={ok:50,wrong:[30,40,30],invalid:[60,50,60],fail:[20,30,20],dup:40}[state];
+    if(navigator.vibrate&&vib)navigator.vibrate(vib);
+    fbTimer=setTimeout(()=>feedback.classList.remove('show'), state==='ok'?850:(state==='dup'?1100:1900));
+  }
+  function openScan(i){
+    activeIdx=i; const o=orders[i];
+    if(!o.listOpen){o.listOpen=true;syncAll();}
+    sheetSub.textContent=`${o.name}, ${o.id}`;
+    if(camHint)camHint.textContent='Aponte para o QR Code';
+    feedback.classList.remove('show');
+    syncScan(); sheetWrap.classList.add('open');
+    startScan();
+  }
+  function syncScan(){
+    const o=orders[activeIdx],total=loadable(o).length,lidas=o.cages.filter(c=>c.status==='lida').length,scanned=o.cages.filter(c=>c.status==='lida'||c.status==='problema').length;
+    sheetBar.querySelector('i').style.width=(scanned/total*100)+'%';
+    sheetCount.textContent=`${lidas} de ${total} lidas`;
+    const full=pend(o).length===0; sheetCount.classList.toggle('full',full); sheetBar.classList.toggle('full',full);
+  }
+  function readNext(){
+    if(busy) return;
+    const o=orders[activeIdx], c=pend(o)[0]; if(!c) return;
+    c.status='lida'; const idx=o.cages.indexOf(c);
+    showFeedback('ok',{num:String(idx+1).padStart(2,'0')});
+    const cg=ordersEl.querySelector(`[data-cage="${activeIdx}-${idx}"]`);
+    if(cg){cg.classList.add('flash');setTimeout(()=>cg.classList.remove('flash'),600);}
+    syncScan(); syncAll();
+    if(pend(o).length===0) finishScan();
+  }
+  function finishScan(){
+    busy=true; clearTimeout(fbTimer);
+    feedback.querySelector('.fb-ring').innerHTML=FB_ICON.ok;
+    feedback.querySelector('.fb-title').textContent='Gaiolas do cliente foram lidas';
+    feedback.querySelector('.fb-sub').textContent='Confirme o carregamento';
+    feedback.className='feedback show ok';
+    if(navigator.vibrate)navigator.vibrate([40,60,120]);
+    setTimeout(()=>{feedback.classList.remove('show');stopScan();sheetWrap.classList.remove('open');busy=false;syncAll();openConfirm(activeIdx);},1300);
+  }
+
+  document.getElementById('closeScan').addEventListener('click',()=>{stopScan();sheetWrap.classList.remove('open');});
+  sheetWrap.addEventListener('click',e=>{if(e.target===sheetWrap){stopScan();sheetWrap.classList.remove('open');}});
+
+  const reportWrap=document.getElementById('reportWrap'),reportSelect=document.getElementById('reportSelect'),reportOther=document.getElementById('reportOther'),reportBtn=document.getElementById('reportBtn');
+  let reportIdx=0,rpQty=0,rpMax=0;
+  function openReport(i){
+    reportIdx=i; reportSelect.value=''; reportOther.value=''; reportOther.hidden=true;
+    rpMax=pend(orders[i]).length; rpQty=0;
+    document.getElementById('reportForm').hidden=false; document.getElementById('reportSuccess').hidden=true;
+    renderReport(); reportWrap.classList.add('open');
+  }
+  function renderReport(){
+    const val=reportSelect.value, removed=REMOVAL_REASONS.includes(val), isComanda=(val==='comanda');
+    const note=document.getElementById('reportNote'), qtyBlock=document.getElementById('reportQtyBlock');
+    note.hidden=!val; if(val) note.innerHTML = isComanda ? NOTE_COMANDA : (removed ? NOTE_OUT : NOTE_READ);
+    qtyBlock.hidden = !val || removed || isComanda;                              // sem stepper p/ gaiola removida ou comanda
+    reportOther.hidden = val!=='outro';
+    document.getElementById('rpVal').textContent=rpQty;
+    document.getElementById('rpMinus').disabled=rpQty<=0;
+    document.getElementById('rpPlus').disabled=rpQty>=rpMax;
+    reportBtn.textContent = isComanda ? 'Reportar comanda' : (removed ? 'Retirar do carregamento' : 'Registrar problema');
+    const ok = (removed||isComanda) ? !!val : (val && rpQty>=1 && (val!=='outro' || reportOther.value.trim()));
+    reportBtn.disabled=!ok;
+  }
+  document.getElementById('rpMinus').addEventListener('click',()=>{if(rpQty>0){rpQty--;renderReport();}});
+  document.getElementById('rpPlus').addEventListener('click',()=>{if(rpQty<rpMax){rpQty++;renderReport();}});
+  reportSelect.addEventListener('change',renderReport);
+  reportOther.addEventListener('input',renderReport);
+  document.getElementById('reportBtn').addEventListener('click',()=>{
+    const o=orders[reportIdx], val=reportSelect.value;
+    const succ=document.getElementById('reportSuccess');
+    if(val==='comanda'){
+      o.reported=true; o.reportReason=val;
+      syncAll();
+      succ.querySelector('h3').textContent='Comanda enviada para análise';
+      succ.querySelector('p').textContent='O gestor vai verificar. Ela sai deste carregamento.';
+    } else {
+      const removed=REMOVAL_REASONS.includes(val);
+      const st=removed?'removida':'problema';
+      let n = removed ? 1 : rpQty;
+      for(const c of o.cages){ if(n<=0) break; if(c.status==='pendente'){ c.status=st; n--; } }
+      if(removed && o.loadedQty!=null) o.loadedQty=Math.min(o.loadedQty, loadable(o).length);
+      syncAll();
+      succ.querySelector('h3').textContent = removed ? 'Gaiola retirada da comanda' : 'Problema de leitura registrado';
+      succ.querySelector('p').textContent = removed ? 'Ela sai do carregamento. Vamos avisar os gestores.' : 'Vamos comunicar os gestores sobre o problema.';
+    }
+    document.getElementById('reportForm').hidden=true; succ.hidden=false;
+    if(navigator.vibrate)navigator.vibrate(50);
+    setTimeout(()=>reportWrap.classList.remove('open'),1600);
+  });
+  document.getElementById('closeReport').addEventListener('click',()=>reportWrap.classList.remove('open'));
+  reportWrap.addEventListener('click',e=>{if(e.target===reportWrap)reportWrap.classList.remove('open');});
+
+  const confirmWrap=document.getElementById('confirmWrap'),confirmSelect=document.getElementById('confirmSelect'),confirmOther=document.getElementById('confirmOther');
+  const photoInput=document.getElementById('photoInput'),photoGrid=document.getElementById('photoGrid'),photoBig=document.getElementById('photoBig'),photoMore=document.getElementById('photoMore');
+  let confirmIdx=0, photos=[];
+  function openConfirm(i){
+    confirmIdx=i; const o=orders[i];
+    const tot=loadable(o).length;
+    if(o.loadedQty===null || o.loadedQty>tot) o.loadedQty=tot;
+    confirmSelect.value=o.reason||''; confirmOther.value=o.reasonText||'';
+    photos=[...(o.photos||[])];
+    document.getElementById('confirmSub').textContent=`${o.name}, ${o.id}`;
+    document.getElementById('confirmForm').hidden=false; document.getElementById('confirmSuccess').hidden=true;
+    renderPhotos(); renderConfirm(); confirmWrap.classList.add('open');
+  }
+  function renderConfirm(){
+    const o=orders[confirmIdx], total=loadable(o).length, diff=total-o.loadedQty;
+    document.getElementById('qtyVal').textContent=o.loadedQty;
+    document.getElementById('stepMinus').disabled=o.loadedQty<=0;
+    document.getElementById('stepPlus').disabled=o.loadedQty>=total;
+    const block=document.getElementById('reasonBlock'); block.hidden=diff<=0;
+    if(diff>0) document.getElementById('reasonLabel').innerHTML=`Por que ${diff} gaiola${diff>1?'s':''} não ${diff>1?'foram':'foi'} carregada${diff>1?'s':''}? <span class="req">*</span>`;
+    confirmOther.hidden = confirmSelect.value!=='outro';
+    const coube = diff>0 && confirmSelect.value==='nao-coube';
+    document.getElementById('coubeNote').hidden=!coube;
+    if(coube) document.getElementById('coubeNoteTxt').textContent = diff>1
+      ? `Essas ${diff} gaiolas não ficam para trás. Entram na próxima rota que você fizer hoje.`
+      : `Essa gaiola não fica para trás. Entra na próxima rota que você fizer hoje.`;
+    const reasonOk = diff<=0 || (confirmSelect.value && (confirmSelect.value!=='outro' || confirmOther.value.trim()));
+    const photoOk = photos.length>=1;
+    document.getElementById('confirmBtn').disabled=!(reasonOk && photoOk);
+  }
+  function renderPhotos(){
+    photoGrid.innerHTML=photos.map((src,i)=>`<div class="pthumb"><img src="${src}" alt="Foto ${i+1}"><button class="prm" data-rm="${i}" aria-label="Remover"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>`).join('');
+    photoGrid.querySelectorAll('[data-rm]').forEach(b=>b.addEventListener('click',()=>{photos.splice(+b.dataset.rm,1);renderPhotos();}));
+    photoBig.hidden=photos.length>0; photoMore.hidden=photos.length===0;
+    renderConfirm();
+  }
+  photoBig.addEventListener('click',()=>photoInput.click());
+  photoMore.addEventListener('click',()=>photoInput.click());
+  photoInput.addEventListener('change',e=>{
+    const files=[...e.target.files]; let left=files.length;
+    files.forEach(f=>{const r=new FileReader();r.onload=()=>{photos.push(r.result);if(--left===0)renderPhotos();};r.readAsDataURL(f);});
+    photoInput.value='';
+  });
+  document.getElementById('stepMinus').addEventListener('click',()=>{const o=orders[confirmIdx];if(o.loadedQty>0){o.loadedQty--;renderConfirm();}});
+  document.getElementById('stepPlus').addEventListener('click',()=>{const o=orders[confirmIdx];if(o.loadedQty<loadable(o).length){o.loadedQty++;renderConfirm();}});
+  confirmSelect.addEventListener('change',renderConfirm);
+  confirmOther.addEventListener('input',renderConfirm);
+  document.getElementById('closeConfirm').addEventListener('click',()=>confirmWrap.classList.remove('open'));
+  confirmWrap.addEventListener('click',e=>{if(e.target===confirmWrap)confirmWrap.classList.remove('open');});
+  document.getElementById('confirmBtn').addEventListener('click',()=>{
+    const o=orders[confirmIdx], total=loadable(o).length, loaded=o.loadedQty, diff=total-loaded;
+    o.confirmed=true; o.reason=confirmSelect.value||null; o.reasonText=confirmOther.value||''; o.photos=[...photos];
+    document.getElementById('confirmForm').hidden=true; document.getElementById('confirmSuccess').hidden=false;
+    document.getElementById('succLine').textContent = total===0 ? 'Comanda sem gaiolas para carregar' : (diff>0?`${loaded} de ${total} gaiolas carregadas`:`Total de ${total} gaiolas confirmadas`);
+    if(navigator.vibrate)navigator.vibrate([40,60,120]);
+    setTimeout(()=>{
+      confirmWrap.classList.remove('open');
+      const next=orders.findIndex(x=>!x.confirmed);
+      if(next!==-1){activeIdx=next;orders[next].listOpen=true;}
+      syncAll();
+      const t=ordersEl.querySelector(`[data-order="${next!==-1?next:confirmIdx}"]`);
+      if(t)t.scrollIntoView({behavior:'smooth',block:'center'});
+    },1500);
+  });
+
+  goBtn.addEventListener('click',()=>{ if(!goBtn.disabled){ if(window.GAO&&GAO.setTrip){var t=(GAO.getTrip&&GAO.getTrip())||{route:0};t.step='rota';GAO.setTrip(t);} window.location.href='rota.html'; } });
+  document.getElementById('backBtn').addEventListener('click',()=>{window.location.href='index.html';});
+  build();
+</script>
+</body>
+</html>

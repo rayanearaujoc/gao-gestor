@@ -40,11 +40,11 @@
   </main>
 
   <div class="gk-overlay" id="ovMsg"><div class="gk-scrim" data-close="ovMsg"></div>
-    <div class="gk-modal is-form" role="dialog" aria-labelledby="msgTitle" style="width:min(640px,calc(100% - 32px))">
+    <div class="gk-modal is-form" role="dialog" aria-labelledby="msgTitle" style="width:min(560px,calc(100% - 32px))">
       <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="message-circle" class="gk-ic"></i></span><h2 class="gk-h2" id="msgTitle">Mensagens do comprovante</h2></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovMsg" aria-label="Fechar"><i data-lucide="x" class="gk-ic"></i></button></div>
       <div class="gk-modal-body" style="border-top:1px solid var(--line);max-height:min(560px,70vh);overflow:auto">
         <div class="gk-caption" id="msgSub"></div>
-        <div id="msgList" style="display:flex;flex-direction:column;gap:var(--space-5);margin-top:var(--space-4)"></div>
+        <div id="msgList" style="display:flex;flex-direction:column;gap:var(--space-5);margin-top:var(--space-5)"></div>
       </div>
       <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovMsg">Fechar</button></div>
     </div>
@@ -62,12 +62,15 @@
   function ini(n){ var p=n.split(' ').filter(function(x){ return x&&!/^(de|da|do|das|dos|e)$/i.test(x); }); return (p.length>1?p[0][0]+p[1][0]:n.slice(0,2)).toUpperCase(); }
   function pad(n){ return (n<10?'0':'')+n; }
   function hm(min){ return pad(Math.floor(min/60))+':'+pad(min%60); }
+  /* textos exatamente como no documento "Fluxo de mensagens WhatsApp (Z-API)". Só duas mensagens saem pelo número da GAO:
+     "a caminho" e o desfecho (entrega concluída, não foi possível entregar ou, no acidente, entrega reagendada).
+     O "cheguei" sai do celular do motorista (link wa.me), não passa pelo sistema e por isso não aparece aqui. */
+  var MOTIVOS=['não havia ninguém no local para receber a remessa.','a remessa foi recusada no momento da entrega.','o local estava fechado ou sem acesso no horário da entrega.'];
   var TXT={
-    'A caminho':function(c){ return 'O enxoval limpo de '+c+' saiu da GAO e está a caminho.'; },
-    'Cheguei':function(c){ return 'O motorista chegou em '+c+' e já vai descarregar o enxoval.'; },
-    'Entrega concluída':function(c){ return 'Entrega concluída em '+c+'. Link do comprovante enviado.'; },
-    'Não foi possível entregar':function(c){ return 'Não foi possível entregar em '+c+'. O motivo foi informado ao cliente.'; },
-    'Entrega será reagendada':function(c){ return 'A entrega em '+c+' será reagendada. Avisaremos a nova data.'; }
+    'A caminho':function(c){ return 'Olá, '+c.cli+'! Seu enxoval hospitalar limpo saiu para entrega hoje. O motorista '+c.mot+' já está a caminho com a sua remessa e em breve chega até vocês. GAO Logística'; },
+    'Entrega concluída':function(c){ return 'Entrega concluída! '+c.cli+', seu enxoval limpo foi entregue hoje ('+c.data+') por '+c.mot+'. O comprovante com as fotos e os itens está aqui: <span class="gk-wa-l">gao.app/c/'+c.cod+'</span> Obrigado por confiar na GAO.'; },
+    'Não foi possível entregar':function(c){ return 'Olá, '+c.cli+'. Infelizmente não foi possível concluir a entrega do seu enxoval hoje ('+c.data+'). Motivo: '+MOTIVOS[c.k%3]+' Nossa equipe já foi avisada e vai entrar em contato para reagendar. GAO Logística'; },
+    'Entrega reagendada':function(c){ return 'Olá, '+c.cli+'. Tivemos um imprevisto com o nosso veículo durante a rota de hoje ('+c.data+') e, por segurança, a entrega do seu enxoval precisará ser reagendada. Pedimos desculpas pelo transtorno. Nossa equipe já vai entrar em contato para remarcar. GAO Logística'; }
   };
   // um comprovante por cliente de cada viagem; cada um tem o seu grupo de mensagens
   var COMP=[], idc=0;
@@ -75,13 +78,12 @@
     var viagem=1048-i, d=12-Math.floor(i/2), n=3+(i%3), t=7*60+30+(i*11)%40;
     for(var k=0;k<n;k++){
       var nome=CLI[(i+k)%CLI.length], msgs=[], h=t+30+k*55;
-      var fim=(i===3&&k===1)?'Não foi possível entregar':((i===8&&k===2)?'Entrega será reagendada':'Entrega concluída');
+      var fim=(i===3&&k===1)?'Não foi possível entregar':((i===8&&k===2)?'Entrega reagendada':'Entrega concluída');
       msgs.push({tipo:'A caminho',hora:hm(t),st:'Lida'});
-      if(fim==='Entrega será reagendada'){ msgs.push({tipo:fim,hora:hm(h+20),st:'Entregue'}); }
-      else { msgs.push({tipo:'Cheguei',hora:hm(h),st:'Lida',mot:true}); msgs.push({tipo:fim,hora:hm(h+12),st:'Lida'}); }
-      msgs.forEach(function(m,j){ if((i===2&&k===0&&j===1)||(i===5&&k===1&&j===0)||(i===9&&k===2&&j===2)) m.st='Falhou'; else if(i===0&&j>0) m.st='Entregue'; });
+      msgs.push({tipo:fim,hora:hm(h+(fim==='Entrega reagendada'?20:12)),st:'Lida'});
+      msgs.forEach(function(m,j){ if((i===2&&k===0&&j===1)||(i===5&&k===1&&j===0)||(i===9&&k===2&&j===1)) m.st='Falhou'; else if(i===0&&j>0) m.st='Entregue'; });
       var fal=msgs.filter(function(m){ return m.st==='Falhou'; }).length;
-      COMP.push({id:idc++,data:pad(d)+'/11/2026',cli:nome,tipo:TIPOS[(i+k)%TIPOS.length],viagem:viagem,msgs:msgs,tot:msgs.length,fal:fal});
+      COMP.push({id:idc++,mot:MOT[i%4],k:k,cod:(viagem*7+k*131).toString(36),data:pad(d)+'/11/2026',cli:nome,tipo:TIPOS[(i+k)%TIPOS.length],viagem:viagem,msgs:msgs,tot:msgs.length,fal:fal});
     }
   }
   if(window.GAO_VAZIO) COMP.length=0;
@@ -126,9 +128,12 @@
     var c=COMP.filter(function(x){ return x.id==id; })[0]; if(!c) return;
     document.getElementById('msgTitle').textContent=c.cli;
     document.getElementById('msgSub').innerHTML=c.tipo+'<span class="gk-sep"></span>Viagem #'+c.viagem+'<span class="gk-sep"></span>'+c.data+'<span class="gk-sep"></span><a class="gk-linkbtn" href="comprovante.html?c='+c.id+'">Ver comprovante</a>';
-    document.getElementById('msgList').innerHTML='<div>'+c.msgs.map(function(m){
-      return '<div style="display:flex;align-items:flex-start;gap:var(--space-3);padding:var(--space-3) 0;border-top:1px solid var(--line)"><div style="flex:1;min-width:0"><div class="gk-strong">'+m.tipo+'<span class="gk-sep"></span><span class="gk-caption" style="font-weight:400">'+m.hora+(m.mot?'<span class="gk-sep"></span>Celular do motorista':'')+'</span></div><div class="gk-caption" style="margin-top:2px">'+TXT[m.tipo](c.cli)+'</div></div><span class="'+BADGE[m.st]+' gk-badge-plain">'+m.st+'</span></div>';
-    }).join('')+'</div>';
+    document.getElementById('msgList').innerHTML=c.msgs.map(function(m){
+      var falhou=m.st==='Falhou';
+      return '<div><div style="display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);margin-bottom:var(--space-2)"><div class="gk-caption"><b class="gk-strong" style="color:var(--fg)">'+m.tipo+'</b><span class="gk-sep"></span>'+m.hora+'</div><span class="'+BADGE[m.st]+' gk-badge-plain">'+m.st+'</span></div>'
+        +'<div class="gk-wa">'+TXT[m.tipo](c)+'</div>'
+        +(falhou?'<div class="gk-caption" style="margin-top:var(--space-2);color:var(--bad-ink)">O envio falhou. Confira o número do cliente no cadastro.</div>':'')+'</div>';
+    }).join('');
     GK.open('ovMsg'); GK.icons();
   }
   tbody.addEventListener('click',function(e){ var b=e.target.closest('[data-ver]'); if(b){ abrir(b.getAttribute('data-ver')); return; } if(e.target.closest('a')) return; var tr=e.target.closest('tr'); if(tr) abrir(tr.getAttribute('data-id')); });

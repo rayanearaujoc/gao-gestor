@@ -1,0 +1,94 @@
+/* ===== Exclusivo: Entregas (entrega.html) =====
+   Reaproveita app.css + carregar.css (order, scanner, sheet, stepper,
+   foto, etc.). Aqui só o que é novo da entrega. */
+.p-entrega .content{display:flex;flex-direction:column;gap:18px}
+.field-gap{margin-top:18px}
+
+/* aviso do topo: enxoval limpo primeiro */
+.e-note{display:flex;gap:10px;align-items:flex-start;background:var(--info-bg);border-radius:12px;padding:12px 13px;color:var(--info-ink)}
+.e-note svg{color:var(--primary);flex:none;margin-top:1px;width:18px;height:18px;opacity:.9}
+.e-note p{margin:0;font-size:12.5px;line-height:1.45;font-weight:500}
+
+/* aviso de chegada (inline no card) — "Avise que você chegou" + botão WhatsApp do motorista */
+.arrive-note{display:flex;flex-direction:column;align-items:stretch;gap:10px;background:var(--info-bg);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+.an-tx{min-width:0}
+.an-tx b{display:block;font-size:13px;font-weight:600;color:var(--read)}
+.an-tx span{display:block;font-size:11.5px;color:var(--info-ink);opacity:.85;margin-top:2px;line-height:1.4}
+.an-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--line);background:var(--card);color:var(--ok);border-radius:10px;padding:10px 14px;font-size:12.5px;font-weight:600;text-decoration:none;cursor:pointer;white-space:nowrap}
+.an-btn:hover{background:var(--row)}
+.an-btn .an-wa{width:16px;height:16px;flex:none}
+@media(min-width:560px){
+  .arrive-note{flex-direction:row;align-items:center}
+  .an-tx{flex:1}
+  .an-btn{flex:none}
+}
+
+/* confirmação de que o cliente foi avisado (sucesso do registro de problema) */
+.notified{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:12px;font-size:12px;font-weight:500;color:var(--ok-ink)}
+.notified svg{width:15px;height:15px;color:var(--ok);flex:none}
+
+/* coleta: inline no confirmar (coleta-reg) + modal próprio (#coletaWrap) */
+.coleta-reg{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.coleta-reg .f-label{margin-bottom:0}
+#coletaWrap{z-index:130}
+.coleta-note{margin:8px 0 12px}
+.coleta-note p b{font-weight:700}
+.col-delete{display:inline-flex;align-items:center;gap:7px;border:none;background:none;color:var(--bad);font-size:12.5px;font-weight:600;cursor:pointer;padding:14px 2px 2px;margin:0 auto;width:100%;justify-content:center}
+.col-delete svg{width:15px;height:15px}
+.gestor-note{display:flex;gap:10px;align-items:flex-start;background:var(--info-bg);border-radius:12px;padding:12px 13px;margin:16px 0 2px;color:var(--info-ink)}
+.gestor-note svg{color:var(--primary);flex:none;margin-top:1px;width:18px;height:18px}
+.gestor-note b{display:block;font-size:12.5px;font-weight:600;margin-bottom:1px}
+.gestor-note p{margin:0;font-size:11.5px;opacity:.9;line-height:1.45}
+
+/* nome de quem recebeu */
+.e-input{width:100%;border:1px solid var(--line);border-radius:11px;padding:13px 12px;font-size:13.5px;background:var(--card);color:var(--fg)}
+.e-input::placeholder{color:var(--ph)}
+.e-hint{font-size:11px;color:var(--muted);margin:6px 2px 0;display:flex;align-items:center;gap:5px}
+.e-hint svg{width:13px;height:13px;color:var(--primary)}
+
+/* simulação de GPS + geofence */
+.geo{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.geo-lbl{font-size:11.5px;color:var(--muted);font-weight:500}
+.geo-chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--card);border-radius:20px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer}
+.geo-chip .dot{width:8px;height:8px;border-radius:50%;flex:none}
+.geo-chip.in{color:var(--ok-ink)} .geo-chip.in .dot{background:var(--ok)}
+.geo-chip.out{color:var(--coleta-ink)} .geo-chip.out .dot{background:var(--coleta)}
+
+/* toast de aviso (estilo do app, sem preto) */
+.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(10px);max-width:440px;width:calc(100% - 32px);background:var(--card);color:var(--fg);border:1px solid var(--line);box-shadow:var(--pop-shadow);border-radius:12px;padding:12px 14px;font-size:12.5px;font-weight:500;line-height:1.4;display:flex;gap:9px;align-items:flex-start;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:120}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast svg{flex:none;margin-top:1px;color:var(--bad)}
+@media(min-width:900px){ .toast{left:calc(50% + var(--side-w)/2)} }
+
+/* estado "não entregue" — padrão do carregamento: card cinza e ícone azul (não verde); badge vermelho */
+.chip.nao{background:var(--bad-bg);color:var(--bad)}
+.order.is-fail .badge{background:var(--info-bg);color:var(--read)}
+
+/* assinatura: caixa pequena (pré-visualização) + tela cheia */
+.sign{position:relative;border:1.5px dashed var(--line-strong);border-radius:12px;background:var(--row);height:96px;overflow:hidden;margin-top:9px;cursor:pointer;display:grid;place-items:center}
+.sign img{display:none;max-width:100%;max-height:100%;object-fit:contain}
+.sign.has img{display:block}
+.sign .sign-ph{color:var(--muted);font-size:13px;pointer-events:none}
+.sign.has .sign-ph{display:none}
+.sign-clear{display:none;position:absolute;top:8px;right:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:8px;font-size:12px;font-weight:600;padding:6px 11px;cursor:pointer}
+.sign.has .sign-clear{display:block}
+.sigfull{position:fixed;inset:0;z-index:300;background:var(--card);display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.sigfull[hidden]{display:none}
+.sf-top{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.sf-cancel{border:1px solid var(--line-strong);background:var(--card);color:var(--fg);border-radius:10px;font:inherit;font-size:14px;font-weight:600;padding:0 14px;height:40px;cursor:pointer}
+.sf-who{min-width:0}.sf-who b{display:block;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sf-who span{font-size:12.5px;color:var(--muted)}
+.sf-pad{position:relative;flex:1;margin:16px;border:1.5px dashed var(--line-strong);border-radius:14px;background:var(--row);touch-action:none;overflow:hidden}
+.sf-pad canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.sf-ph{position:absolute;left:0;right:0;top:calc(50% - 40px);text-align:center;color:var(--ph);font-size:15px;pointer-events:none}
+.sf-line{position:absolute;left:24px;right:24px;bottom:30%;border-top:1.5px solid var(--line-strong);pointer-events:none}
+.sf-bar{display:flex;gap:10px;padding:12px 16px 16px;border-top:1px solid var(--line)}
+.sf-bar .btn{flex:1}.sf-bar #sfClear{flex:0 0 32%}
+.sf-bar .btn:disabled{opacity:.5}
+.sf-ask{position:absolute;inset:0;background:rgba(16,24,40,.45);display:grid;place-items:center;padding:24px}
+.sf-ask[hidden]{display:none}
+.sf-card{background:var(--card);border-radius:16px;padding:20px;width:100%;max-width:340px}
+.sf-card b{font-size:16px;font-weight:600}.sf-card p{margin:6px 0 16px;color:var(--muted);font-size:13.5px}
+.sf-row{display:flex;gap:10px}.sf-row .btn{flex:1;padding-left:8px;padding-right:8px}
+.sign img{width:100%;height:100%}
+.sf-bar .btn.ghost,.sf-row .btn.ghost{background:var(--row);color:var(--fg);border:1px solid var(--line-strong)}
+.sign img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
