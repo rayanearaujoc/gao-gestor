@@ -332,3 +332,15 @@ input.txt:focus,textarea.f-area:focus,.sup-select:focus,.sup-area:focus{border-c
 .info p{color:var(--muted);opacity:1}
 /* telas com botão fixo embaixo: reserva espaço para o conteúdo rolar até o fim */
 body:has(.footer) .app>.content{padding-bottom:120px!important}
+
+/* ---- diferenças do motorista sobre o app.css compartilhado (antes eram uma cópia do arquivo) ---- */
+.gao-foot-nav{padding:0 13px;margin-bottom:6px;flex:none}
+.gao-navwrap .gao-foot-nav{margin:0 0 6px;padding:0 13px}
+a.gf-step{text-decoration:none;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+a.gf-step .gf-name,a.gf-step .gf-d{transition:color .15s,border-color .15s}
+@media(hover:hover){a.gf-step:hover .gf-name{color:var(--fg)}a.gf-step:hover .gf-d{border-color:var(--primary)}}
+a.gf-step:active{opacity:.7}
+button.gao-pop-item{width:100%;background:none;border:0;cursor:pointer;text-align:left}
+body.gao-crumb{padding-top:0}
+@media(min-width:900px){body.gao-crumb .gao-topbar{display:none}}
+.gf-name{font-size:10.5px}
