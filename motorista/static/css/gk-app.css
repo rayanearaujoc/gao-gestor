@@ -78,9 +78,9 @@ input.txt:focus,textarea.f-area:focus,.sup-select:focus,.sup-area:focus{border-c
 /* ---- menu: hambúrguer em escadinha no começo do cabeçalho (celular e desktop) ---- */
 .gk-menu-btn{display:inline-flex;margin-left:-8px;margin-right:0}
 .nav .gk-menu-btn{margin-right:-4px}
-.gao-top{border-bottom:1px solid var(--line)}
+.gao-top{border-bottom:0}
 .gao-nav{font-size:13px;height:38px}
-.gao-nav.active{background:var(--primary-soft);color:var(--primary-ink)}
+.gao-nav.active{background:rgba(255,255,255,.1);color:#fff}
 .gao-pop{border-radius:var(--radius-lg);box-shadow:var(--shadow-pop)}
 .gao-pop-item{font-size:13px;font-weight:500;border-radius:var(--radius-md)}
 .gao-pc{border-radius:var(--radius-md)}
@@ -117,7 +117,7 @@ input.txt:focus,textarea.f-area:focus,.sup-select:focus,.sup-area:focus{border-c
 .sc.aprov .sc-ic{background:rgba(255,255,255,.16);color:#fff}
 .sc.aprov .sub{font-size:12px}
 .tbl-wrap{border-radius:var(--radius-lg);box-shadow:var(--shadow-card)}
-.htbl thead th{background:color-mix(in srgb,var(--read) 76%,#000);color:rgba(255,255,255,.9);font-weight:500;border-bottom:0}
+.htbl thead th{background:var(--row);color:var(--muted);font-weight:500;border-bottom:1px solid var(--line)}
 .act-eye{border-radius:var(--radius-md);color:var(--muted)}
 .act-eye:hover{background:var(--row);color:var(--fg)}
 .hpill{height:20px;padding:0 var(--space-2);border-radius:var(--radius-sm);font-size:11px;font-weight:500}

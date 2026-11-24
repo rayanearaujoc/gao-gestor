@@ -302,3 +302,46 @@ svg.lucide{width:20px;height:20px;stroke-width:2;flex:none}
 
 /* Configurações e Suporte rolam junto com o menu */
 .gao-navwrap .gao-foot-nav,.gao-col .gao-navwrap .gao-foot-nav{margin:var(--space-3,12px) 0 0;padding:0}
+
+/* ===== menu lateral azul escuro (logo num quadradinho azul mais claro) ===== */
+.gao-side{--sb:#14264D;background:var(--sb);border-right:0}
+.gao-top{border-bottom:0;height:72px;padding:0 18px}
+.gao-bm{width:38px;height:38px;border-radius:11px;background:var(--primary);display:grid;place-items:center;flex:none}
+.gao-bm img{width:27px;height:27px;filter:brightness(0) invert(1)}
+.gao-bt{display:flex;flex-direction:column;line-height:1.1;color:#fff}
+.gao-bt b{font-size:17px;font-weight:800;letter-spacing:.02em}
+.gao-bt small{font-size:10.5px;font-weight:600;color:rgba(255,255,255,.62);margin-top:3px}
+.gao-col .gao-bt{display:none}
+.gao-x{color:rgba(255,255,255,.7)}.gao-x:hover{background:rgba(255,255,255,.1);color:#fff}
+.gao-nav{color:rgba(255,255,255,.72)}
+.gao-nav:hover{background:rgba(255,255,255,.08);color:#fff}
+.gao-nav.active{background:rgba(255,255,255,.1);color:#fff}
+.gao-nav.active .gni{background:none;color:#fff}
+.gao-nav.active::after{background:var(--primary)}
+.gao-sh{color:rgba(255,255,255,.5)}.gao-sh:hover{color:#fff}
+.gao-foot{border-top:1px solid rgba(255,255,255,.12)}
+.gao-pc:hover{background:rgba(255,255,255,.08)}
+.gao-pt b{color:#fff}.gao-pt small{color:rgba(255,255,255,.6)}
+.gao-pc-cx{color:rgba(255,255,255,.7)}
+.gao-avatar{background:var(--primary)}
+.gao-bt img{height:17px;width:auto;display:block}
+.gao-bt small{margin-top:5px}
+.gao-pop{background:#1B3363;border-color:rgba(255,255,255,.14);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.gao-pop-item{color:#fff}
+.gao-pop-item:hover{background:rgba(255,255,255,.08)}
+.gao-pop-item .pii{background:rgba(255,255,255,.1);color:rgba(255,255,255,.85)}
+.gao-pop-item.me .pii{background:var(--primary);color:#fff}
+.gao-pop-dv{background:rgba(255,255,255,.14)}
+[data-theme="dark"] .gao-side{--sb:#0C1424;border-right:1px solid rgba(255,255,255,.08)}
+[data-theme="dark"] .gao-pop{background:#16213A}
+[data-theme="dark"] .gao-nav.active{background:rgba(255,255,255,.08)}
+
+/* mobile e tablet: barra superior azul escura, igual ao menu */
+@media(max-width:899px){
+  .gao-topbar{background:#14264D;border-bottom:0}
+  .gao-topbar .gao-burger,.gao-topbar .gao-top-back,.gao-topbar .gao-top-title b,.gao-topbar .gbc-seg:last-child,.gao-topbar .gao-top-greet .gtg-hi,.gao-topbar .gao-top-greet .gtg-name{color:#fff}
+  .gao-topbar .gao-burger:hover{background:rgba(255,255,255,.1)}
+  .gao-topbar .gao-top-back svg,.gao-topbar .gbc-seg,.gao-topbar .gbc-ic,.gao-topbar .gao-top-title small,.gao-topbar .gbc-sep{color:rgba(255,255,255,.7)}
+  [data-theme="dark"] .gao-topbar{background:#0C1424;border-bottom:1px solid rgba(255,255,255,.08)}
+  body:has(.gao-topbar) #gaoTheme{color:rgba(255,255,255,.8)}
+}

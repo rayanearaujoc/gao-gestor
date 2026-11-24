@@ -101,7 +101,7 @@
     var closedSet = load('gao_side_closed') || [];
     var h = '<button class="gao-tg" id="gaoTg" type="button" aria-label="Recolher menu"></button>';
     h += '<div class="gao-top">'
-      + '<a class="gao-brand" href="index.html"><img class="gao-logo-full" src="../static/img/logo.svg" alt="GAO"><img class="gao-logo-mark" src="../static/img/flor.svg" alt="GAO"></a>'
+      + '<a class="gao-brand" href="index.html"><span class="gao-bm"><img src="../static/img/flor.svg" alt="GAO"></span><span class="gao-logo-full gao-bt"><img src="../static/img/logo-gao.svg" alt="GAO"><small>Logística</small></span></a>'
       + '<button class="gao-x" id="gaoX" type="button" aria-label="Fechar menu">'+IC_X+'</button>'
       + '</div>';
     h += '<nav class="gao-navwrap" id="gaoNav">';

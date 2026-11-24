@@ -40,6 +40,9 @@
   var USER = {name:'Marina Alves', short:'Olá, Marina', role:'Gestora', initials:'MA', photo:''};
   try{ var _pf=JSON.parse(localStorage.getItem('gao_profile')||'null'); if(_pf&&_pf.name){ USER.name=_pf.name; USER.photo=_pf.photo||'';
     var _p=_pf.name.trim().split(/\s+/); USER.initials=((_p[0]||'')[0]+(_p.length>1?_p[_p.length-1][0]:'')).toUpperCase(); USER.short='Olá, '+_p[0]; } }catch(e){}
+  // outras áreas (ex.: GAO Sistemas) trocam menu, usuário e links definindo window.GAO_SHELL antes deste script
+  var SH = window.GAO_SHELL || null;
+  if(SH){ if(SH.top) NAV_TOP=SH.top; if(SH.sections) SECTIONS=SH.sections; if(SH.user) USER=SH.user; }
 
   /* ---- ícones estruturais inline (independem do lucide) ---- */
   var CHV_SEC   = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
@@ -107,7 +110,7 @@
     var closedSet = load('gao_side_closed') || [];
     var h = '<button class="gao-tg" id="gaoTg" type="button" aria-label="Recolher menu"></button>';
     h += '<div class="gao-top">'
-      + '<a class="gao-brand" href="inicio.html"><img class="gao-logo-full" src="static/img/logo.svg" alt="GAO"><img class="gao-logo-mark" src="static/img/flor.svg" alt="GAO"></a>'
+      + '<a class="gao-brand" href="'+(SH&&SH.home||'inicio.html')+'"><span class="gao-bm"><img src="static/img/flor.svg" alt="GAO"></span><span class="gao-logo-full gao-bt"><img src="static/img/logo-gao.svg" alt="GAO"><small>Logística</small></span></a>'
       + '<button class="gao-x" id="gaoX" type="button" aria-label="Fechar menu">'+IC_X+'</button>'
       + '</div>';
     h += '<nav class="gao-navwrap" id="gaoNav">';
@@ -125,11 +128,11 @@
     h += '</nav>';
     h += '<div class="gao-foot">';
     h += '<div class="gao-pop" id="gaoPop">'
-      + '<a class="gao-pop-item me" href="perfil.html"><span class="pii"><i data-lucide="circle-user-round"></i></span> Meu perfil</a>'
+      + '<a class="gao-pop-item me" href="'+(SH&&SH.profile||'perfil.html')+'"><span class="pii"><i data-lucide="circle-user-round"></i></span> Meu perfil</a>'
       + '<button class="gao-pop-item" id="gaoThemeItem" type="button"><span class="pii"><i data-lucide="moon"></i></span> Modo escuro</button>'
-      + '<button class="gao-pop-item" id="gaoVazioItem" type="button"><span class="pii"><i data-lucide="'+(window.GAO_VAZIO?'database':'inbox')+'"></i></span> '+(window.GAO_VAZIO?'Ver com dados':'Ver telas vazias')+'</button>'
+      + (SH?'':'<button class="gao-pop-item" id="gaoVazioItem" type="button"><span class="pii"><i data-lucide="'+(window.GAO_VAZIO?'database':'inbox')+'"></i></span> '+(window.GAO_VAZIO?'Ver com dados':'Ver telas vazias')+'</button>')
       + '<div class="gao-pop-dv"></div>'
-      + '<a class="gao-pop-item" href="login.html"><span class="pii"><i data-lucide="log-out"></i></span> Sair</a>'
+      + '<a class="gao-pop-item" href="'+(SH&&SH.login||'login.html')+'"><span class="pii"><i data-lucide="log-out"></i></span> Sair</a>'
       + '</div>'
       + '<button class="gao-pc" id="gaoPc" data-gao-user aria-haspopup="true"><span class="gao-avatar">'+(USER.photo?'<img src="'+USER.photo+'" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">':USER.initials)+'</span>'
       + '<span class="gao-pt"><b>'+USER.name+'</b><small>'+USER.role+'</small></span>'
@@ -289,7 +292,7 @@
     // rodapé do sistema (todas as páginas): direitos e versão à esquerda, suporte à direita
     if(!document.querySelector('.gk-foot')){
       var ft=document.createElement('footer'); ft.className='gk-foot';
-      ft.innerHTML='<span>© '+new Date().getFullYear()+' GAO Sistemas. Todos os direitos reservados.</span><span class="gk-foot-r"><a href="suporte.html">Suporte</a><span>Versão 1.0</span></span>';
+      ft.innerHTML='<span>© '+new Date().getFullYear()+' GAO Sistemas. Todos os direitos reservados.</span><span class="gk-foot-r">'+(SH?'':'<a href="suporte.html">Suporte</a>')+'<span>Versão 1.0</span></span>';
       var mm=document.querySelector('main'); if(mm&&mm.parentNode) mm.parentNode.insertBefore(ft,mm.nextSibling); else document.body.appendChild(ft);
       document.body.classList.add('has-gk-foot');
     }
