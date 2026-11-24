@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="static/css/app.css">
 <link rel="stylesheet" href="static/css/gestor.css">
 <link rel="stylesheet" href="static/css/kit.css">
+<style>#cats{grid-template-columns:repeat(3,1fr)}@media(max-width:900px){#cats{grid-template-columns:repeat(2,1fr)}}</style>
 </head>
 <body data-page="suporte">
   <main class="gpage">
@@ -72,38 +73,38 @@
     {k:'sugestao',t:'Sugestão de melhoria',to:'produto@gao.com.br'}
   ];
   var FAQ=[
-    {c:'Primeiros passos',q:'Por onde começo a configurar o sistema?',a:'Cadastre primeiro os motoristas e os veículos. Depois crie as rotas, escolhendo ao menos um motorista em cada uma, e por último cadastre os clientes, cada um com a sua rota.'},
-    {c:'Primeiros passos',q:'Como conecto o WhatsApp da minha empresa?',a:'Vá em Configurações, abra a aba Assistente WhatsApp e leia o QR Code com o número da empresa. Esse número envia os avisos automáticos aos clientes durante as viagens.'},
-    {c:'Primeiros passos',q:'Qual a diferença entre o plano com CRM e sem CRM?',a:'Com o CRM da GAO, as comandas chegam do CRM e seguem os status dele. Sem o CRM, a logística cria as comandas manualmente em Comandas, com os status Liberada, Em trânsito e Entregue para entregas, e Aguardando coleta e Coletada para coletas.'},
-    {c:'Primeiros passos',q:'Por que um cliente aparece como pendente?',a:'O cliente fica pendente até ter endereço completo (com CEP), WhatsApp para contato e uma rota. Complete o cadastro em Clientes e ele passa a Ativo.'},
-    {c:'Primeiros passos',q:'Onde vejo o plano da minha empresa?',a:'Em Configurações, na aba Geral. Lá ficam o plano contratado, o Assistente WhatsApp e os dados da empresa.'},
-    {c:'Operação',q:'Como crio uma comanda sem o CRM?',a:'Em Comandas, clique em Criar comanda, escolha Entrega ou Coleta e o cliente. A entrega gera as etiquetas com QR Code, uma por gaiola. A coleta já nasce como Aguardando coleta.'},
-    {c:'Operação',q:'Como funciona a coleta?',a:'A comanda de coleta entra no app do motorista quando está como Aguardando coleta. O motorista informa as gaiolas na parada, e a comanda passa a Coletada.'},
-    {c:'Operação',q:'Uma comanda pode ser entrega e coleta ao mesmo tempo?',a:'Não. Cada comanda é uma entrega ou uma coleta. Só as viagens e os comprovantes podem aparecer como Entrega e coleta, quando a mesma parada tem as duas.'},
-    {c:'Operação',q:'O que significa Em trânsito?',a:'A comanda já foi carregada pelo motorista e está a caminho do cliente. Depois da entrega ela passa a Entregue.'},
-    {c:'Operação',q:'Com dois motoristas na mesma rota, quem fica com a comanda?',a:'Quem carregar primeiro. A comanda sai da lista do outro motorista assim que é carregada.'},
-    {c:'Operação',q:'O que fazer quando uma comanda fica sem ninguém carregar?',a:'Em Operação, abra o aviso de comandas sem carregar, escolha as comandas e designe a um motorista. Elas passam a aparecer no app dele.'},
-    {c:'Operação',q:'O que fazer quando uma viagem fica parada?',a:'Em Operação, abra o aviso de viagem parada. O sistema mostra uma mensagem padrão para você enviar ao motorista pelo WhatsApp.'},
-    {c:'Operação',q:'Como designo um motorista para a rota do dia?',a:'Os motoristas de cada rota vêm do cadastro. Para reforçar uma rota, abra Operação e use o botão de designar motorista. Ele vale só para hoje e o cadastro não muda.'},
-    {c:'Operação',q:'Posso excluir uma comanda?',a:'Só enquanto ela está Liberada, ou seja, antes de o motorista carregar. Depois disso a comanda faz parte do histórico e não pode mais ser excluída.'},
-    {c:'Operação',q:'Como reimprimo as etiquetas de uma comanda?',a:'Na lista de Comandas, use o ícone de impressora na linha da comanda de entrega. Cada gaiola tem a sua etiqueta com QR Code.'},
-    {c:'Cadastros',q:'Como cadastro um cliente?',a:'Em Clientes, clique em Cadastrar cliente e preencha os dados, o endereço com CEP, o WhatsApp e a rota. Sem esses dados o cliente fica pendente.'},
-    {c:'Cadastros',q:'Posso colocar um cliente em mais de uma rota?',a:'Não. Cada cliente pertence a uma única rota, para não haver dúvida de qual rota leva a comanda.'},
-    {c:'Cadastros',q:'Como crio uma rota?',a:'Em Rotas, clique em criar rota, escolha os clientes e selecione os motoristas. Toda rota precisa ter pelo menos um motorista.'},
-    {c:'Cadastros',q:'Um motorista pode atender mais de uma rota?',a:'Pode. Motoristas e rotas se relacionam de vários para vários: uma rota tem um ou mais motoristas, e um motorista pode estar em mais de uma rota.'},
-    {c:'Cadastros',q:'O que acontece quando inativo um motorista?',a:'Ele perde o acesso ao app, mas o histórico de viagens continua guardado.'},
-    {c:'Cadastros',q:'Para que serve o cadastro de veículos?',a:'Os veículos aparecem nas viagens e ajudam a identificar de quem é uma multa, pela placa do veículo.'},
-    {c:'Histórico',q:'Como vejo as viagens de um período?',a:'Em Viagens, use o filtro Período (todos, 7 dias, 30 dias ou este mês). Os números do topo da tela acompanham o filtro.'},
-    {c:'Histórico',q:'O que encontro em Comprovantes?',a:'A lista dos comprovantes das paradas atendidas. Dá para buscar e filtrar por cliente, motorista e período.'},
-    {c:'Histórico',q:'Como designo uma multa a um motorista?',a:'Em Multas, envie o PDF. O sistema encontra a placa e o dia, mostra as viagens daquele dia e você escolhe o motorista em Designar.'},
-    {c:'Histórico',q:'Que informações a multa mostra?',a:'A infração e o número do AIT, o veículo, a data e a hora, o motorista, a viagem e o valor. O valor total das multas do período aparece no topo da tela.'},
-    {c:'Plano',q:'Como troco de plano?',a:'Clique em Pedir ajuda, escolha Trocar de plano e diga qual você quer. Nossa equipe comercial responde por e-mail.'},
-    {c:'Plano',q:'Posso alterar os dados da empresa?',a:'Os dados em Configurações são só de leitura. Para alterar, fale com a GAO por Pedir ajuda.'},
-    {c:'Plano',q:'Como trocar o número do WhatsApp da empresa?',a:'Fale com a equipe por Pedir ajuda e peça a troca do número. O novo número precisa ser conectado de novo pelo QR Code.'},
-    {c:'Plano',q:'Como relato um problema no sistema?',a:'Clique em Pedir ajuda, escolha Problema no sistema, diga onde aconteceu e descreva o que viu. A mensagem vai direto para o time de suporte.'}
+    {c:'Primeiros passos',q:'Recebi meu acesso. O que faço primeiro?',a:'A GAO cria a sua empresa e o seu usuário e envia o acesso. Ao entrar, a plataforma vem vazia. Siga os Primeiros passos da tela Início, na ordem: clientes, motoristas, veículos e rotas.'},
+    {c:'Primeiros passos',q:'Por que um cliente aparece como pendente?',a:'O cliente fica pendente até ter o endereço completo (com CEP), o WhatsApp para contato e uma rota. Complete o cadastro em Clientes e ele passa a Ativo.'},
+    {c:'Primeiros passos',q:'Cadastrei o motorista, mas ele não consegue entrar no app. O que verifico?',a:'Confira se o usuário e a senha foram definidos na etapa Acesso ao app e se o motorista está como Ativo. Motorista inativo perde o acesso. Para trocar a senha, edite o cadastro dele e digite uma nova.'},
+    {c:'Primeiros passos',q:'Esqueci minha senha. Como recupero?',a:'Peça à GAO em Pedir ajuda. Quando estiver logado, você pode trocar a senha por conta própria em Meu perfil, na aba Segurança.'},
+    {c:'Primeiros passos',q:'Posso colocar um cliente em mais de uma rota?',a:'Não. Cada cliente pertence a uma única rota, para não haver dúvida de qual rota leva a comanda. Já um motorista pode estar em mais de uma rota, e uma rota pode ter até dois motoristas.'},
+    {c:'Comandas',q:'As comandas vêm do CRM ou eu preciso criar?',a:'Depende do plano. Com o CRM GAO, a comanda entra sozinha, aparece no app do motorista e as etiquetas já saem impressas, então você só acompanha. Sem o CRM, você cria a comanda em Comandas e imprime as etiquetas com QR Code.'},
+    {c:'Comandas',q:'Liberei uma comanda e o motorista não a vê no app. O que pode ser?',a:'Confira se o cliente tem uma rota, se essa rota tem motorista e se a comanda está Liberada (com o CRM, depois da expedição realizada). Se ninguém carregar em mais de 24 horas, o aviso aparece em Operação e você pode designar a comanda a um motorista.'},
+    {c:'Comandas',q:'Como imprimo ou reimprimo as etiquetas?',a:'Sem o CRM, na lista de Comandas, use o ícone de impressora na linha da comanda de entrega. Cada gaiola tem a sua etiqueta com QR Code. Com o CRM, as etiquetas são impressas pela produção.'},
+    {c:'Comandas',q:'Qual a diferença entre comanda de entrega e de coleta?',a:'Cada comanda é só uma coisa: entrega ou coleta. Ao entregar, o sistema abre uma coleta pendente do cliente. Se o cliente pedir uma coleta, você cria a comanda de coleta, que fica como Aguardando coleta e entra no app do motorista.'},
+    {c:'Comandas',q:'Posso excluir uma comanda?',a:'Sim, sem o CRM, na lista de Comandas. As etiquetas já impressas dessa comanda deixam de valer, então confirme antes de excluir.'},
+    {c:'Operação',q:'Uma viagem apareceu como parada. O que faço?',a:'Em Operação, abra o aviso de viagem parada e use Avisar. O WhatsApp abre com a mensagem pronta para o motorista, e você só confirma o envio.'},
+    {c:'Operação',q:'Falta um motorista hoje. Como cubro a rota?',a:'Em Operação, designe um motorista para a rota, por exemplo um folguista. Vale só para hoje e o cadastro da rota não muda. O folguista não tem rota fixa e monta uma rota extra no app.'},
+    {c:'Operação',q:'Com dois motoristas na mesma rota, quem leva cada comanda?',a:'Quem carregar primeiro. Cada motorista segue só o que carregou, e a comanda carregada por um some da lista do outro.'},
+    {c:'Operação',q:'Como funciona a coleta?',a:'A coleta só acontece depois das entregas. O motorista informa as gaiolas na própria parada. Se não houver coletas, ele vai direto ao check-out. O comprovante junta entrega e coleta da mesma parada.'},
+    {c:'Operação',q:'O caminhão teve um acidente. O que acontece com a viagem?',a:'O motorista registra o acidente no app, e a viagem é encerrada. Os clientes que ainda não foram atendidos recebem a mensagem automática de entrega reagendada, e a sua equipe entra em contato para remarcar.'},
+    {c:'Operação',q:'Um motorista saiu da empresa. Como removo o acesso dele?',a:'Edite o motorista e deixe o acesso como Inativo. Ele perde o acesso ao app, e o histórico de viagens dele continua guardado.'},
+    {c:'WhatsApp',q:'Quais mensagens o cliente recebe?',a:'Pelo número da empresa saem duas, de forma automática: a caminho, quando o motorista inicia as entregas, e o resultado da entrega (concluída com o comprovante, não realizada com o motivo, ou reagendada por acidente).'},
+    {c:'WhatsApp',q:'Por que o aviso de chegada não aparece em Mensagens?',a:'Porque ele sai do WhatsApp do próprio motorista, pelo botão Avisar cliente, e o sistema não tem acesso a essa conversa. O mesmo vale para o aviso de viagem parada e para o envio avulso de comprovante: o WhatsApp abre com a mensagem pronta, quem pediu confirma o envio e isso não entra no histórico.'},
+    {c:'WhatsApp',q:'Um cliente diz que não recebeu a mensagem. Como confiro?',a:'Em Mensagens, procure o cliente e veja o texto enviado e se houve falha. Confira também se o WhatsApp para contato dele em Clientes está correto.'},
+    {c:'WhatsApp',q:'As mensagens automáticas pararam de sair. O que pode ser?',a:'O número da empresa pode ter desconectado. A conexão é feita pela GAO, que recebe o alerta. Se notar a falha antes, avise em Pedir ajuda para a GAO reconectar.'},
+    {c:'WhatsApp',q:'Como troco o número de WhatsApp da empresa?',a:'Peça à GAO em Pedir ajuda. O novo número é conectado pela GAO, e você não precisa fazer nada na plataforma.'},
+    {c:'Histórico',q:'Como envio de novo um comprovante ao cliente?',a:'Em Comprovantes, ou no perfil do cliente, use Enviar. O WhatsApp abre com a mensagem pronta e o link do comprovante, e você confirma o envio.'},
+    {c:'Histórico',q:'Onde vejo o que o motorista fez em uma viagem?',a:'Em Viagens, abra a viagem. Se estiver em andamento, aparece o que ele já fez e o que falta. Se estiver concluída, aparecem os dados da viagem, o consumo médio, as fotos do veículo e os comprovantes de cada cliente.'},
+    {c:'Histórico',q:'Como designo uma multa a um motorista?',a:'Em Multas, envie o PDF. O sistema encontra a placa e o dia, mostra as viagens daquele dia e você escolhe o motorista em Designar. A GAO só mantém o registro por motorista e não indica o condutor ao órgão.'},
+    {c:'Histórico',q:'Quem informa os saneantes que aparecem no comprovante?',a:'Você, em Configurações, na aba Saneantes. O motorista não escolhe nada, e o saneante marcado como em uso vai para o comprovante.'},
+    {c:'Conta e plano',q:'Onde vejo o plano e os dados da minha empresa?',a:'Em Configurações. Lá ficam o plano contratado e os dados da empresa, que são só de leitura.'},
+    {c:'Conta e plano',q:'Como altero os dados da empresa ou o plano?',a:'Clique em Pedir ajuda e escolha o assunto. Trocar de plano vai para o comercial, e a mudança dos dados vai para o suporte.'},
+    {c:'Conta e plano',q:'Preciso de mais um usuário gestor. Como faço?',a:'Os usuários da plataforma são criados pela GAO. Peça em Pedir ajuda, com o nome e o e-mail da pessoa.'},
+    {c:'Conta e plano',q:'Como relato um problema no sistema?',a:'Clique em Pedir ajuda, escolha Problema no sistema, diga onde aconteceu e descreva o que viu. A mensagem vai direto para o time de suporte.'}
   ];
   var CATS=[
-    {c:'Primeiros passos',ic:'clipboard-check'},{c:'Operação',ic:'truck'},{c:'Cadastros',ic:'users'},{c:'Histórico',ic:'receipt'},{c:'Plano',ic:'credit-card'}
+    {c:'Primeiros passos',ic:'clipboard-check'},{c:'Comandas',ic:'clipboard-list'},{c:'Operação',ic:'truck'},{c:'WhatsApp',ic:'message-circle'},{c:'Histórico',ic:'receipt'},{c:'Conta e plano',ic:'credit-card'}
   ], cat='Primeiros passos', q='';
   function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
   function cnt(c){ return FAQ.filter(function(f){ return f.c===c; }).length; }
