@@ -11,7 +11,7 @@ Para ver localmente, abra o `index.html` no navegador. A primeira tela deixa esc
 
 ---
 
-## O CSS é o nosso design system
+## Design system
 
 Este protótipo já foi desenhado com um design system, o **GAO Kit**. O CSS que está aqui é ele, e é o que garante que todas as telas tenham a mesma cara e o mesmo comportamento.
 
