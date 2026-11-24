@@ -137,6 +137,7 @@
       +(r.st==='Concluída'?'<span class="gk-act" style="visibility:hidden"></span>':'<button class="gk-act" data-act="des" type="button" aria-label="Designar motorista" title="Designar motorista"><i data-lucide="user-plus" class="gk-ic"></i></button>')+'</span></td></tr>';
   }
   function fmtP(min){ return min>=60?Math.floor(min/60)+'h'+('0'+min%60).slice(-2):min+' min'; }
+  function ini(n){ var w=String(n||'').trim().split(/\s+/); return ((w[0]||'').charAt(0)+(w.length>1?w[w.length-1].charAt(0):'')).toUpperCase(); }
   function paradas(){ var o=[]; R.forEach(function(r){ r.m.forEach(function(m){ if(m.pmin) o.push({r:r,m:m}); }); }); return o; }
   function avisos(){
     var a=[];
