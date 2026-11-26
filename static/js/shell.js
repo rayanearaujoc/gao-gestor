@@ -15,7 +15,8 @@
   try{ if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark') document.documentElement.setAttribute('data-theme','dark'); }catch(e){}
   var NAV_TOP = [
     {label:'Início', icon:'layout-grid', href:'inicio.html', key:'home'},
-    {label:'Operação', icon:'activity', href:'operacao.html', key:'operacao'}
+    {label:'Operação', icon:'activity', href:'operacao.html', key:'operacao'},
+    {label:'Centro de custo', icon:'circle-dollar-sign', href:'centro-custo.html', key:'custos'}
   ];
   var SECTIONS = [
     {name:'Cadastros', items:[

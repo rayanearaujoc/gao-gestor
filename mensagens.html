@@ -66,11 +66,16 @@
      "a caminho" e o desfecho (entrega concluída, não foi possível entregar ou, no acidente, entrega reagendada).
      O "cheguei" sai do celular do motorista (link wa.me), não passa pelo sistema e por isso não aparece aqui. */
   var MOTIVOS=['não havia ninguém no local para receber a remessa.','a remessa foi recusada no momento da entrega.','o local estava fechado ou sem acesso no horário da entrega.'];
+  var MOTIVOS_C=['não havia ninguém no local para entregar as peças.','as peças não estavam prontas para a coleta.','o local estava fechado ou sem acesso no horário da coleta.'];
+  var LINK=function(c){ return '<span class="gk-wa-l">gao.app/c/'+c.cod+'</span>'; };
+  /* o texto muda conforme o tipo da parada: Entrega, Entrega e coleta (a mais comum) ou só Coleta */
   var TXT={
-    'A caminho':function(c){ return 'Olá, '+c.cli+'! Seu enxoval hospitalar limpo saiu para entrega hoje. O motorista '+c.mot+' já está a caminho com a sua remessa e em breve chega até vocês. GAO Logística'; },
-    'Entrega concluída':function(c){ return 'Entrega concluída! '+c.cli+', seu enxoval limpo foi entregue hoje ('+c.data+') por '+c.mot+'. O comprovante com as fotos e os itens está aqui: <span class="gk-wa-l">gao.app/c/'+c.cod+'</span> Obrigado por confiar na GAO.'; },
+    'A caminho':function(c){ return 'Olá, '+c.cli+'! O motorista '+c.mot+', da GAO, está a caminho de vocês e em breve chega ao endereço. GAO Logística'; },
+    'Entrega concluída':function(c){ return 'Entrega concluída! '+c.cli+', seu enxoval limpo foi entregue'+(c.tipo==='Entrega e coleta'?' e a coleta foi realizada':'')+' hoje ('+c.data+') por '+c.mot+'. O comprovante com as fotos e os itens está aqui: '+LINK(c)+' Obrigado por confiar na GAO.'; },
     'Não foi possível entregar':function(c){ return 'Olá, '+c.cli+'. Infelizmente não foi possível concluir a entrega do seu enxoval hoje ('+c.data+'). Motivo: '+MOTIVOS[c.k%3]+' Nossa equipe já foi avisada e vai entrar em contato para reagendar. GAO Logística'; },
-    'Entrega reagendada':function(c){ return 'Olá, '+c.cli+'. Tivemos um imprevisto com o nosso veículo durante a rota de hoje ('+c.data+') e, por segurança, a entrega do seu enxoval precisará ser reagendada. Pedimos desculpas pelo transtorno. Nossa equipe já vai entrar em contato para remarcar. GAO Logística'; }
+    'Atendimento reagendado':function(c){ return 'Olá, '+c.cli+'. Tivemos um imprevisto com o nosso veículo durante a rota de hoje ('+c.data+') e, por segurança, o atendimento a vocês precisará ser reagendado. Pedimos desculpas pelo transtorno. Nossa equipe já vai entrar em contato para remarcar. GAO Logística'; },
+    'Coleta concluída':function(c){ return 'Coleta concluída! '+c.cli+', as peças foram recolhidas hoje ('+c.data+') por '+c.mot+'. O comprovante com as fotos e os itens está aqui: '+LINK(c)+' Obrigado por confiar na GAO.'; },
+    'Não foi possível coletar':function(c){ return 'Olá, '+c.cli+'. Infelizmente não foi possível fazer a coleta hoje ('+c.data+'). Motivo: '+MOTIVOS_C[c.k%3]+' Nossa equipe já foi avisada e vai entrar em contato para reagendar. GAO Logística'; }
   };
   // um comprovante por cliente de cada viagem; cada um tem o seu grupo de mensagens
   var COMP=[], idc=0;
@@ -78,12 +83,13 @@
     var viagem=1048-i, d=12-Math.floor(i/2), n=3+(i%3), t=7*60+30+(i*11)%40;
     for(var k=0;k<n;k++){
       var nome=CLI[(i+k)%CLI.length], msgs=[], h=t+30+k*55;
-      var fim=(i===3&&k===1)?'Não foi possível entregar':((i===8&&k===2)?'Entrega reagendada':'Entrega concluída');
+      var tp=TIPOS[(i+k)%TIPOS.length], so=tp==='Coleta';
+      var fim=(i===3&&k===1)?(so?'Não foi possível coletar':'Não foi possível entregar'):((i===8&&k===2)?'Atendimento reagendado':(so?'Coleta concluída':'Entrega concluída'));
       msgs.push({tipo:'A caminho',hora:hm(t),st:'Lida'});
-      msgs.push({tipo:fim,hora:hm(h+(fim==='Entrega reagendada'?20:12)),st:'Lida'});
+      msgs.push({tipo:fim,hora:hm(h+(/reagendad/.test(fim)?20:12)),st:'Lida'});
       msgs.forEach(function(m,j){ if((i===2&&k===0&&j===1)||(i===5&&k===1&&j===0)||(i===9&&k===2&&j===1)) m.st='Falhou'; else if(i===0&&j>0) m.st='Entregue'; });
       var fal=msgs.filter(function(m){ return m.st==='Falhou'; }).length;
-      COMP.push({id:idc++,mot:MOT[i%4],k:k,cod:(viagem*7+k*131).toString(36),data:pad(d)+'/11/2026',cli:nome,tipo:TIPOS[(i+k)%TIPOS.length],viagem:viagem,msgs:msgs,tot:msgs.length,fal:fal});
+      COMP.push({id:idc++,mot:MOT[i%4],k:k,cod:(viagem*7+k*131).toString(36),data:pad(d)+'/11/2026',cli:nome,tipo:tp,viagem:viagem,msgs:msgs,tot:msgs.length,fal:fal});
     }
   }
   if(window.GAO_VAZIO) COMP.length=0;

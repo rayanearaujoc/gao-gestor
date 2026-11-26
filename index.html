@@ -12,13 +12,16 @@ body{margin:0;min-height:100vh;background:var(--bg,#F0F2F6);color:var(--fg,#1426
 .top{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:32px;text-align:center}
 .top h1{margin:0;font-size:22px;font-weight:700}
 .top p{margin:0;font-size:14px;color:var(--muted,#5A6B8C)}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,360px));gap:20px;width:100%;justify-content:center}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,360px));gap:20px;width:100%;justify-content:center}
 .c{display:flex;flex-direction:column;background:var(--card,#fff);border:1px solid var(--line,#E3E8F0);border-radius:12px;overflow:hidden;text-decoration:none;color:inherit;box-shadow:0 1px 2px rgba(20,38,77,.05);transition:border-color .15s,transform .15s}
 .c:hover{border-color:#2563EB;transform:translateY(-2px)}
 .c img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top left;background:#E7EDF6;border-bottom:1px solid var(--line,#E3E8F0)}
 .c div{padding:18px 20px}
+.c .pv{position:relative;padding:0;aspect-ratio:16/10;overflow:hidden;background:#E7EDF6;border-bottom:1px solid var(--line,#E3E8F0)}
+.c .pv iframe{position:absolute;top:0;left:0;width:1280px;height:800px;border:0;transform-origin:0 0;pointer-events:none}
 .c b{display:block;font-size:16px;font-weight:700}
 .c span{display:block;margin-top:4px;font-size:13px;color:var(--muted,#5A6B8C);line-height:20px}
+@media(max-width:1200px){.grid{grid-template-columns:repeat(2,minmax(0,360px))}}
 @media(max-width:720px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
@@ -27,6 +30,11 @@ body{margin:0;min-height:100vh;background:var(--bg,#F0F2F6);color:var(--fg,#1426
 <div class="grid">
   <a class="c" href="inicio.html"><img src="static/img/mock-gestor.webp" alt=""><div><b>Plataforma do gestor</b><span>Operação, comandas, rotas, cadastros e comprovantes.</span></div></a>
   <a class="c" href="motorista/index.html"><img src="static/img/mock-motorista.webp" alt=""><div><b>App do motorista</b><span>Carregamento, entregas, coletas e check-out da rota.</span></div></a>
+  <a class="c" href="acompanhamento/index.html"><div class="pv"><iframe src="acompanhamento/index.html#caminho" tabindex="-1" loading="lazy" title="Prévia do acompanhamento em tempo real"></iframe></div><div><b>Acompanhamento da entrega</b><span>Link do WhatsApp com o mapa em tempo real, que o cliente abre.</span></div></a>
 </div>
+<script>
+(function(){ function fit(){ document.querySelectorAll('.pv').forEach(function(p){ var f=p.querySelector('iframe'); if(f) f.style.transform='scale('+(p.clientWidth/1280)+')'; }); }
+fit(); window.addEventListener('resize',fit); })();
+</script>
 </body>
 </html>

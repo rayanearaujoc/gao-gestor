@@ -1,0 +1,753 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>GAO Gestor · Centro de custo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+<link rel="stylesheet" href="static/css/app.css">
+<link rel="stylesheet" href="static/css/gestor.css">
+<link rel="stylesheet" href="static/css/kit.css">
+<style>
+.gk-delta.cc-flip::before{transform:rotate(180deg)}
+.gk-delta.is-down.cc-flip::before{transform:none}
+.cc-q{display:inline-grid;place-items:center;width:18px;height:18px;margin-left:2px;padding:0;border:0;border-radius:50%;background:none;color:var(--muted);cursor:help}
+.cc-q:hover,.cc-q:focus-visible{color:var(--fg);background:var(--row)}
+.cc-q .gk-ic{width:14px;height:14px}
+.gk-stat.is-grad .cc-q{color:inherit;opacity:.8}
+.gk-ctip.cc-wide{max-width:320px;padding:12px 14px}
+.gk-ctip.cc-wide b{margin-bottom:6px}
+.gk-ctip.cc-wide span{white-space:normal;font-size:13px;line-height:20px}
+.cc-cats{display:grid;gap:2px}
+.cc-cat{display:grid;grid-template-columns:minmax(110px,170px) minmax(40px,1fr) 88px 40px;align-items:center;gap:var(--space-3);padding:7px var(--space-2);margin:0 calc(var(--space-2) * -1);border:0;border-radius:var(--radius-md);background:none;font:inherit;text-align:left;color:var(--fg)}
+.cc-cat>span:first-child{font-size:13px;line-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-bar{height:10px;border-radius:3px;background:var(--row);overflow:hidden}
+.cc-bar i{display:block;height:100%;border-radius:inherit;background:var(--primary)}
+.cc-v{text-align:right;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cc-pc{text-align:right;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.cc-cmp-h{display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap;margin-bottom:var(--space-2)}
+.cc-cmp-h .gk-stat-h{margin-right:auto;font-size:14px}
+.cc-avg{margin-bottom:var(--space-5);font-size:12px;line-height:16px;color:var(--muted)}
+.cc-avg b{font-weight:600;color:var(--fg)}
+/* comparação: ranking em barras horizontais */
+.cc-rk{display:grid;gap:2px}
+.cc-rk.is-scroll{max-height:560px;overflow-y:auto;padding-right:var(--space-2)}
+.cc-r{display:grid;grid-template-columns:32px minmax(0,1fr);gap:var(--space-3);align-items:center;padding:10px var(--space-2);margin:0 calc(var(--space-2) * -1);border-radius:var(--radius-md);outline:none}
+.cc-r:hover,.cc-r:focus-visible{background:var(--row)}
+.cc-r>.gk-avatar,.cc-r>.gk-stat-ic{width:32px;height:32px;font-size:11px}
+.cc-r-t{display:flex;align-items:baseline;gap:var(--space-2);min-width:0}
+.cc-r-t b{font-size:13px;line-height:18px;font-weight:600;white-space:nowrap}
+.cc-r-t .cc-s{flex:1;min-width:0;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-r-t .cc-v{margin-left:auto;font-size:13px;font-weight:700}
+.cc-r .cc-trk{height:12px;margin:6px 0 4px;border-radius:3px;background:var(--row);overflow:hidden}
+.cc-r:hover .cc-trk{background:var(--card)}
+.cc-r .cc-trk i{display:block;height:100%;border-radius:inherit;background:var(--primary)}
+.cc-r.is-warn .cc-trk i{background:var(--warn)}
+.cc-r.is-good .cc-trk i{background:var(--ok)}
+.cc-r .cc-dt{font-size:12px;line-height:16px;color:var(--muted)}
+.cc-r.is-warn .cc-dt{color:var(--warn-ink);font-weight:600}
+.cc-r.is-good .cc-dt{color:var(--ok-ink)}
+.cc-more{margin-top:var(--space-3)}
+.cc-tb{display:flex;align-items:center;gap:var(--space-2);flex-wrap:wrap;margin:var(--space-4) 0}
+.cc-tb .cc-avg{margin:0 0 0 auto}
+.cc-body{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:var(--space-6);align-items:start}
+.cc-tiles{display:grid;gap:var(--space-4)}
+.cc-pair{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4)}
+.cc-pair .cc-tile{padding:var(--space-5)}
+.cc-pair .cc-tile-w{flex-direction:column;align-items:flex-start;gap:var(--space-2)}
+.cc-pair .cc-tile-w>.gk-avatar,.cc-pair .cc-tile-w>.gk-stat-ic{width:32px;height:32px;font-size:11px}
+.cc-pair .cc-tile-w div{width:100%}
+.cc-pair .cc-tile-v{margin-top:var(--space-3);font-size:20px;line-height:28px}
+.cc-pair .cc-tile-s{font-size:12px;line-height:16px}
+.cc-avgc{padding:var(--space-5);border:1px solid var(--line);border-radius:var(--radius-lg)}
+.cc-avgc .cc-tile-l{display:flex;align-items:center;gap:6px;font-size:12px;line-height:16px;color:var(--muted)}
+.cc-avgc .cc-tile-v{margin-top:var(--space-2)}
+.cc-avgc p{margin:2px 0 0;font-size:12px;line-height:16px;color:var(--muted)}
+.cc-tile{position:relative;padding:var(--space-5);border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--card)}
+.cc-tile .gk-badge{margin-bottom:var(--space-4)}
+.cc-tile-w{display:flex;align-items:center;gap:var(--space-3)}
+.cc-tile-w>.gk-avatar,.cc-tile-w>.gk-stat-ic{width:40px;height:40px;flex:none;font-size:13px}
+.cc-tile-w div b{display:block;font-size:14px;line-height:20px;font-weight:700}
+.cc-tile-w div span{display:block;font-size:12px;line-height:16px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-tile-v{margin-top:var(--space-4);font-size:24px;line-height:32px;font-weight:700;font-variant-numeric:tabular-nums}
+.cc-tile-v small{font-size:13px;font-weight:500;color:var(--muted)}
+.cc-tile-s{margin-top:2px;font-size:13px;line-height:18px;font-weight:600}
+.cc-tile.is-bad .cc-tile-s{color:var(--warn-ink)}
+.cc-tile.is-ok .cc-tile-s{color:var(--ok-ink)}
+.cc-tile-x{margin-top:var(--space-3);padding-top:var(--space-3);border-top:1px solid rgba(15,23,42,.08);font-size:12px;line-height:16px;color:var(--muted)}
+.cc-tile-x b{color:var(--fg);font-weight:600}
+@media (max-width:1100px){.cc-body{grid-template-columns:1fr}.cc-tiles{order:-1}}
+
+/* motorista: barra que sai do meio (meio = média dos colegas) */
+.cc-dv{position:relative;height:8px;margin:6px 0 4px;border-radius:var(--radius-full);background:var(--row)}
+.cc-r:hover .cc-dv{background:var(--card)}
+.cc-dv::after{content:"";position:absolute;left:50%;top:-4px;bottom:-4px;width:2px;margin-left:-1px;border-radius:1px;background:var(--ph)}
+.cc-dv i{position:absolute;top:0;bottom:0;background:var(--primary);border-radius:var(--radius-full)}
+.cc-r.is-warn .cc-dv i{background:var(--warn)}
+.cc-r.is-good .cc-dv i{background:var(--ok)}
+.cc-dvax{display:flex;justify-content:space-between;margin:0 0 var(--space-2) 44px;font-size:11px;color:var(--muted)}
+@media (max-width:900px){.cc-tiles{grid-template-columns:1fr}.cc-tb .cc-avg{flex-basis:100%;margin:0}}
+.cc-lg{display:flex;flex-wrap:wrap;gap:var(--space-4);margin-top:var(--space-4);padding-top:var(--space-4);border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+.cc-lg span{display:inline-flex;align-items:center;gap:6px}
+.cc-lg i{width:10px;height:10px;border-radius:50%}
+.cc-lg i.is-ln{width:16px;height:0;border-radius:0;border-top:2px dashed var(--ph)}
+@media (max-width:600px){.cc-cat{grid-template-columns:minmax(0,1fr) auto 36px}.cc-cat .cc-bar{display:none}}
+.gk-charts{gap:var(--space-5);margin-bottom:var(--space-6)}
+#pGeral .gk-chart{padding:var(--space-6) var(--space-7,32px)}
+#pGeral .gk-charts .gk-chart{display:flex;flex-direction:column}
+#cMes{flex:1;display:flex;flex-direction:column;min-height:0}
+#cMes .gk-bc-plot,#cMes:has(.has-plan) .gk-bc-plot{flex:1;height:auto;min-height:120px}
+.cc-body{gap:var(--space-7,32px)}
+.cc-rk{gap:var(--space-2)}
+.cc-r{padding:12px var(--space-2)}
+.cc-tb{margin:var(--space-5) 0 var(--space-6)}
+.cc-lg{margin-top:var(--space-6);padding-top:var(--space-5)}
+.cc-seg{display:inline-flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--card)}
+.cc-seg button{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border:0;border-radius:var(--radius-md);background:none;font:inherit;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:background .12s,color .12s}
+.cc-seg button .gk-ic{width:15px;height:15px}
+.cc-seg button:hover{background:var(--row);color:var(--fg)}
+.cc-seg button.is-active{background:var(--read);color:#fff}
+.cc-seg2 button{display:inline-flex;align-items:center;gap:6px}
+.cc-seg2 button .gk-ic{width:14px;height:14px}
+.cc-more{display:inline-flex;justify-self:start}
+.cc-col2{color:var(--muted);font-weight:400}
+.cc-col2::before{content:"";display:inline-block;width:1px;height:10px;margin:0 8px;background:var(--line-strong);vertical-align:-1px}
+.cc-allb{max-height:60vh;overflow-y:auto;border-top:1px solid var(--line)}
+.cc-allb .cc-cats,.cc-allb .cc-rk{margin:0}
+.gk-ctip{max-width:300px;padding:10px 12px}
+.gk-ctip b{font-size:13px;line-height:18px}
+.gk-ctip span{white-space:normal;margin-top:2px}
+
+/* ---- comparação, versão leve ---- */
+.cc-body{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:64px}
+.cc-rk{gap:0}
+.cc-r{grid-template-columns:20px 28px minmax(0,1fr);gap:var(--space-3);padding:14px var(--space-2);border-radius:var(--radius-md)}
+.cc-r+.cc-r{border-top:1px solid var(--line);border-radius:0}
+.cc-r:hover{border-radius:var(--radius-md)}
+.cc-r:hover+.cc-r{border-top-color:transparent}
+.cc-n{font-size:12px;color:var(--ph);font-variant-numeric:tabular-nums;text-align:right}
+.cc-r>.gk-avatar{width:28px;height:28px;font-size:10px}
+.cc-r>.cc-ic{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--row);color:var(--muted)}
+.cc-r>.cc-ic .gk-ic{width:14px;height:14px}
+.cc-r-t{align-items:center}
+.cc-r-t b{font-weight:600}
+.cc-r-t .cc-v{font-weight:600}
+.cc-r .cc-trk{height:10px;margin:8px 0 0;border-radius:3px;background:var(--row)}
+.cc-r .cc-trk i{opacity:1;border-radius:3px}
+.cc-bar i{border-radius:3px}
+.cc-chip{flex:none;min-width:48px;margin-left:var(--space-2);padding:1px 6px;border-radius:var(--radius-sm);font-size:11px;line-height:16px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums;background:var(--row);color:var(--muted)}
+.cc-r.is-warn .cc-chip{background:var(--warn-bg);color:var(--warn-ink)}
+.cc-r.is-good .cc-chip{background:var(--ok-bg);color:var(--ok-ink)}
+.cc-pn{border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden}
+.cc-pn-a{padding:var(--space-5)}
+.cc-pn-l{font-size:12px;line-height:16px;color:var(--muted)}
+.cc-pn-v{margin-top:4px;font-size:20px;line-height:28px;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.cc-pn-v small{margin-left:2px;font-size:13px;font-weight:500;color:var(--muted);letter-spacing:0}
+.cc-pn-s{margin-top:2px;font-size:12px;line-height:16px;color:var(--muted)}
+.cc-pn-i{display:grid;grid-template-columns:32px minmax(0,1fr) auto;align-items:center;gap:var(--space-3);padding:var(--space-4) var(--space-5);border-top:1px solid var(--line)}
+.cc-pn-i>.gk-avatar,.cc-pn-i>.cc-ic{width:32px;height:32px;font-size:11px}
+.cc-pn-i>.cc-ic{display:grid;place-items:center;border-radius:50%;background:var(--row);color:var(--muted)}
+.cc-pn-i>.cc-ic .gk-ic{width:15px;height:15px}
+.cc-pn-k{display:flex;align-items:center;gap:6px;font-size:11px;line-height:14px;color:var(--muted)}
+.cc-pn-k i{width:6px;height:6px;border-radius:50%}
+.cc-pn-i b{display:block;margin-top:2px;font-size:13px;line-height:18px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-pn-r{display:flex;align-items:center;gap:8px}
+.cc-pn-i .cc-pn-r b{display:block;margin:0;font-size:14px;line-height:20px;font-variant-numeric:tabular-nums}
+.cc-pn-r .cc-chip{margin:0;min-width:44px;padding:1px 6px;font-size:11px;line-height:16px;font-weight:600}
+.cc-pn-r .is-warn{background:var(--warn-bg);color:var(--warn-ink)}
+.cc-pn-r .is-good{background:var(--ok-bg);color:var(--ok-ink)}
+.cc-pn-end{border-top:1px solid var(--line)}
+.cc-pn-k.is-warn{color:var(--warn-ink);font-weight:400;font-size:12px}
+.cc-pn-k.is-good{color:var(--ok-ink);font-weight:400;font-size:12px}
+.cc-all{height:26px;padding:0 8px;font-size:12px;gap:4px}
+.cc-all .gk-ic{width:13px;height:13px}
+.cc-tools{display:flex;align-items:center;gap:var(--space-2);flex:none}
+@media (min-width:1101px){.cc-cmp-h{flex-wrap:nowrap}.cc-cmp-h .gk-stat-h{min-width:0}.cc-cmp-h #cmpT{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cc-cmp-h .gk-seg{flex:none}}
+.cc-r.no-av{grid-template-columns:20px minmax(0,1fr)}
+.cc-pn-i.no-av{grid-template-columns:minmax(0,1fr) auto}
+.cc-lblrow{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.cc-lblrow .gk-label{margin:0}
+.cc-lblrow .gk-link{border:0;background:none;padding:0;font:inherit;font-size:12px;cursor:pointer}
+.cc-top3{margin-bottom:var(--space-5)}
+.cc-top3 .cc-pn{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.cc-top3 .cc-pn>*{border-top:0!important;border-left:1px solid var(--line)}
+.cc-top3 .cc-pn>*:first-child{border-left:0}
+.cc-top3 .cc-pn-i{padding:var(--space-5)}
+@media (max-width:900px){.cc-top3 .cc-pn{grid-template-columns:1fr}.cc-top3 .cc-pn>*{border-left:0;border-top:1px solid var(--line)!important}.cc-top3 .cc-pn>*:first-child{border-top:0!important}}
+.cc-r-t b{font-size:14px;line-height:20px}
+.cc-r-t .cc-s{font-size:13px}
+.cc-r-t .cc-v{font-size:15px;line-height:20px;font-weight:700}
+.cc-n{font-size:13px}
+.cc-pn-i b{font-size:14px}
+.cc-pn-i .cc-pn-r b{font-size:16px;line-height:22px;font-weight:700}
+.cc-pn-v{font-size:22px!important;line-height:28px!important}
+#dVei .gk-pop{top:calc(100% + 4px);bottom:auto}
+.cc-dn .gk-donut-n b{font-size:16px;line-height:22px}
+.cc-dn .gk-lg-i em{width:34px}
+.cc-r{grid-template-columns:28px minmax(0,1fr)!important}
+.cc-pn-i{align-items:start}
+.cc-pn-sub{display:block;margin-top:1px;font-size:12px;line-height:16px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-pn-r{flex-direction:column;align-items:flex-end!important;gap:2px!important}
+.cc-pn-d{font-size:12px;line-height:16px;font-weight:600;white-space:nowrap}
+.cc-pn-d{background:none!important;padding:0}
+.cc-pn-d.is-warn{color:var(--warn-ink)}
+.cc-pn-d.is-good{color:var(--ok-ink)}
+.cc-pn-x{grid-column:2/-1;margin-top:0;font-size:12px;line-height:16px;color:var(--muted)}
+.cc-pn-x b{display:inline!important;margin:0!important;font-size:12px!important;font-weight:600;color:var(--fg)}
+.cc-pn-c{padding:1px 6px;border-radius:var(--radius-sm);font-size:11px;line-height:16px;font-weight:600;font-variant-numeric:tabular-nums}
+.cc-pn-c.is-warn{background:var(--warn-bg);color:var(--warn-ink)}
+.cc-pn-c.is-good{background:var(--ok-bg);color:var(--ok-ink)}
+.cc-pn-i{align-items:center!important}
+/* escala menor, com hierarquia */
+.cc-r{padding:10px var(--space-2)!important}
+.cc-r .cc-trk{height:8px!important;margin-top:6px!important;border-radius:3px!important}
+.cc-bar{height:8px!important}
+.cc-r-t b{font-size:13px!important;line-height:18px!important;font-weight:600}
+.cc-r-t .cc-s{font-size:12px!important}
+.cc-r-t .cc-v{font-size:13px!important;line-height:18px!important;font-weight:700}
+.cc-r>.gk-avatar,.cc-r>.cc-ic{width:26px!important;height:26px!important}
+.cc-r{grid-template-columns:26px minmax(0,1fr)!important}
+.cc-pn-i .cc-pn-r b{font-size:14px!important;line-height:20px!important}
+.cc-pn-i b{font-size:13px!important}
+.cc-pn-v{font-size:20px!important;line-height:26px!important}
+.cc-pn-a{padding:var(--space-4) var(--space-5)!important}
+.cc-pn-i{padding:var(--space-3) var(--space-5)!important}
+.cc-eco{padding:var(--space-4) var(--space-5);border-top:1px solid var(--line);background:var(--row)}
+.cc-eco-v{margin-top:4px;font-size:20px;line-height:26px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ok-ink)}
+.cc-eco p{margin:6px 0 0;font-size:12px;line-height:18px;color:var(--muted)}
+.cc-eco p b{font-weight:600;color:var(--fg)}
+
+/* ===== responsivo: tablet e celular (o desktop não muda) ===== */
+@media (max-width:1100px){
+  .cc-body{grid-template-columns:minmax(0,1fr);gap:var(--space-6)}
+  .cc-tiles{order:-1}
+}
+@media (max-width:1000px){
+  #pGeral .gk-charts{grid-template-columns:minmax(0,1fr)!important}
+}
+@media (max-width:899px){
+  #pGeral .gk-chart{padding:var(--space-5)}
+  .gk-page-head{flex-wrap:wrap}
+  .gk-page-head .gk-actions,.gk-page-head>div:last-child:not(:first-child){display:flex;flex-wrap:wrap;gap:var(--space-2)}
+  .cc-cmp-h .gk-seg{max-width:100%;overflow-x:auto;scrollbar-width:none}
+  .cc-cmp-h .gk-seg::-webkit-scrollbar{display:none}
+  .cc-tb{flex-wrap:wrap}
+  .cc-tb>.gk-pop-anchor{flex:1 1 220px}
+  .cc-tb>.gk-pop-anchor>.gk-btn{width:100%;justify-content:space-between}
+}
+@media (max-width:640px){
+  .cc-r-t{flex-wrap:wrap}
+  .cc-pn-i{padding:var(--space-4)}
+  .cc-lg{gap:var(--space-2) var(--space-4)}
+  .gk-bc{padding-left:20px}
+  #dForm .gk-grid-2{grid-template-columns:minmax(0,1fr)!important}
+}
+</style>
+</head>
+<body data-page="custos">
+  <main class="gpage">
+    <div class="gk-page-head" style="align-items:center"><div><h1 class="gk-h1">Centro de custo</h1></div>
+      <div class="gk-inline" style="gap:var(--space-2)">
+        <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="fPer" data-pop="popPer" type="button"><i data-lucide="calendar" class="gk-ic"></i><span id="perTxt"></span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button>
+          <div class="gk-pop gk-menu is-right" id="popPer"><div id="perList"><button class="gk-menu-item" type="button" data-p="5,6">Mês atual</button><button class="gk-menu-item" type="button" data-p="4,5">Mês anterior</button><button class="gk-menu-item" type="button" data-p="3,6">Últimos 3 meses</button><button class="gk-menu-item" type="button" data-p="0,6">Últimos 6 meses</button><button class="gk-menu-item" type="button" id="perCus">Personalizado</button></div>
+          <div id="perBox" hidden style="padding:var(--space-2);width:240px"><div class="gk-field" style="margin-bottom:var(--space-2)"><label class="gk-label" for="perDe">De</label><input class="gk-input" id="perDe" type="date" min="2026-06-01" max="2026-11-26"></div><div class="gk-field" style="margin-bottom:var(--space-3)"><label class="gk-label" for="perAte">Até</label><input class="gk-input" id="perAte" type="date" min="2026-06-01" max="2026-11-26"></div><div style="display:flex;justify-content:space-between;align-items:center"><button type="button" id="perVolta" style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Voltar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" id="perOk">Aplicar</button></div></div></div></div>
+        <button class="gk-btn gk-btn-primary" id="btnNova" type="button"><i data-lucide="plus" class="gk-ic"></i>Nova despesa</button>
+      </div>
+    </div>
+
+    <div class="gk-tabs" id="tabs" style="margin-bottom:var(--space-5)"><button class="gk-tab is-active" data-t="geral" type="button">Visão geral</button><button class="gk-tab" data-t="desp" type="button">Despesas <span class="gk-count" id="cntTab"></span></button></div>
+
+    <!-- visão geral -->
+    <div id="pGeral">
+      <section class="gk-stats" style="margin-bottom:var(--space-6)">
+        <div class="gk-card gk-stat is-grad"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="circle-dollar-sign" class="gk-ic"></i></span>Custo total</div><div class="gk-stat-v"><span id="kT"></span></div><div class="gk-stat-l" id="kTl"></div></div>
+        <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="gauge" class="gk-ic"></i></span>Custo por km<button class="cc-q" type="button" id="qKm" aria-label="Como é calculado"><i data-lucide="circle-help" class="gk-ic"></i></button></div><div class="gk-stat-v"><span id="kK"></span></div><div class="gk-stat-l" id="kKl"></div></div>
+        <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="map-pin" class="gk-ic"></i></span>Custo por atendimento<button class="cc-q" type="button" id="qPar" aria-label="Como é calculado"><i data-lucide="circle-help" class="gk-ic"></i></button></div><div class="gk-stat-v"><span id="kP"></span></div><div class="gk-stat-l" id="kPl"></div></div>
+        <a class="gk-card gk-stat is-link" href="multas.html" style="text-decoration:none;color:inherit"><span class="gk-stat-arrow"><i data-lucide="arrow-up-right" class="gk-ic"></i></span><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="triangle-alert" class="gk-ic"></i></span>Multas dos motoristas</div><div class="gk-stat-v" id="kM"></div><div class="gk-stat-l" id="kMl"></div></a>
+      </section>
+
+
+      <section class="gk-charts" style="grid-template-columns:minmax(0,2fr) minmax(0,3fr)">
+        <div class="gk-card gk-chart"><div class="gk-chart-h"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="chart-column" class="gk-ic"></i></span>Gasto por mês</div><span class="gk-chart-m">Em mil reais</span></div><div id="cMes"></div><div class="gk-tl-lg" style="margin:var(--space-3) 0 0"><span><i class="is-sq" style="background:var(--primary)"></i>Gasto do mês</span><span><i class="is-sq" style="background:var(--line-strong)"></i>Média dos 6 meses</span></div></div>
+        <div class="gk-card gk-chart"><div class="gk-chart-h"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="layers" class="gk-ic"></i></span>Por categoria</div><button class="gk-btn gk-btn-ghost gk-btn-sm cc-all" type="button" id="catMore">Ver todas<i data-lucide="arrow-right" class="gk-ic"></i></button></div><div class="cc-cats" id="cCat"></div></div>
+      </section>
+      <section class="gk-card gk-chart">
+        <div class="cc-cmp-h">
+          <div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="chart-bar-big" class="gk-ic"></i></span><span id="cmpT"></span><button class="cc-q" type="button" id="qCmp" aria-label="Como é calculado"><i data-lucide="circle-help" class="gk-ic"></i></button></div>
+          <div class="gk-seg cc-seg2" id="dim" role="tablist"><button type="button" data-d="vei" class="is-active"><i data-lucide="truck" class="gk-ic"></i>Veículos</button><button type="button" data-d="mot"><i data-lucide="users" class="gk-ic"></i>Motoristas</button><button type="button" data-d="rot"><i data-lucide="route" class="gk-ic"></i>Rotas</button></div>
+        </div>
+        <div class="cc-tb"><div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary gk-btn-sm" id="fSel" data-pop="popSel" type="button"><i data-lucide="list-filter" class="gk-ic"></i><span id="fSelL">Todos</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button>
+            <div class="gk-pop gk-filter-pop" id="popSel"><div style="padding:var(--space-2);border-bottom:1px solid var(--line)"><div class="gk-input-wrap"><i data-lucide="search" class="gk-ic"></i><input class="gk-input gk-input-sm" id="selQ" placeholder="Buscar"></div></div><div class="gk-fp-body" id="popSelB"></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Comparar</button></div></div></div>
+          <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary gk-btn-sm" id="fOrd" data-pop="popOrd" type="button"><i data-lucide="arrow-down-up" class="gk-ic"></i><span id="fOrdL">Menos econômico primeiro</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button>
+            <div class="gk-pop gk-menu" id="popOrd"><button class="gk-menu-item is-selected" type="button" data-o="pior">Menos econômico primeiro</button><button class="gk-menu-item" type="button" data-o="melhor">Mais econômico primeiro</button></div></div>
+          <button class="gk-btn gk-btn-ghost gk-btn-sm" type="button" id="cmpClear" hidden>Limpar filtros</button><span id="cmpAvg" hidden></span></div>
+        <div class="cc-body">
+          <div><div class="cc-rk" id="rows"></div><button class="gk-btn gk-btn-ghost gk-btn-sm cc-more cc-all" type="button" id="cmpMore" hidden></button></div>
+          <div class="cc-tiles" id="tiles"></div>
+        </div>
+        <div class="cc-lg" id="cmpLg"></div>
+      </section>
+    </div>
+
+    <!-- despesas -->
+    <div id="pDesp" hidden>
+
+      <div class="gk-table-wrap">
+        <div class="gk-toolbar" style="flex-wrap:nowrap">
+          <div class="gk-input-wrap" style="flex:1 1 200px;min-width:160px;max-width:440px"><i data-lucide="search" class="gk-ic"></i><input class="gk-input" id="q" placeholder="Busque por descrição ou placa"></div>
+          <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="fCat" data-pop="popCat" type="button"><i data-lucide="layers" class="gk-ic"></i><span>Categoria</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popCat"><div class="gk-fp-body" id="popCatB"></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+          <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="fVei" data-pop="popVei" type="button"><i data-lucide="truck" class="gk-ic"></i><span>Veículo</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popVei"><div class="gk-fp-body" id="popVeiB"></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+          <div class="gk-pop-anchor"><button class="gk-btn gk-btn-secondary" id="fRec" data-pop="popRec" type="button"><i data-lucide="repeat" class="gk-ic"></i><span>Lançamento</span><i data-lucide="chevron-down" class="gk-ic gk-caret"></i></button><div class="gk-pop gk-filter-pop" id="popRec"><div class="gk-fp-body"><label class="gk-check"><input type="checkbox" value="Única">Única</label><label class="gk-check"><input type="checkbox" value="Recorrente">Recorrente</label><label class="gk-check"><input type="checkbox" value="Pausada">Recorrência pausada</label></div><div class="gk-fp-foot"><button type="button" data-clear style="font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer">Limpar</button><button type="button" class="gk-btn gk-btn-primary gk-btn-sm" data-apply>Aplicar</button></div></div></div>
+          <button class="gk-btn gk-btn-ghost" id="clearAll" type="button" hidden>Limpar filtros</button>
+        </div>
+        <table class="gk-table">
+          <thead><tr><th>Despesa</th><th>Veículo</th><th>Data</th><th>Lançada por</th><th>Lançamento</th><th>Valor</th><th class="gk-col-actions" style="width:130px">Ações</th></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+        <div class="gk-empty" id="empty" hidden><i data-lucide="search" class="gk-ic"></i><b>Nenhuma despesa encontrada</b>Tente ajustar os termos da busca ou remover os filtros.<div style="margin-top:var(--space-4)"><button class="gk-btn gk-btn-secondary" id="clearEmpty" type="button">Limpar filtros</button></div></div>
+        <div class="gk-tfoot"><span id="cnt"></span><div class="gk-pager" id="pager"></div></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- lista completa (categorias ou comparação) -->
+  <div class="gk-overlay" id="ovAll"><div class="gk-scrim" data-close="ovAll"></div>
+    <div class="gk-modal is-form" role="dialog" aria-labelledby="allT" style="max-width:640px">
+      <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="list" class="gk-ic"></i></span><h2 class="gk-h2" id="allT"></h2></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovAll" aria-label="Fechar" type="button"><i data-lucide="x" class="gk-ic"></i></button></div>
+      <div style="padding:var(--space-3) var(--space-6);border-top:1px solid var(--line)"><div class="gk-input-wrap"><i data-lucide="search" class="gk-ic"></i><input class="gk-input" id="allQ" placeholder="Buscar"></div></div>
+      <div class="gk-modal-body cc-allb" id="allB"></div>
+    </div>
+  </div>
+
+  <!-- ver despesa -->
+  <div class="gk-overlay" id="ovVer"><div class="gk-scrim" data-close="ovVer"></div>
+    <div class="gk-modal is-form" role="dialog" aria-labelledby="vT" style="max-width:520px">
+      <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="receipt-text" class="gk-ic"></i></span><h2 class="gk-h2" id="vT"></h2></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovVer" aria-label="Fechar" type="button"><i data-lucide="x" class="gk-ic"></i></button></div>
+      <div class="gk-modal-body" style="border-top:1px solid var(--line)"><div class="gk-dl" id="vDl"></div></div>
+      <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" id="vDel" type="button"><i data-lucide="trash-2" class="gk-ic"></i>Excluir</button><button class="gk-btn gk-btn-primary" id="vEd" type="button"><i data-lucide="pencil" class="gk-ic"></i>Editar</button></div>
+    </div>
+  </div>
+  <!-- excluir despesa -->
+  <div class="gk-overlay" id="ovDel"><div class="gk-scrim" data-close="ovDel"></div><div class="gk-modal" role="dialog"><div class="gk-modal-body"><div class="gk-modal-icon is-bad"><i data-lucide="trash-2" class="gk-ic"></i></div><h2 class="gk-h2">Excluir despesa?</h2><p id="delTxt"></p></div>
+    <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovDel" type="button">Cancelar</button><button class="gk-btn gk-btn-danger" id="delOk" type="button"><i data-lucide="trash-2" class="gk-ic"></i>Excluir</button></div></div></div>
+
+  <!-- nova / editar despesa -->
+  <div class="gk-overlay" id="ovD"><div class="gk-scrim" data-close="ovD"></div>
+    <div class="gk-modal is-form" role="dialog" aria-labelledby="dTitle">
+      <div class="gk-modal-head"><div class="gk-modal-title"><span class="gk-title-ic"><i data-lucide="circle-dollar-sign" class="gk-ic"></i></span><h2 class="gk-h2" id="dTitle">Nova despesa</h2></div><button class="gk-btn gk-btn-secondary gk-btn-icon gk-btn-sm" data-close="ovD" aria-label="Fechar" type="button"><i data-lucide="x" class="gk-ic"></i></button></div>
+      <div class="gk-modal-body" style="border-top:1px solid var(--line)"><form class="gk-form" id="dForm" onsubmit="return false">
+        <div class="gk-grid-2">
+          <div class="gk-field"><label class="gk-label" for="dCat">Categoria<span class="gk-req">*</span></label><select class="gk-select" id="dCat" data-required><option value="">Selecione</option></select><span class="gk-error" hidden>Escolha a categoria.</span></div>
+          <div class="gk-field" id="fSub"><label class="gk-label" for="dSub">Tipo<span class="gk-req">*</span></label><select class="gk-select" id="dSub" data-required disabled><option value="">Escolha a categoria</option></select><span class="gk-error" hidden>Escolha o tipo.</span></div>
+          <div class="gk-field" id="fDesc" hidden><label class="gk-label" for="dDesc">Descrição<span class="gk-req">*</span></label><input class="gk-input" id="dDesc" placeholder="Ex.: Troca do vidro lateral"><span class="gk-error" hidden>Descreva a despesa.</span></div>
+        </div>
+        <div class="gk-field" id="fVeis"><div class="cc-lblrow"><span class="gk-label">Veículos<span class="gk-req">*</span></span></div><div id="dVeiBox"></div><span class="gk-error" hidden>Escolha pelo menos um veículo.</span><span class="gk-help" id="dVeiHelp">Para seguro, rastreador ou IPVA de mais de um veículo, escolha Todos os veículos.</span></div>
+        <div class="gk-field"><label class="gk-label" for="dVal" id="dValL">Valor<span class="gk-req">*</span></label><input class="gk-input" id="dVal" data-required inputmode="decimal" placeholder="R$ 0,00"><span class="gk-error" hidden>Informe o valor.</span><span class="gk-help" id="dValHelp" hidden></span></div>
+        <div class="gk-grid-2" id="rowDK">
+          <div class="gk-field"><label class="gk-label" for="dData">Data<span class="gk-req">*</span></label><input class="gk-input" id="dData" type="date" data-required><span class="gk-error" hidden>Informe a data.</span></div>
+          <div class="gk-field" id="fKm"><label class="gk-label" for="dKm">Km do veículo nesse dia</label><input class="gk-input" id="dKm" inputmode="numeric" placeholder="Opcional, ex.: 48.320"></div>
+        </div>
+
+        <div class="gk-status-row" style="padding-top:var(--space-5);border-top:1px solid var(--line)"><div><h3 class="gk-h3">Despesa recorrente</h3><div class="gk-caption" id="dRecDesc">Repete sozinha na frequência escolhida, como seguro e rastreador.</div></div>
+          <div class="gk-inline"><input type="checkbox" class="gk-switch" id="dRec"><span class="gk-on off" id="dRecTxt">Não</span></div></div>
+        <div id="recBox" hidden>
+          <div class="gk-grid-2">
+            <div class="gk-field"><label class="gk-label" for="dFreq">Repetir</label><select class="gk-select" id="dFreq"><option>Todo mês</option><option>A cada 3 meses</option><option>A cada 6 meses</option><option>Todo ano</option></select></div>
+            <div class="gk-field"><label class="gk-label" for="dFim">Até</label><input class="gk-input" id="dFim" type="date"><span class="gk-caption">Em branco, repete até você pausar.</span></div>
+          </div>
+          <div class="gk-status-row" id="pauseRow" hidden style="padding-top:var(--space-4)"><div><h3 class="gk-h3">Recorrência</h3><div class="gk-caption" id="dPauseDesc"></div></div>
+            <div class="gk-inline"><input type="checkbox" class="gk-switch" id="dAtiva" checked><span class="gk-on" id="dAtivaTxt">Ativa</span></div></div>
+        </div>
+
+        <div class="gk-field" style="padding-top:var(--space-5);border-top:1px solid var(--line)"><label class="gk-label">Nota fiscal ou recibo</label><div class="gk-inline"><input type="file" id="dFile" accept="image/*,application/pdf" hidden><button class="gk-btn gk-btn-secondary gk-btn-sm" type="button" id="dFileBtn"><i data-lucide="paperclip" class="gk-ic"></i>Anexar arquivo</button><span class="gk-caption" id="dFileName">Opcional, imagem ou PDF</span></div></div>
+        <div class="gk-logrow" id="dLog" hidden></div>
+      </form></div>
+      <div class="gk-modal-foot"><button class="gk-btn gk-btn-ghost" data-close="ovD" type="button">Cancelar</button><button class="gk-btn gk-btn-primary" id="dSave" type="button">Lançar despesa</button></div>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
+<script src="static/js/shell.js"></script>
+<script src="static/js/kit-ui.js"></script>
+<script src="static/js/kit-icons.js"></script>
+<script>
+(function(){
+  var $=function(id){ return document.getElementById(id); };
+  function brl(v,d){ d=d==null?2:d; return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+  function num(v,d){ return v.toLocaleString('pt-BR',{minimumFractionDigits:d||0,maximumFractionDigits:d||0}); }
+
+  /* ---------- categorias (vêm de Configurações) ---------- */
+  var CATS=[
+    {n:'Combustível',s:['Diesel','Gasolina','Arla 32']},
+    {n:'Manutenção',s:['Revisão preventiva','Óleo e filtros','Freios','Suspensão e direção','Elétrica e bateria','Motor e câmbio','Funilaria e pintura','Corretiva']},
+    {n:'Pneus',s:['Troca','Recapagem','Alinhamento e balanceamento','Rodízio']},
+    {n:'Peças e insumos',s:['Peças','Lubrificantes','Produtos de limpeza']},
+    {n:'Seguro',s:['Seguro do veículo','Seguro de carga']},
+    {n:'Documentação',s:['IPVA','Licenciamento','Vistoria']},
+    {n:'Equipamentos',s:['Rastreador','Tacógrafo']},
+    {n:'Pedágio',s:['Tag de pedágio']},
+    {n:'Lavagem',s:['Lavagem completa','Lavagem rápida']},
+    {n:'Acidente',s:['Conserto','Franquia','Guincho']},
+    {n:'Outros',s:[]}
+  ];
+
+  /* ---------- frota, motoristas e rotas (os mesmos dos cadastros) ---------- */
+  var VEI=[
+    {p:'QRT-4A21',m:'Fiat Ducato',t:'Van',km:2200,kml:5.5,seg:420,rt:[['Rota Norte',.7],['Rota Centro',.3]],mot:[['Ronaldo Araújo',.8],['Gustavo Lima',.2]]},
+    {p:'PXM-7C09',m:'Renault Master',t:'Furgão',km:2000,kml:6.7,seg:0,rt:[['Rota Leste',1]],mot:[['Bruno Castro',.8],['Gustavo Lima',.2]]},
+    {p:'OGR-2C20',m:'Mercedes Sprinter',t:'Van',km:2300,kml:8.6,seg:460,rt:[['Rota Hospitalar',.6],['Rota Centro',.4]],mot:[['Ronaldo Araújo',.35],['Gustavo Lima',.65]]},
+    {p:'OLK-9B13',m:'Iveco Daily',t:'Caminhão',km:1800,kml:5.5,seg:0,rt:[['Rota Oeste',1]],mot:[['Diego Martins',.75],['Paulo Ribeiro',.25]]},
+    {p:'QSD-1H78',m:'VW Delivery',t:'Caminhão',km:2100,kml:6.8,seg:480,rt:[['Rota Sul',1]],mot:[['Paulo Ribeiro',.7],['Diego Martins',.3]]},
+    {p:'PYH-5D40',m:'Fiat Fiorino',t:'Utilitário',km:1400,kml:11.0,seg:0,rt:[['Rota Centro',.5],['Rota Hospitalar',.5]],mot:[['Gustavo Lima',1]]}
+  ];
+  var DRV={'Ronaldo Araújo':1.18,'Gustavo Lima':1.03,'Bruno Castro':.93,'Diego Martins':1.32,'Paulo Ribeiro':1.30};
+  /* clientes cadastrados em cada rota e dias com viagem no mês (novembro até hoje) */
+  var CLI_ROTA={'Rota Norte':8,'Rota Centro':10,'Rota Leste':7,'Rota Hospitalar':9,'Rota Oeste':7,'Rota Sul':9}, DIAS=[22,23,21,22,22,18];
+  var MES=['junho','julho','agosto','setembro','outubro','novembro'], MC=['jun','jul','ago','set','out','nov'], MN=[6,7,8,9,10,11];
+  var PRECO=[5.98,6.02,6.05,6.12,6.18,6.15], FATOR=[.96,1.02,1.04,.98,1.03,.94];
+  var GESTOR='Marina Alves';
+
+  /* ---------- gera despesas e viagens de exemplo, mês a mês ---------- */
+  var D=[], TR=[], seq=1;
+  function add(o){ o.id=seq++; D.push(o); }
+  function dia(m,d){ return '2026-'+('0'+MN[m]).slice(-2)+'-'+('0'+d).slice(-2); }
+  VEI.forEach(function(v,vi){
+    for(var m=0;m<6;m++){
+      var km=Math.round(v.km*FATOR[m]*(1+((vi*7+m*3)%5-2)/40));
+      /* km por motorista e por rota: as viagens */
+      v.mot.forEach(function(mo){ var kmM=km*mo[1], kml=v.kml*DRV[mo[0]]; v.rt.forEach(function(r){ var k=kmM*r[1]; TR.push({m:m,vi:vi,mot:mo[0],rota:r[0],km:k,l:k/kml,par:0}); }); });
+      /* abastecimentos lançados no app pelo motorista */
+      v.mot.forEach(function(mo,mi){ var litros=km*mo[1]/(v.kml*DRV[mo[0]]), n=Math.max(1,Math.round(litros/90));
+        for(var a=0;a<n;a++){ var l=litros/n; add({cat:'Combustível',sub:v.t==='Utilitário'?'Gasolina':'Diesel',vi:vi,data:dia(m,Math.min(m===5?25:28,3+a*Math.floor(24/n)+mi*2+vi%3)),por:mo[0],app:true,val:Math.round(l*PRECO[m]*100)/100,lit:Math.round(l*10)/10}); } });
+      /* recorrentes */
+      if(v.seg) add({cat:'Seguro',sub:'Seguro do veículo',vi:vi,data:dia(m,5),por:GESTOR,rec:'Todo mês',val:v.seg});
+      add({cat:'Equipamentos',sub:'Rastreador',vi:vi,data:dia(m,10),por:GESTOR,rec:'Todo mês',val:89.9,pausa:vi===5&&m===5});
+      add({cat:'Pedágio',sub:'Tag de pedágio',vi:vi,data:dia(m,15),por:GESTOR,rec:'Todo mês',val:Math.round((v.t==='Caminhão'?260:140)*(1+((vi+m)%4)/10)*100)/100});
+      if(m%2===vi%2) add({cat:'Lavagem',sub:'Lavagem completa',vi:vi,data:dia(m,20),por:GESTOR,val:v.t==='Caminhão'?120:80});
+      /* manutenção, pelo km acumulado */
+      if((m+vi)%3===0) add({cat:'Manutenção',sub:'Óleo e filtros',vi:vi,data:dia(m,12),por:GESTOR,val:v.t==='Caminhão'?690:420,km:41200+vi*5300+m*3000});
+      if((m+vi)%5===2) add({cat:'Manutenção',sub:'Revisão preventiva',vi:vi,data:dia(m,18),por:GESTOR,val:v.t==='Caminhão'?1850:1180});
+      if(v.p==='OLK-9B13'&&(m===1||m===4)) add({cat:'Manutenção',sub:'Freios',vi:vi,data:dia(m,8),por:GESTOR,val:m===1?1460:1980});
+      if(v.p==='OLK-9B13'&&m===2) add({cat:'Manutenção',sub:'Motor e câmbio',vi:vi,data:dia(m,22),por:GESTOR,val:4350});
+      if(v.p==='PYH-5D40'&&m===3) add({cat:'Manutenção',sub:'Elétrica e bateria',vi:vi,data:dia(m,14),por:GESTOR,val:640});
+      if((v.p==='QSD-1H78'&&m===4)||(v.p==='OLK-9B13'&&m===0)||(v.p==='QRT-4A21'&&m===2)) add({cat:'Pneus',sub:'Troca',vi:vi,data:dia(m,6),por:GESTOR,val:v.t==='Caminhão'?3920:2480});
+      if(m===3||m===5) add({cat:'Pneus',sub:'Alinhamento e balanceamento',vi:vi,data:dia(m,24),por:GESTOR,val:v.t==='Caminhão'?260:180});
+      if(v.p==='PXM-7C09'&&m===1) add({cat:'Peças e insumos',sub:'Peças',vi:vi,data:dia(m,9),por:GESTOR,val:380});
+      if(m===2) add({cat:'Documentação',sub:'Licenciamento',vi:vi,data:dia(m,3),por:GESTOR,rec:'Todo ano',val:178.3});
+      if(v.p==='OLK-9B13'&&m===3){ add({cat:'Acidente',sub:'Conserto',vi:vi,data:dia(m,19),por:GESTOR,val:4800,obs:'Batida lateral na Av. Perimetral'}); add({cat:'Acidente',sub:'Guincho',vi:vi,data:dia(m,17),por:GESTOR,val:450}); }
+      if(v.p==='QSD-1H78'&&m===4) add({cat:'Acidente',sub:'Franquia',vi:vi,data:dia(m,27),por:GESTOR,val:2900});
+      if(v.p==='QSD-1H78'&&m===5) add({cat:'Equipamentos',sub:'Tacógrafo',vi:vi,data:dia(m,11),por:GESTOR,rec:'Todo ano',val:290});
+      if(v.p==='PXM-7C09'&&m===4) add({cat:'Outros',sub:'',desc:'Troca do retrovisor',vi:vi,data:dia(m,13),por:GESTOR,val:310});
+    }
+  });
+  /* atendimentos: clientes da rota x dias de viagem, repartidos entre os veículos pelos km rodados nela */
+  var RK={}; TR.forEach(function(t){ var k=t.rota+'|'+t.m; RK[k]=(RK[k]||0)+t.km; });
+  TR.forEach(function(t){ t.par=CLI_ROTA[t.rota]*DIAS[t.m]*t.km/RK[t.rota+'|'+t.m]; });
+  D.sort(function(a,b){ return a.data<b.data?1:(a.data>b.data?-1:b.id-a.id); });
+  var MULTAS=[{m:5,v:195.23},{m:5,v:293.47},{m:5,v:195.23},{m:5,v:130.16},{m:5,v:130.16},{m:5,v:195.23},{m:5,v:195.23},{m:4,v:293.47},{m:4,v:130.16},{m:3,v:195.23},{m:2,v:130.16},{m:1,v:293.47},{m:0,v:195.23}];
+  function mesDe(d){ return +d.slice(5,7)-6; }
+
+  /* ---------- soma do período ----------
+     lim: corta o mês anterior no mesmo dia de hoje, para comparar mês em andamento com o mesmo trecho do anterior */
+  var HOJE_DIA=26;
+  function agg(a,b,lim){
+    function inM(m){ return m>=a&&m<b; }
+    var fr=function(m){ return lim&&m===lim.m?lim.f:1; };
+    var R={tot:0,km:0,par:0,cat:{},vcat:VEI.map(function(){ return {}; }),mes:[0,0,0,0,0,0],vei:VEI.map(function(){ return {c:0,km:0,l:0,cf:0}; }),mot:{},mcf:{},rot:{}};
+    D.forEach(function(d){ var m=mesDe(d.data); R.mes[m]+=d.val; if(!inM(m)) return; if(lim&&m===lim.m&&+d.data.slice(8)>lim.d) return;
+      R.tot+=d.val; R.cat[d.cat]=(R.cat[d.cat]||0)+d.val; R.vcat[d.vi][d.cat]=(R.vcat[d.vi][d.cat]||0)+d.val;
+      var x=R.vei[d.vi]; x.c+=d.val; if(d.app){ x.cf+=d.val; R.mcf[d.por]=(R.mcf[d.por]||0)+d.val; } });
+    TR.forEach(function(t){ if(!inM(t.m)) return; var f=fr(t.m), k=t.km*f, l=t.l*f, pa=t.par*f; R.km+=k; R.par+=pa; var x=R.vei[t.vi]; x.km+=k; x.l+=l;
+      var mo=R.mot[t.mot]||(R.mot[t.mot]={km:0,l:0,vk:[]}); mo.km+=k; mo.l+=l; mo.vk.push([t.vi,k]);
+      var r=R.rot[t.rota]||(R.rot[t.rota]={km:0,par:0,c:0,vk:[]}); r.km+=k; r.par+=pa; r.vk.push([t.vi,k]); });
+    Object.keys(R.rot).forEach(function(n){ var r=R.rot[n]; r.vk.forEach(function(p){ var v=R.vei[p[0]]; if(v.km) r.c+=v.c*p[1]/v.km; }); });
+    /* motorista: a referência é o consumo médio dos mesmos veículos que ele dirigiu */
+    Object.keys(R.mot).forEach(function(n){ var mo=R.mot[n], ks=0, ls=0, vs={}; var cs=0; mo.vk.forEach(function(p){ var v=R.vei[p[0]]; ks+=p[1]; ls+=p[1]/(v.km/v.l); cs+=p[1]*v.cf/v.km; vs[p[0]]=1; }); mo.ref=ks/ls; mo.cf=R.mcf[n]||0; mo.refCf=cs/ks; mo.veis=Object.keys(vs).map(Number); });
+    return R;
+  }
+  var st={a:5,b:6,dim:'vei'};
+  function anterior(){ var a=st.a,b=st.b,n=b-a; if(a-n<0) return null; if(a===5&&b===6) return {R:agg(4,5,{m:4,d:HOJE_DIA,f:HOJE_DIA/31}),txt:'no mesmo período de outubro (1 a '+HOJE_DIA+')'}; return {R:agg(a-n,a),txt:n===1?'em '+MES[a-1]:'nos '+n+' meses anteriores'}; }
+  var NOME_PER={'5,6':'Gasto em novembro, até hoje','4,5':'Gasto em outubro','3,6':'Gasto nos últimos 3 meses','0,6':'Gasto nos últimos 6 meses'};
+
+  /* ---------- explicações dos cálculos (o "?") ---------- */
+  function ajuda(btn,tit,txt){ var show=function(){ GK.tip.show(btn,tit,txt); var t=document.querySelector('.gk-ctip'); if(t) t.classList.add('cc-wide'); };
+    btn.onmouseenter=show; btn.onfocus=show; btn.onclick=show; btn.onmouseleave=GK.tip.off; btn.onblur=GK.tip.off; }
+  ajuda($('qKm'),'Custo por km','Tudo o que a frota custou no período dividido pelos km rodados nas viagens. Mostra se rodar está ficando mais caro, mesmo quando a frota roda mais ou menos.');
+  ajuda($('qPar'),'Custo por atendimento','Tudo o que a frota custou dividido pelo número de atendimentos: cada visita a um cliente, para entregar ou coletar. É quanto custa, em média, ir até um cliente.');
+
+  /* ---------- visão geral ---------- */
+  function delta(el,cur,prev){
+    if(prev==null||!isFinite(prev)||!prev){ el.textContent=''; el.className='gk-delta'; return; }
+    var p=Math.round((cur-prev)/prev*100); el.textContent=(p>0?'+':(p<0?'−':''))+Math.abs(p)+'%';
+    /* custo subir é ruim: cor invertida, seta no sentido do número */
+    el.className='gk-delta'+(p===0?'':(p<0?' is-up cc-flip':' is-down cc-flip'));
+  }
+  function geral(){
+    var R=agg(st.a,st.b), P=anterior(), Q=P&&P.R;
+    $('kT').textContent=brl(R.tot,0); $('kTl').textContent=$('perTxt').textContent.toLowerCase().replace(/^m/,'no m').replace(/^ú/,'nos ú').replace(/^(\d)/,'de $1');
+    $('kK').textContent=brl(R.tot/R.km); $('kKl').textContent=num(R.km)+' km rodados';
+    $('kP').textContent=brl(R.tot/R.par); $('kPl').textContent=num(R.par)+' atendimentos';
+    var mv=MULTAS.filter(function(x){ return x.m>=st.a&&x.m<st.b; }); $('kM').textContent=brl(mv.reduce(function(t,x){ return t+x.v; },0)); $('kMl').textContent='valor em multas, '+mv.length+(mv.length===1?' multa':' multas');
+    comparar(R); GK.icons();
+  }
+
+  /* ---------- explicações dos cálculos (o "?") ---------- */
+  function ajuda(btn,tit,txt){ var show=function(e){ if(e) e.preventDefault(); GK.tip.show(btn,tit,txt); var t=document.querySelector('.gk-ctip'); if(t) t.classList.add('cc-wide'); };
+    btn.onmouseenter=show; btn.onfocus=show; btn.onclick=show; btn.onmouseleave=GK.tip.off; btn.onblur=GK.tip.off; }
+  ajuda($('qKm'),'Custo por km','Tudo o que a frota custou no período dividido pelos km rodados nas viagens. Mostra se rodar está ficando mais caro, mesmo quando a frota roda mais ou menos.');
+  ajuda($('qPar'),'Custo por atendimento','Tudo o que a frota custou dividido pelo número de atendimentos: cada visita a um cliente, para entregar ou coletar. É quanto custa, em média, ir até um cliente.');
+
+  /* ---------- comparação em colunas ---------- */
+  var CMP={
+    vei:{t:'Quanto cada veículo custa por km',h:'Tudo o que o veículo custou no período (combustível, manutenção, pneus, seguro, pedágio…) dividido pelos km que ele rodou. Assim dá para comparar um veículo que roda muito com um que roda pouco.',bad:'hi',fmt:function(v){ return brl(v); },un:'/km'},
+    mot:{t:'Quanto cada motorista gasta de combustível por km',h:'Valor dos abastecimentos do motorista dividido pelos km que ele rodou. A cor e a ordem comparam com a média de todos os motoristas. Como caminhão sempre gasta mais que van, ao lado aparece também a comparação com quem dirige os mesmos veículos: é ela que mostra se a diferença é do motorista ou do veículo.',bad:'hi',fmt:function(v){ return brl(v); },un:'/km'},
+    rot:{t:'Quanto custa cada atendimento em cada rota',h:'Custo dos veículos da rota dividido pelo número de atendimentos (cada visita a um cliente, para entregar ou coletar). Uma rota com 8 clientes rodando 22 dias faz 176 atendimentos no mês. É uma estimativa: quando o veículo faz mais de uma rota, o custo dele é dividido pelos km rodados em cada uma.',bad:'hi',fmt:function(v){ return brl(v); },un:''}
+  };
+  var sel={dim:null,ids:[]}, ord='pior', fSel;
+  function itens(R,c){
+    var L=[], media=null;
+    if(st.dim==='vei'){ VEI.forEach(function(v,i){ var x=R.vei[i]; if(x.km) L.push({n:v.p,s:v.m,v:x.c/x.km,q:x.km,ic:'truck'}); }); media=R.tot/R.km; }
+    if(st.dim==='mot') Object.keys(R.mot).forEach(function(n){ var mo=R.mot[n]; L.push({n:n,s:mo.veis.map(function(i){ return VEI[i].p; }).join(', '),v:mo.cf/mo.km,col:(mo.cf/mo.km-mo.refCf)/mo.refCf,q:mo.km,av:true}); });
+    if(st.dim==='mot'){ var cft=0,kmt=0; Object.keys(R.mot).forEach(function(n){ cft+=R.mot[n].cf; kmt+=R.mot[n].km; }); media=cft/kmt; }
+    if(st.dim==='rot'){ Object.keys(R.rot).forEach(function(n){ var r=R.rot[n]; L.push({n:n,s:CLI_ROTA[n]+' clientes',v:r.c/r.par,q:r.par,ic:'route'}); }); media=R.tot/R.par; }
+    L.forEach(function(r){ if(r.ref==null) r.ref=media; r.d=(r.v-r.ref)/r.ref; r.eco=c.bad==='hi'?-r.d:r.d; r.rk=c.bad==='hi'?-r.v:r.v; });
+    return {L:L,media:media};
+  }
+  function frase(r,c){ var pc=Math.round(Math.abs(r.d)*100); if(pc<5) return 'Na média';
+    return pc+'% '+(r.d>0?(st.dim==='mot'?'acima':'mais caro'):(st.dim==='mot'?'abaixo':'mais barato'))+' '+(st.dim==='mot'?'da média dos motoristas':'que a média'); }
+  function colegas(r){ if(r.col==null) return ''; var pc=Math.round(Math.abs(r.col)*100); return '<span class="cc-col2">Nos mesmos veículos: '+(pc<2?'igual aos colegas':pc+'% '+(r.col>0?'a mais':'a menos')+' que os colegas')+'</span>'; }
+  function ico(r){ return r.av?GK.mot(r.n):'<span class="cc-ic"><i data-lucide="'+r.ic+'" class="gk-ic"></i></span>'; }
+  /* quanto a GAO deixaria de gastar se quem está acima da média chegasse à média */
+  function economia(R,L){ var t=0;
+    if(st.dim==='mot'){ var pr=0,lt=0; VEI.forEach(function(v,i){ pr+=R.vei[i].cf; lt+=R.vei[i].l; }); var preco=pr/lt;
+      L.forEach(function(r){ var extra=r.q/r.v-r.q/r.ref; if(extra>0) t+=extra*preco; }); }
+    else L.forEach(function(r){ if(r.v>r.ref) t+=(r.v-r.ref)*r.q; });
+    return t; }
+  function comparar(R){
+    var c=CMP[st.dim], o=itens(R,c), L=o.L, media=o.media;
+    $('cmpT').textContent=c.t; ajuda($('qCmp'),c.t,c.h+' Cores: laranja acima da média, azul na média, verde abaixo da média.');
+    /* lista para escolher o que comparar */
+    if(sel.dim!==st.dim){ sel.dim=st.dim; sel.ids=[]; $('popSelB').innerHTML=L.map(function(r){ return '<label class="gk-check"><input type="checkbox" value="'+r.n+'">'+r.n+'</label>'; }).join(''); $('selQ').value=''; $('fSel').classList.remove('is-filtered'); }
+    $('fSelL').textContent=sel.ids.length?(sel.ids.length===1?sel.ids[0]:sel.ids.length+' selecionados'):({vei:'Todos os veículos',mot:'Todos os motoristas',rot:'Todas as rotas'})[st.dim];
+    if(sel.ids.length) L=L.filter(function(r){ return sel.ids.indexOf(r.n)>=0; });
+    $('cmpClear').hidden=!(sel.ids.length||ord!=='pior');
+    L.sort(function(x,y){ return ord==='pior'?x.rk-y.rk:y.rk-x.rk; });
+    $('cmpAvg').innerHTML=media!=null?(st.dim==='vei'?'Média da frota: ':'Média das rotas: ')+'<b>'+c.fmt(media)+c.un+'</b>':'Cada motorista é comparado com quem dirige os mesmos veículos';
+    /* destaques: o mais e o menos econômico */
+    var byEco=L.slice().sort(function(x,y){ return x.rk-y.rk; }), pi=byEco[0], me=byEco[byEco.length-1];
+    function pct(r){ var p=Math.round(r.d*100); return Math.abs(p)<5?'na média':(p>0?'+':'−')+Math.abs(p)+'%'; }
+    var mv=media, ml, mx2;
+    if(st.dim==='mot'){ ml='Média dos motoristas'; mx2=Object.keys(R.mot).length+' motoristas no período'; }
+    else if(st.dim==='vei'){ ml='Média da frota'; mx2=num(R.km)+' km rodados por '+L.length+' veículos'; }
+    else { ml='Média das rotas'; mx2=num(R.par)+' atendimentos em '+L.length+' rotas'; }
+    function pnI(lbl,cor,r,cls){ var p=Math.round(r.d*100), dt=Math.abs(p)<5?'na média':(p>0?'+':'−')+Math.abs(p)+'%';
+      return '<div class="cc-pn-i">'+ico(r)+'<div style="min-width:0"><span class="cc-pn-k '+cls+'"><i style="background:'+cor+'"></i>'+lbl+'</span><b>'+r.n+'</b></div>'
+        +'<div class="cc-pn-r"><b>'+c.fmt(r.v)+'</b><span class="cc-pn-c '+cls+'">'+dt+'</span></div></div>'; }
+    var eco='';
+    /* só quando o gestor escolheu itens para comparar: quanto se economiza no mês pela diferença entre o que gasta menos e o que gasta mais */
+    if(sel.ids.length>=2&&L.length>=2&&pi!==me){
+      var per=st.de?'no período':(st.b-st.a===1?'no mês':'no período'), dv=pi.v-me.v, tot=dv*pi.q;
+      var un=st.dim==='vei'?'por km':st.dim==='mot'?'por km em combustível':'por atendimento';
+      var base=st.dim==='rot'?num(pi.q)+' atendimentos':num(pi.q)+' km';
+      eco='<div class="cc-eco"><div class="cc-pn-l">Economia '+per+'</div><div class="cc-eco-v">'+brl(tot,0)+'</div>'
+        +'<p><b>'+me.n+'</b> gasta '+brl(dv)+' a menos '+un+' que <b>'+pi.n+'</b>. Em '+base+', são '+brl(tot,0)+' a menos.</p></div>';
+    }
+    $('tiles').innerHTML='<div class="cc-pn"><div class="cc-pn-a"><div class="cc-pn-l">'+ml+'</div><div class="cc-pn-v">'+c.fmt(mv)+'<small>'+c.un+'</small></div><div class="cc-pn-s">'+mx2+'</div></div>'
+      +(L.length>1?pnI(st.dim==='rot'?'Mais cara':'Gasta mais','var(--warn)',pi,'is-warn')+pnI(st.dim==='rot'?'Mais barata':'Gasta menos','var(--ok)',me,'is-good'):'')+eco+'</div>';
+    
+    /* ranking */
+    var LIM=8, mx=Math.max.apply(null,L.map(function(r){ return r.v; }));
+    function rowH(r,i){
+      var pior=r.eco<-.05, melhor=r.eco>.05, p=Math.round(r.d*100);
+      return '<div class="cc-r'+(pior?' is-warn':(melhor?' is-good':''))+'" tabindex="0" data-i="'+i+'">'+ico(r)
+        +'<div style="min-width:0"><div class="cc-r-t"><b>'+r.n+'</b><span class="cc-s">'+r.s+'</span><span class="cc-v">'+c.fmt(r.v)+c.un+'</span></div>'
+        +'<div class="cc-trk"><i style="width:'+(r.v/mx*100)+'%"></i></div></div></div>'; }
+    function dicas(box){ box.querySelectorAll('.cc-r').forEach(function(el){ var r=L[+el.getAttribute('data-i')];
+      if(r.col!=null){ var pc=Math.round(Math.abs(r.col)*100); GK.tip.bind(el,frase(r,c),'Nos mesmos veículos: '+(pc<2?'igual aos colegas':pc+'% '+(r.col>0?'a mais':'a menos')+' que os colegas')); }
+      else GK.tip.bind(el,frase(r,c),(st.dim==='vei'?'Média da frota: ':'Média das rotas: ')+c.fmt(r.ref)+c.un); }); }
+    $('rows').innerHTML=L.slice(0,LIM).map(rowH).join(''); dicas($('rows'));
+    var mb=$('cmpMore'); mb.hidden=L.length<=LIM; mb.innerHTML='Ver todos<i data-lucide="arrow-right" class="gk-ic"></i>';
+    mb.onclick=function(){ todosModal(c.t,'<div class="cc-rk">'+L.map(rowH).join('')+'</div>',dicas); };
+    $('cmpLg').innerHTML='<span><i style="background:var(--warn)"></i>Acima da média</span><span><i style="background:var(--primary)"></i>Na média</span><span><i style="background:var(--ok)"></i>Abaixo da média</span>';
+  }
+  function todosModal(t,html,bind){ $('allT').textContent=t; $('allB').innerHTML=html; $('allQ').value=''; if(bind) bind($('allB')); GK.open('ovAll'); GK.icons(); }
+  $('allQ').addEventListener('input',function(){ var q=this.value.toLowerCase(); $('allB').querySelectorAll('.cc-cat,.cc-r').forEach(function(x){ x.hidden=x.textContent.toLowerCase().indexOf(q)<0; }); });
+  fSel=GK.checkFilter({btn:'fSel',pop:'popSel',label:'',onChange:function(v){ sel.ids=v; if(sel.dim) geral(); }});
+  $('selQ').addEventListener('input',function(){ var q=this.value.toLowerCase(); $('popSelB').querySelectorAll('.gk-check').forEach(function(l){ l.hidden=l.textContent.toLowerCase().indexOf(q)<0; }); });
+  $('popOrd').querySelectorAll('[data-o]').forEach(function(b){ b.addEventListener('click',function(){ ord=b.getAttribute('data-o'); $('fOrdL').textContent=b.textContent;  $('popOrd').querySelectorAll('[data-o]').forEach(function(x){ x.classList.toggle('is-selected',x===b); }); $('popOrd').classList.remove('is-open'); geral(); }); });
+  $('cmpClear').addEventListener('click',function(){ $('popSelB').querySelectorAll('input').forEach(function(i){ i.checked=false; }); sel.ids=[]; $('fSel').classList.remove('is-filtered');
+    ord='pior'; $('popOrd').querySelectorAll('[data-o]').forEach(function(x){ x.classList.toggle('is-selected',x.getAttribute('data-o')==='pior'); }); $('fOrdL').textContent='Menos econômico primeiro'; geral(); });
+  function dim(d){ st.dim=d; st.todos=false; $('dim').querySelectorAll('button').forEach(function(x){ x.classList.toggle('is-active',x.getAttribute('data-d')===d); }); geral(); }
+  $('dim').addEventListener('click',function(e){ var b=e.target.closest('button'); if(b) dim(b.getAttribute('data-d')); });
+
+  /* atalho da visão geral para a lista já filtrada */
+  function verDespesas(o){ aba('desp'); limpar();
+    function marca(pop,val){ var p=$(pop); p.querySelectorAll('input').forEach(function(i){ i.checked=i.value===val; }); p.querySelector('[data-apply]').click(); }
+    if(o.cat) marca('popCat',o.cat); if(o.vei) marca('popVei',o.vei); window.scrollTo({top:0,behavior:'smooth'}); }
+
+  /* ---------- período ---------- */
+  var PER={'5,6':'Mês atual','4,5':'Mês anterior','3,6':'Últimos 3 meses','0,6':'Últimos 6 meses'};
+  function fechaPer(){ $('popPer').classList.remove('is-open'); $('perBox').hidden=true; $('perList').hidden=false; }
+  function periodo(k){ var p=k.split(','); st.a=+p[0]; st.b=+p[1]; st.de=null; st.ate=null; fs.page=1; $('perTxt').textContent=PER[k]; fechaPer(); geral(); lista(); }
+  $('popPer').querySelectorAll('[data-p]').forEach(function(b){ b.addEventListener('click',function(){ periodo(b.getAttribute('data-p')); }); });
+  $('popPer').addEventListener('click',function(e){ e.stopPropagation(); });
+  $('perCus').addEventListener('click',function(){ $('perList').hidden=true; $('perBox').hidden=false; $('perDe').value=st.de||'2026-11-01'; $('perAte').value=st.ate||'2026-11-26'; });
+  $('perVolta').addEventListener('click',function(){ $('perBox').hidden=true; $('perList').hidden=false; });
+  $('perOk').addEventListener('click',function(){ var d1=$('perDe').value, d2=$('perAte').value; if(!d1||!d2) return GK.toast('Escolha as duas datas'); if(d2<d1) return GK.toast('A data final precisa ser depois da inicial');
+    st.de=d1; st.ate=d2; st.a=mesDe(d1); st.b=mesDe(d2)+1; fs.page=1; $('perTxt').textContent=fdata(d1).slice(0,5)+' a '+fdata(d2); fechaPer(); geral(); lista(); });
+
+  /* ---------- abas ---------- */
+  var perAnc=$('fPer').parentNode, perHome=perAnc.parentNode;
+  function aba(t){ document.querySelectorAll('#tabs .gk-tab').forEach(function(x){ x.classList.toggle('is-active',x.getAttribute('data-t')===t); }); $('pGeral').hidden=t!=='geral'; $('pDesp').hidden=t!=='desp';
+    /* o período fica no topo na visão geral e na barra da tabela em Despesas */
+    if(t==='desp'){ $('clearAll').parentNode.insertBefore(perAnc,$('clearAll')); $('popPer').classList.remove('is-right'); }
+    else { perHome.insertBefore(perAnc,perHome.firstChild); $('popPer').classList.add('is-right'); } }
+  $('tabs').addEventListener('click',function(e){ var b=e.target.closest('.gk-tab'); if(b) aba(b.getAttribute('data-t')); });
+
+  /* ---------- lista de despesas ---------- */
+  $('popCatB').innerHTML=CATS.map(function(c){ return '<label class="gk-check"><input type="checkbox" value="'+c.n+'">'+c.n+'</label>'; }).join('');
+  $('popVeiB').innerHTML=VEI.map(function(v){ return '<label class="gk-check"><input type="checkbox" value="'+v.p+'">'+v.p+'</label>'; }).join('');
+  var fs={q:'',cat:[],vei:[],rec:[],page:1}, PAGE=10, shown=[];
+  function fdata(s){ var p=s.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+  function tipoL(d){ return d.rec?(d.pausa?'Pausada':'Recorrente'):'Única'; }
+  function row(d,i){
+    var t=d.cat==='Outros'?d.desc:d.sub, lanc=d.rec?'<span class="gk-badge '+(d.pausa?'gk-badge-warn':'gk-badge-info')+'">'+(d.pausa?'Pausada':d.rec)+'</span>':'<span class="gk-muted">Única</span>';
+    var por='<div class="gk-cell-main">'+GK.mot(d.por)+'<span><span>'+d.por+'</span><span class="gk-sub" style="display:block">'+(d.app?'App do motorista':'Gestora')+'</span></span></div>';
+    return '<tr class="gk-row-link" data-i="'+i+'"><td><span class="gk-strong">'+t+'</span><span class="gk-sub" style="display:block">'+d.cat+(d.lit?GK.sep+num(d.lit,1)+' litros':'')+'</span></td>'
+      +'<td class="gk-strong">'+VEI[d.vi].p+'</td><td>'+fdata(d.data)+'</td><td>'+por+'</td><td>'+lanc+'</td><td class="gk-strong">'+brl(d.val)+'</td>'
+      +'<td class="gk-col-actions"><span class="gk-acts"><button class="gk-act" data-a="ver" aria-label="Ver despesa" title="Ver" type="button"><i data-lucide="eye" class="gk-ic"></i></button><button class="gk-act" data-a="ed" aria-label="Editar despesa" title="Editar" type="button"><i data-lucide="pencil" class="gk-ic"></i></button><button class="gk-act" data-a="del" aria-label="Excluir despesa" title="Excluir" type="button"><i data-lucide="trash-2" class="gk-ic"></i></button></span></td></tr>';
+  }
+  function noPer(d){ return st.de?(d.data>=st.de&&d.data<=st.ate):(mesDe(d.data)>=st.a&&mesDe(d.data)<st.b); }
+  function passa(d){ var t=(d.cat==='Outros'?d.desc:d.sub)+' '+d.cat+' '+VEI[d.vi].p;
+    return (!fs.q||t.toLowerCase().indexOf(fs.q)>=0)&&(!fs.cat.length||fs.cat.indexOf(d.cat)>=0)&&(!fs.vei.length||fs.vei.indexOf(VEI[d.vi].p)>=0)&&(!fs.rec.length||fs.rec.indexOf(tipoL(d))>=0); }
+  /* gráficos da visão geral: seguem o período */
+  function rosca(el,parts,tot){
+    var R=54, C=2*Math.PI*R, gap=10, off=0, NS='http://www.w3.org/2000/svg';
+    el.className='gk-donut cc-dn'; el.textContent='';
+    var wrap=document.createElement('div'); wrap.className='gk-donut-c'; el.appendChild(wrap);
+    var svg=document.createElementNS(NS,'svg'); svg.setAttribute('viewBox','0 0 132 132'); svg.setAttribute('role','img'); svg.setAttribute('aria-label',parts.map(function(p){ return p.n+' '+brl(p.v,0); }).join(', ')); wrap.appendChild(svg);
+    var lg=document.createElement('div'); lg.className='gk-lg'; el.appendChild(lg); var cs=[];
+    parts.forEach(function(p,k){ var len=p.v/tot*C, c=document.createElementNS(NS,'circle'); c.setAttribute('cx',66); c.setAttribute('cy',66); c.setAttribute('r',R); c.style.stroke=p.c; c.setAttribute('stroke-linecap','round');
+      var dl=Math.max(.1,len-gap); c.setAttribute('stroke-dasharray',dl+' '+(C-dl)); c.setAttribute('stroke-dashoffset',-(off+gap/2)); off+=len; svg.appendChild(c); cs.push(c);
+      var r=document.createElement('div'); r.className='gk-lg-i'; r.innerHTML='<i style="background:'+p.c+'"></i><span>'+p.n+'</span><b>'+brl(p.v,0)+'</b><em>'+Math.round(p.v/tot*100)+'%</em>'; lg.appendChild(r);
+      function on(){ cs.forEach(function(x,j){ x.classList.toggle('is-dim',j!==k); }); } function out(){ cs.forEach(function(x){ x.classList.remove('is-dim'); }); }
+      [c,r].forEach(function(n){ n.addEventListener('mouseenter',on); n.addEventListener('mouseleave',out); });
+      GK.tip.bind(c,brl(p.v,0),p.n,Math.round(p.v/tot*100)+'% do total'); });
+    var n=document.createElement('div'); n.className='gk-donut-n'; n.innerHTML='<b>'+brl(tot/1000,1).replace('R$ ','R$ ')+' mil</b><span>no período</span>'; wrap.appendChild(n);
+  }
+  function graficos(L){
+    var tot=0, cat={}; L.forEach(function(d){ tot+=d.val; cat[d.cat]=(cat[d.cat]||0)+d.val; });
+    var cs=Object.keys(cat).map(function(k){ return [k,cat[k]]; }).sort(function(x,y){ return y[1]-x[1]; }), mx=cs.length?cs[0][1]:1, CL=6;
+    function catH(c){ return '<div class="cc-cat"><span>'+c[0]+'</span><span class="cc-bar"><i style="width:'+(c[1]/mx*100)+'%"></i></span><span class="cc-v">'+brl(c[1],0)+'</span><span class="cc-pc">'+Math.round(c[1]/tot*100)+'%</span></div>'; }
+    $('cCat').innerHTML=cs.length?cs.slice(0,CL).map(catH).join(''):'<div class="gk-muted" style="font-size:13px">Nenhuma despesa no período.</div>';
+    $('catMore').hidden=cs.length<=CL; $('catMore').innerHTML='Ver todas<i data-lucide="arrow-right" class="gk-ic"></i>';
+    $('catMore').onclick=function(){ todosModal('Todas as categorias','<div class="cc-cats">'+cs.map(catH).join('')+'</div>'); };
+    var mes=[0,0,0,0,0,0]; D.forEach(function(d){ mes[mesDe(d.data)]+=d.val; });
+    var med=mes.reduce(function(a,b){ return a+b; },0)/6;
+    GK.barChart($('cMes'),{items:mes.map(function(v,m){ var d=Math.round((v-med)/med*100); return {l:MC[m],v:Math.round(v/1000),p:Math.round(med/1000),t:MES[m][0].toUpperCase()+MES[m].slice(1)+(m===5?', até hoje':''),e:brl(v)+', '+(Math.abs(d)<2?'na média':(d>0?d+'% acima da média':(-d)+'% abaixo da média'))}; }),unit:'mil',one:'mil'});
+  }
+  function lista(){
+    var L=D.filter(function(d){ return noPer(d)&&passa(d); });
+    graficos(D.filter(noPer));
+    var tot=L.length, pages=Math.max(1,Math.ceil(tot/PAGE)); if(fs.page>pages) fs.page=pages;
+    var s=(fs.page-1)*PAGE; shown=L.slice(s,s+PAGE);
+    $('tbody').innerHTML=shown.map(row).join(''); $('empty').hidden=tot>0; $('tbody').closest('table').hidden=tot===0;
+    $('cntTab').textContent=D.filter(noPer).length;
+    $('cnt').textContent='Nenhuma despesa encontrada';
+    if(tot) $('cnt').innerHTML='Mostrando '+(s+1)+'–'+Math.min(s+PAGE,tot)+' de '+tot+GK.sep+'Total '+brl(L.reduce(function(a,d){ return a+d.val; },0));
+    var pg=$('pager'); pg.innerHTML='';
+    function mk(l,p,on,dis,ar){ var b=document.createElement('button'); b.type='button'; b.className='gk-btn gk-btn-ghost gk-btn-sm'+(on?' is-active':''); b.innerHTML=l; if(ar) b.setAttribute('aria-label',ar); b.disabled=dis; if(!dis&&!on) b.addEventListener('click',function(){ fs.page=p; lista(); }); pg.appendChild(b); }
+    mk('<i data-lucide="chevron-left" class="gk-ic"></i>',fs.page-1,false,fs.page<=1,'Anterior');
+    var ini=Math.max(1,Math.min(fs.page-2,pages-4)); for(var i=ini;i<=Math.min(pages,ini+4);i++) mk(String(i),i,i===fs.page,false);
+    mk('<i data-lucide="chevron-right" class="gk-ic"></i>',fs.page+1,false,fs.page>=pages,'Próxima');
+    $('clearAll').hidden=!(fs.cat.length||fs.vei.length||fs.rec.length); GK.icons();
+  }
+  $('q').addEventListener('input',function(){ fs.q=this.value.toLowerCase().trim(); fs.page=1; lista(); });
+  var fC=GK.checkFilter({btn:'fCat',pop:'popCat',label:'Categoria',onChange:function(v){ fs.cat=v; fs.page=1; lista(); }});
+  var fV=GK.checkFilter({btn:'fVei',pop:'popVei',label:'Veículo',onChange:function(v){ fs.vei=v; fs.page=1; lista(); }});
+  var fR=GK.checkFilter({btn:'fRec',pop:'popRec',label:'Lançamento',onChange:function(v){ fs.rec=v; fs.page=1; lista(); }});
+  function limpar(){ fC.reset(); fV.reset(); fR.reset(); }
+  $('clearAll').addEventListener('click',limpar);
+  $('clearEmpty').addEventListener('click',function(){ $('q').value=''; fs.q=''; limpar(); lista(); });
+  var alvo=null;
+  $('tbody').addEventListener('click',function(e){ var tr=e.target.closest('tr'); if(!tr) return; var d=shown[+tr.getAttribute('data-i')], b=e.target.closest('[data-a]'), a=b?b.getAttribute('data-a'):'ver';
+    if(a==='ed') editar(d); else if(a==='del') excluir(d); else ver(d); });
+  function ver(d){ alvo=d; var t=d.cat==='Outros'?d.desc:d.sub;
+    $('vT').textContent=t;
+    var R=[['Categoria',d.cat],['Veículo',VEI[d.vi].p+' ('+VEI[d.vi].m+')'],['Valor','<b>'+brl(d.val)+'</b>'],['Data',fdata(d.data)]];
+    if(d.lit) R.push(['Litros',num(d.lit,1)+' l']); if(d.km) R.push(['Km do veículo',num(d.km)+' km']);
+    R.push(['Lançamento',d.rec?(d.pausa?'Recorrente ('+d.rec.toLowerCase()+'), pausada':'Recorrente, '+d.rec.toLowerCase()):'Única']);
+    R.push(['Lançada por',d.por+(d.app?', pelo app do motorista':'')]);
+    R.push(['Comprovante',d.app?'<a class="gk-link" href="#" onclick="return false">cupom-abastecimento.jpg</a>':'<span class="gk-muted">Sem anexo</span>']);
+    $('vDl').innerHTML=R.map(function(r){ return '<div class="gk-dl-row"><span class="gk-dl-l">'+r[0]+'</span><span>'+r[1]+'</span></div>'; }).join('');
+    GK.open('ovVer'); }
+  function excluir(d){ alvo=d; $('delTxt').textContent=(d.cat==='Outros'?d.desc:d.sub)+' de '+fdata(d.data)+', '+brl(d.val)+', no '+VEI[d.vi].p+'. Ela sai do Centro de custo e dos cálculos. '+(d.rec?'As próximas da recorrência também deixam de ser lançadas.':'Não dá para desfazer.'); GK.open('ovDel'); }
+  $('vEd').addEventListener('click',function(){ GK.close('ovVer'); editar(alvo); });
+  $('vDel').addEventListener('click',function(){ GK.close('ovVer'); excluir(alvo); });
+  $('delOk').addEventListener('click',function(){ var i=D.indexOf(alvo); if(i>=0) D.splice(i,1); GK.close('ovDel'); GK.toast('Despesa excluída'); geral(); lista(); });
+
+  /* ---------- modal da despesa ---------- */
+  $('dCat').innerHTML='<option value="">Selecione</option>'+CATS.map(function(c){ return '<option>'+c.n+'</option>'; }).join('');
+  $('dVeiBox').innerHTML=GK.msHTML('dVei','Selecione os veículos','Buscar placa',[['all','Todos os veículos']].concat(VEI.map(function(v,i){ return [String(i),v.p+' ('+v.m+')']; })),false);
+  var msRaw=GK.multiselect($('dVei'),veiMudou), ALL=VEI.map(function(v,i){ return String(i); });
+  /* "Todos os veículos" é uma opção só: escolher ela limpa as placas; escolher uma placa tira o "Todos" */
+  $('dVei').addEventListener('change',function(e){ var t=e.target; if(!t.checked) return;
+    $('dVei').querySelectorAll('input[type=checkbox]').forEach(function(b){ if(b!==t&&((t.value==='all')||(b.value==='all'))) b.checked=false; }); },true);
+  var msV={ get:function(){ var g=msRaw.get(); return g.indexOf('all')>=0?ALL.slice():g; },
+            set:function(v){ msRaw.set(v&&v.length>1&&v.length===ALL.length?['all']:v); } };
+  function veiMudou(){ var n=msV.get().length; $('fKm').hidden=n>1; $('rowDK').style.gridTemplateColumns=n>1?'1fr':''; 
+    var f=$('fVeis'); f.classList.remove('is-error'); f.querySelector('.gk-error').hidden=true; valHelp(); }
+  function valHelp(){ var n=msV.get().length, v=+$('dVal').value.replace(/[^\d,]/g,'').replace(',','.')||0; $('dValL').firstChild.textContent=n>1?'Valor total':'Valor';
+    $('dValHelp').hidden=n<2; if(n>1) $('dValHelp').textContent=(v?brl(v/n)+' por veículo':'Dividido igualmente')+' entre os '+n+' veículos'; }
+  $('dVal').addEventListener('input',function(){ setTimeout(valHelp,0); });
+  var cur=null;
+  function subs(cat,val){ var c=CATS.filter(function(x){ return x.n===cat; })[0], out=cat==='Outros';
+    $('fSub').hidden=out; $('fDesc').hidden=!out; $('dSub').toggleAttribute('data-required',!out); $('dDesc').toggleAttribute('data-required',out);
+    $('dSub').disabled=!c; $('dSub').innerHTML=c?('<option value="">Selecione</option>'+c.s.map(function(s){ return '<option'+(s===val?' selected':'')+'>'+s+'</option>'; }).join('')):'<option value="">Escolha a categoria</option>'; }
+  $('dCat').addEventListener('change',function(){ subs(this.value); erro(this,false); });
+  function setRec(on){ $('dRec').checked=on; $('dRecTxt').textContent=on?'Sim':'Não'; $('dRecTxt').classList.toggle('off',!on); $('recBox').hidden=!on; }
+  $('dRec').addEventListener('change',function(){ setRec(this.checked); });
+  function setAtiva(on){ $('dAtiva').checked=on; $('dAtivaTxt').textContent=on?'Ativa':'Pausada'; $('dAtivaTxt').classList.toggle('off',!on);
+    $('dPauseDesc').textContent=on?'Pause para parar de lançar as próximas. As já lançadas continuam.':'Pausada: nenhuma nova é lançada até você retomar.'; }
+  $('dAtiva').addEventListener('change',function(){ setAtiva(this.checked); });
+  $('dVal').addEventListener('input',function(){ var n=this.value.replace(/\D/g,''); this.value=n?brl(+n/100):''; erro(this,false); });
+  $('dKm').addEventListener('input',function(){ var n=this.value.replace(/\D/g,''); this.value=n?(+n).toLocaleString('pt-BR'):''; });
+  $('dFileBtn').addEventListener('click',function(){ $('dFile').click(); });
+  $('dFile').addEventListener('change',function(){ if(this.files[0]) $('dFileName').textContent=this.files[0].name; });
+  function erro(inp,bad){ var f=inp.closest('.gk-field'); f.classList.toggle('is-error',bad); var e=f.querySelector('.gk-error'); if(e) e.hidden=!bad; }
+  document.querySelectorAll('#dForm .gk-input,#dForm .gk-select').forEach(function(el){ el.addEventListener('input',function(){ erro(el,false); }); });
+  function abrir(d){
+    cur=d||null; document.querySelectorAll('#dForm .gk-field').forEach(function(f){ f.classList.remove('is-error'); var e=f.querySelector('.gk-error'); if(e) e.hidden=true; });
+    $('dTitle').textContent=d?'Editar despesa':'Nova despesa'; $('dSave').textContent=d?'Salvar alterações':'Lançar despesa';
+    $('dCat').value=d?d.cat:''; subs(d?d.cat:'',d&&d.sub); $('dDesc').value=d&&d.desc||''; msV.set(d?[String(d.vi)]:[]); veiMudou(); $('dVei').querySelector('input[value=all]').closest('label').hidden=!!d;
+    $('dVal').value=d?brl(d.val):''; $('dData').value=d?d.data:'2026-11-26'; $('dKm').value=d&&d.km||''; $('dFileName').textContent=d&&d.app?'cupom-abastecimento.jpg':'Opcional, imagem ou PDF';
+    setRec(!!(d&&d.rec)); $('dFreq').value=d&&d.rec||'Todo mês'; $('dFim').value='';
+    $('pauseRow').hidden=!(d&&d.rec); setAtiva(!(d&&d.pausa)); $('dRec').disabled=!!(d&&d.rec);
+    $('dRecDesc').textContent=d&&d.rec?'Para parar de repetir, pause a recorrência abaixo.':'Repete sozinha na frequência escolhida, como seguro e rastreador.';
+    $('dLog').hidden=!d; if(d) $('dLog').innerHTML=GK.sp('<span><i data-lucide="clock" class="gk-ic"></i>Lançada em '+fdata(d.data)+' por '+d.por+(d.app?' pelo app':'')+'</span>');
+    GK.open('ovD'); GK.icons(); if(!d) $('dCat').focus();
+  }
+  function editar(d){ abrir(d); }
+  $('btnNova').addEventListener('click',function(){ abrir(null); });
+  $('dSave').addEventListener('click',function(){
+    var ok=true; if(!msV.get().length){ var fv=$('fVeis'); fv.classList.add('is-error'); fv.querySelector('.gk-error').hidden=false; ok=false; }
+    document.querySelectorAll('#dForm [data-required]').forEach(function(inp){ if(inp.closest('[hidden]')) return; var bad=!inp.value.trim(); erro(inp,bad); if(bad&&ok){ inp.focus(); ok=false; } });
+    if(!ok) return;
+    var val=+$('dVal').value.replace(/[^\d,]/g,'').replace(',','.');
+    if(cur){ cur.cat=$('dCat').value; cur.sub=$('dSub').value; cur.desc=$('dDesc').value; cur.vi=+msV.get()[0]; cur.val=val; cur.data=$('dData').value;
+      if(cur.rec){ var was=!!cur.pausa; cur.pausa=!$('dAtiva').checked; cur.rec=$('dFreq').value; GK.close('ovD'); GK.toast(was!==cur.pausa?(cur.pausa?'Recorrência pausada':'Recorrência retomada'):'Alterações salvas'); }
+      else { GK.close('ovD'); GK.toast('Alterações salvas'); } }
+    else { var vs=msV.get(), rec=$('dRec').checked?$('dFreq').value:null;
+      /* uma despesa por veículo, com o valor dividido: assim o custo de cada veículo continua certo */
+      vs.forEach(function(v){ D.unshift({id:seq++,cat:$('dCat').value,sub:$('dSub').value,desc:$('dDesc').value,vi:+v,data:$('dData').value,por:GESTOR,val:Math.round(val/vs.length*100)/100,rec:rec}); });
+      D.sort(function(a,b){ return a.data<b.data?1:(a.data>b.data?-1:b.id-a.id); }); GK.close('ovD'); GK.toast(vs.length>1?'Despesa lançada para '+vs.length+' veículos':(rec?'Despesa recorrente lançada':'Despesa lançada')); }
+    geral(); lista();
+  });
+
+  periodo('5,6'); if(/nova/.test(location.search)) abrir(null); if(/despesas/.test(location.hash)) aba('desp');
+  GK.popovers(); GK.icons();
+})();
+</script>
+</body>
+</html>

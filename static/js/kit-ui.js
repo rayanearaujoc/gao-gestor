@@ -1,7 +1,7 @@
 /* GAO Gestor — kit-ui.js: utilidades dos componentes do kit (popover, painel, modal). */
 window.GK={
   /* avatar do motorista: usa a foto cadastrada quando existe (hoje só o Ronaldo), senão as iniciais. sty = estilo extra (tamanho) */
-  mot:function(n,sty){ var F={'Ronaldo Araújo':'static/img/ronaldo.webp'}, f=F[n], i=n.split(' ').map(function(x){ return x[0]; }).slice(0,2).join(''); return '<span class="gk-avatar"'+(sty?' style="'+sty+'"':'')+'>'+(f?'<img src="'+f+'" alt="">':i)+'</span>'; },
+  mot:function(n,sty){ var F={'Ronaldo Araújo':'static/img/ronaldo.webp','Paulo Ribeiro':'static/img/paulo.jpg'}, f=F[n], i=n.split(' ').map(function(x){ return x[0]; }).slice(0,2).join(''); return '<span class="gk-avatar"'+(sty?' style="'+sty+'"':'')+'>'+(f?'<img src="'+f+'" alt="">':i)+'</span>'; },
   /* separador padrão entre informações na mesma linha: barrinha cinza clara (nunca bolinha). GK.sep é o HTML; GK.sp troca ' · ' por ele */
   sep:'<span class="gk-sep" aria-hidden="true"></span>',
   sp:function(t){ return String(t).split(' · ').join(GK.sep); },

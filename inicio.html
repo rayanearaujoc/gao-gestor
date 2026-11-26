@@ -30,7 +30,7 @@
     <section class="gk-stats" style="margin-bottom:var(--space-5)">
       <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="circle-check" class="gk-ic"></i></span>Taxa de entrega</div><div class="gk-stat-v"><span id="kT"></span><span class="gk-delta" id="kTd"></span></div><div class="gk-stat-l">das comandas foram entregues</div></div>
       <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="package" class="gk-ic"></i></span>Entregas e coletas</div><div class="gk-stat-v"><span id="kV"></span><span class="gk-delta" id="kVd"></span></div><div class="gk-stat-l">comandas no período</div></div>
-      <div class="gk-card gk-stat"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="fuel" class="gk-ic"></i></span>Consumo médio</div><div class="gk-stat-v"><span id="kK"></span> <small style="font-size:13px;font-weight:500;color:var(--muted)">km/l</small><span class="gk-delta" id="kKd"></span></div><div class="gk-stat-l">média da frota</div></div>
+      <a class="gk-card gk-stat is-link" href="centro-custo.html" style="text-decoration:none;color:inherit"><span class="gk-stat-arrow"><i data-lucide="arrow-up-right" class="gk-ic"></i></span><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="circle-dollar-sign" class="gk-ic"></i></span>Custo total</div><div class="gk-stat-v"><span id="kK"></span><span class="gk-delta" id="kKd"></span></div><div class="gk-stat-l">gasto da operação no período</div></a>
       <a class="gk-card gk-stat is-link" href="multas.html" style="text-decoration:none;color:inherit"><span class="gk-stat-arrow"><i data-lucide="arrow-up-right" class="gk-ic"></i></span><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="triangle-alert" class="gk-ic"></i></span>Multas</div><div class="gk-stat-v" id="kM"></div><div class="gk-stat-l" id="kMl"></div></a>
     </section>
 
@@ -40,7 +40,7 @@
     </section>
     <section class="gk-charts">
       <div class="gk-card gk-chart"><div class="gk-chart-h"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="truck" class="gk-ic"></i></span>Entregas e coletas</div><span class="gk-chart-m" id="c3m"></span></div><div id="c3"></div><div class="gk-tl-lg" style="margin:var(--space-3) 0 0"><span><i class="is-sq" style="background:var(--primary)"></i><span id="lgNow"></span></span><span><i class="is-sq" style="background:var(--line-strong)"></i><span id="lgPrev"></span></span></div></div>
-      <div class="gk-card gk-chart"><div class="gk-chart-h"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="fuel" class="gk-ic"></i></span>Consumo médio da frota</div><span class="gk-chart-m" id="c4m"></span></div><div id="c4"></div></div>
+      <div class="gk-card gk-chart"><div class="gk-chart-h"><div class="gk-stat-h"><span class="gk-stat-ic"><i data-lucide="circle-dollar-sign" class="gk-ic"></i></span>Custo por km</div><span class="gk-chart-m" id="c4m"></span></div><div id="c4"></div></div>
     </section>
   </main>
 <script src="https://cdn.jsdelivr.net/npm/lucide@1.60.0/dist/umd/lucide.min.js"></script>
@@ -57,20 +57,19 @@
 
   /* dados de exemplo: 200 dias fechados até ontem (hoje fica só na faixa azul) */
   var N=200, W=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'], WL=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'], MES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
-  var base=[7,19,20,19,18,20,9], fixo=[16,19,20,8,7,18,19, 18,21,19,9,6,20], V=[], ENT=[], LIB=[], RATE=[], K=[], MV=[], MC=[], VALS=[195.23,130.16,293.47];
+  var base=[7,19,20,19,18,20,9], fixo=[16,19,20,8,7,18,19, 18,21,19,9,6,20], V=[], ENT=[], LIB=[], RATE=[], K=[], CK=[], KMD=[], MV=[], MC=[], VALS=[195.23,130.16,293.47];
   for(var i=0;i<N;i++){
     var d=new Date(2026,10,16-(N-1-i)), w=d.getDay();
     V.push(i>=N-13?fixo[i-(N-13)]:Math.max(3,base[w]+((i*37)%5)-2));
     ENT.push(Math.round(V[i]*.85));
     RATE.push(Math.min(99,Math.max(91,95.2+2.2*Math.sin(i/2.3)+1.2*Math.cos(i/1.1)+(i>N-8?.6:0))));
     LIB.push(Math.round(ENT[i]/(RATE[i]/100)));
-    K.push(Math.round((4.95+0.18*Math.sin(i/3.1)+0.12*Math.cos(i/1.7))*10)/10);
+    K.push(Math.round((1.42+0.1*Math.sin(i/3.1)+0.06*Math.cos(i/1.7)+(i>N-30?(i-N+30)*0.0009:0))*100)/100); KMD.push(V[i]*27); CK.push(K[i]*KMD[i]);
     MC.push(i%4===1?1:0); MV.push(i%4===1?VALS[i%3]:0);
   }
-  [4.9,5.1,5.0,5.2,5.1,4.8].forEach(function(v,k){ K[N-6+k]=v; }); K[N-7]=5.0;
   function dt(i){ var d=new Date(2026,10,16-(N-1-i)); return WL[d.getDay()]+', '+d.getDate()+' de '+MES[d.getMonth()]; }
   function sum(A,a,b){ var s=0; for(var i=a;i<b;i++) s+=A[i]; return s; }
-  function agg(a,b){ var e=sum(ENT,a,b), l=sum(LIB,a,b); var wr=0; for(var q=a;q<b;q++) wr+=RATE[q]*ENT[q]; return {e:e,l:l,v:sum(V,a,b),rate:wr/e,k:sum(K,a,b)/(b-a),mc:sum(MC,a,b),mv:sum(MV,a,b)}; }
+  function agg(a,b){ var e=sum(ENT,a,b), l=sum(LIB,a,b); var wr=0; for(var q=a;q<b;q++) wr+=RATE[q]*ENT[q]; return {e:e,l:l,v:sum(V,a,b),rate:wr/e,k:sum(CK,a,b)/sum(KMD,a,b),c:sum(CK,a,b),mc:sum(MC,a,b),mv:sum(MV,a,b)}; }
   function delta(el,dv,txt,inv){ dv=Math.round(dv*10)/10; if(dv===0) txt=txt.replace(/^[+−]/,''); el.textContent=txt; el.className='gk-delta'+(dv===0?'':((dv>0)!==!!inv?' is-up':' is-down')); }
   function lbl(j,n){ var st=n<=31?5:(n<=62?10:15); return n<=7?W[new Date(2026,10,16-(N-1-j)).getDay()]:((N-1-j)%st===0?String(new Date(2026,10,16-(N-1-j)).getDate()):''); }
   function desenha(a,b){
@@ -83,7 +82,7 @@
     var n=b-a, P=agg(a,b), Q=agg(a-n,a), ant=n===7?'vs semana anterior':'vs período anterior', sg=function(x){ return x>0?'+':(x<0?'−':''); };
     $('kT').textContent=pt(P.rate)+'%'; delta($('kTd'),P.rate-Q.rate,sg(P.rate-Q.rate)+pt(Math.abs(P.rate-Q.rate))+' pt');
     $('kV').textContent=P.v.toLocaleString('pt-BR'); var pv=Math.round((P.v-Q.v)/Q.v*100); delta($('kVd'),pv,sg(pv)+Math.abs(pv)+'%');
-    $('kK').textContent=pt(P.k); delta($('kKd'),P.k-Q.k,sg(P.k-Q.k)+pt(Math.abs(P.k-Q.k)));
+    $('kK').textContent='R$ '+Math.round(P.c).toLocaleString('pt-BR'); var pc=Math.round((P.c-Q.c)/Q.c*100); delta($('kKd'),pc,sg(pc)+Math.abs(pc)+'%',true);
     $('kM').textContent='R$ '+P.mv.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); $('kMl').textContent=P.mc+(P.mc===1?' multa':' multas')+' no período';
     /* taxa de entrega */
     var it=[]; for(var j=a;j<b;j++) it.push({l:lbl(j,n),v:Math.round(RATE[j]*10)/10,t:dt(j),e:ENT[j]+' comandas entregues'});
@@ -95,9 +94,9 @@
     var bi=[]; for(j=a;j<b;j++){ var p=V[j-n], df=V[j]-p; bi.push({l:lbl(j,n),v:V[j],p:p,t:dt(j),e:df===0?'Igual ao período anterior':(df>0?'+'+df:'−'+(-df))+' que no período anterior'}); }
     GK.barChart($('c3'),{items:bi,unit:'comandas',one:'comanda'}); $('c3m').textContent=sg(pv)+Math.abs(pv)+'% '+ant;
     $('lgNow').textContent=n===7?'Esta semana':'Período selecionado'; $('lgPrev').textContent=n===7?'Semana anterior':'Período anterior';
-    /* consumo */
+    /* custo por km */
     var ar=[]; for(j=a;j<b;j++) ar.push({l:lbl(j,n),v:K[j],t:dt(j)});
-    GK.areaChart($('c4'),{items:ar,unit:'km/l',one:'km/l',min:4.5,max:5.5,dec:1}); $('c4m').textContent='Média '+pt(P.k)+' km/l';
+    GK.areaChart($('c4'),{items:ar,unit:'R$/km',one:'R$/km',min:1.2,max:1.8,dec:1}); $('c4m').textContent='Média R$ '+pt(P.k,2)+'/km';
   }
   var MC3=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
   function idx(d){ return Math.round((d-new Date(2026,10,16))/864e5)+N-1; }
