@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>GAO Gestor · Comprovantes</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
 <script>try{if(JSON.parse(localStorage.getItem('gao_theme')||'null')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
@@ -32,7 +32,7 @@
         <button class="gk-btn gk-btn-primary" id="btnEnviar" disabled><i data-lucide="send" class="gk-ic"></i>Enviar</button>
       </div>
       <table class="gk-table is-compact">
-        <thead><tr><th style="width:48px"><label class="gk-check"><input type="checkbox" id="selAll" aria-label="Selecionar todos"></label></th><th>Data</th><th>Cliente</th><th>Recebido por</th><th>Tipo</th><th>Origem</th><th class="gk-col-actions" style="width:80px">Ações</th></tr></thead>
+        <thead><tr><th style="width:48px"><label class="gk-check"><input type="checkbox" id="selAll" aria-label="Selecionar todos"></label></th><th>Data</th><th data-card-title>Cliente</th><th>Recebido por</th><th>Tipo</th><th>Origem</th><th class="gk-col-actions" style="width:80px">Ações</th></tr></thead>
         <tbody id="tbody"></tbody>
       </table>
       <div id="vazio" hidden></div>

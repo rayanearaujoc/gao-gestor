@@ -336,6 +336,7 @@ svg.lucide{width:20px;height:20px;stroke-width:2;flex:none}
 [data-theme="dark"] .gao-pop{background:#16213A}
 [data-theme="dark"] .gao-nav.active{background:rgba(255,255,255,.08)}
 
+
 /* mobile e tablet: barra superior azul escura, igual ao menu */
 @media(max-width:899px){
   .gao-topbar{background:#14264D;border-bottom:0}
@@ -345,3 +346,4 @@ svg.lucide{width:20px;height:20px;stroke-width:2;flex:none}
   [data-theme="dark"] .gao-topbar{background:#0C1424;border-bottom:1px solid rgba(255,255,255,.08)}
   body:has(.gao-topbar) #gaoTheme{color:rgba(255,255,255,.8)}
 }
+

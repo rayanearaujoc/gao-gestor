@@ -1274,10 +1274,38 @@ body.gk-login-page{padding:0;background:var(--card)}
   .gk-btn-sm{min-height:40px}
   .gk-btn-icon{min-width:44px}
   .gk-act{width:40px;height:40px}
-  .gk-input,.gk-select{height:44px;font-size:16px}
+  .gk-input,.gk-select{height:44px;font-size:14px}
   /* modais viram folha na base da tela */
   .gk-overlay .gk-modal{left:0;right:0;top:auto;bottom:0;transform:none;width:100%!important;max-width:100%;max-height:92vh;border-radius:var(--radius-lg) var(--radius-lg) 0 0}
   .gk-modal-foot{flex-direction:column-reverse;align-items:stretch}
   .gk-modal-foot .gk-btn{width:100%}
   .gk-fgrid{grid-template-columns:1fr}
+}
+
+/* ===== Tabelas no celular (até 640px): lista de itens, uma linha da tabela por item. Tablet continua com rolagem horizontal ===== */
+@media (max-width:640px){
+  .gk-table-wrap{overflow:hidden}
+  .gk-table{overflow:visible;font-size:13px}
+  .gk-table,.gk-table tbody{display:block}
+  .gk-table thead{display:none}
+  .gk-table tbody tr{position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-2) var(--space-3);padding:var(--space-4);border-bottom:1px solid var(--line);animation:none}
+  .gk-table tbody tr:last-child{border-bottom:0}
+  .gk-table tbody td,.gk-table tbody td:first-child{position:static;display:inline-flex;align-items:center;gap:var(--space-2);height:auto!important;min-height:0;padding:0;border:0;background:transparent;white-space:normal;color:var(--muted);text-align:left}
+  .gk-table tbody tr:hover td{background:transparent}
+  .gk-table tbody td .gk-c-v{display:inline;text-align:left}
+  .gk-table tbody td .gk-c-v:has(>.gk-avatar,>.gk-meter,>.gk-cell-main,>div,>.gk-act,>.gk-acts){display:inline-flex;align-items:center;gap:4px 8px}
+  /* título do item: primeira informação, ocupa a linha toda */
+  .gk-table tbody td.gk-c-title{order:-1;flex:1 0 100%;color:var(--fg);font-size:14px;font-weight:600}
+  .gk-table tbody td.gk-c-title .gk-cell-main{min-width:0}
+  /* checkbox da seleção: canto do item */
+  .gk-table tbody td.gk-c-sel{position:absolute;top:var(--space-4);right:var(--space-4);left:auto;z-index:1}
+  .gk-table tbody tr:has(.gk-c-sel) .gk-c-title{padding-right:var(--space-8)}
+  /* ações: à direita, botões fáceis de tocar */
+  .gk-table tbody td.gk-col-actions{order:99;width:auto!important;margin-left:auto}
+  .gk-table .gk-row-actions{opacity:1}
+  .gk-table tbody td.gk-col-actions .gk-acts{gap:var(--space-2)}
+  .gk-table tbody td.gk-col-actions .gk-act{width:40px;height:40px}
+  .gk-table tbody td.gk-col-actions .gk-act .gk-ic,.gk-table tbody td.gk-col-actions .gk-act svg{width:16px;height:16px}
+  .gk-table tbody td .gk-meter{min-width:120px}
+  .gk-pager{flex-wrap:wrap;gap:var(--space-2) var(--space-3);justify-content:center}
 }

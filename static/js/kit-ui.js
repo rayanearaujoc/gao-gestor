@@ -279,3 +279,32 @@ document.addEventListener('click',function(e){
     if(zero&&!v.innerHTML){ v.innerHTML=GK.emptyHTML(o); GK.icons(); var b=v.querySelector('button'); if(b) b.addEventListener('click',function(){ var n=document.getElementById('btnNovo')||document.getElementById('btnNova'); if(n) n.click(); }); }
   };
 })();
+
+/* Tabelas no mobile viram cards: cada célula ganha data-label (texto do cabeçalho) e a célula de título é marcada.
+   O CSS (kit.css, max-width:640px) faz o resto. Acompanha linhas redesenhadas por JS. */
+(function(){
+  function prep(t){
+    var ths=[].slice.call(t.querySelectorAll('thead th')); if(!ths.length) return;
+    var ti=-1; ths.forEach(function(h,i){ if(ti<0&&h.hasAttribute('data-card-title')) ti=i; });
+    if(ti<0) ths.some(function(h,i){ if(h.textContent.trim()&&!h.classList.contains('gk-col-actions')){ ti=i; return true; } });
+    [].forEach.call(t.querySelectorAll('tbody tr'),function(tr){
+      var tds=tr.children; if(tds.length!==ths.length) return;
+      [].forEach.call(tds,function(td,i){
+        if(td.hasAttribute('data-cardized')) return; td.setAttribute('data-cardized','');
+        var txt=ths[i].textContent.trim();
+        if(i===ti) td.classList.add('gk-c-title');
+        else if(!txt&&!td.classList.contains('gk-col-actions')) td.classList.add('gk-c-sel');
+        else if(txt&&!td.classList.contains('gk-col-actions')){
+          td.setAttribute('data-label',txt);
+          var w=document.createElement('span'); w.className='gk-c-v';
+          while(td.firstChild) w.appendChild(td.firstChild); td.appendChild(w);
+        }
+      });
+    });
+  }
+  var raf=0;
+  function run(){ raf=0; [].forEach.call(document.querySelectorAll('.gk-table'),prep); }
+  function sched(){ if(!raf) raf=requestAnimationFrame(run); }
+  function start(){ run(); new MutationObserver(sched).observe(document.body,{childList:true,subtree:true}); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
+})();
